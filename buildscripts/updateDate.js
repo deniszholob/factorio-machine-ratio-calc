@@ -4,7 +4,9 @@ const fs = require('fs');
 const date = Date.now();
 const outputFile = 'src/assets/update.json';
 
-const outputData = { updated: date }
+const outputData = {
+    updated: date
+}
 
 // Prepare string to write to file
 const json = JSON.stringify(outputData);

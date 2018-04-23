@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 7778",
-    "build": "node buildScripts/updateDate.js && npm run lint && npm run build:prod",
+    "build": "npm run lint && npm run build:prod",
     "build:dev": "ng build --dev --base-href ./",
     "build:prod": "ng build --prod --base-href ./",
     "test": "echo 'No tests yet...'",
