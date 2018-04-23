@@ -2,7 +2,7 @@
 
 # Dev
 /dev
-/src/assets/images/dev
+/src/assets/update.json
 
 # compiled output
 /dist
@@ -41,6 +41,8 @@ testem.log
 # e2e
 /e2e/*.js
 /e2e/*.map
+karma.conf.js
+protractor.conf.js
 
 # System Files
 .DS_Store

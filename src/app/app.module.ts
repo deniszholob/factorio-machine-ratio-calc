@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 // UI (bootstrap, clarity, etc...)
-import { ClarityModule } from "@clr/angular";
+import { ClarityModule } from '@clr/angular';
 
 // Routing
 import { AppRoutingModule, RoutedComponents } from 'app/app-routing.module';
