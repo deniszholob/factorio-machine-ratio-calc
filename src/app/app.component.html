@@ -1,0 +1,45 @@
+<div class="main-container">
+    <header class="header header-6">
+        <div class="branding">
+            <a href="#" class="nav-link nav-icon">
+                <img src="https://wiki.factorio.com/images/Assembling_machine_1.png" alt="Machine">
+                <span class="title">Factorio Machine Ratio Calculator</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="content-container">
+        <div class="content-area">
+            <div class="content container">
+                <span> Simele, generic calculator to help figure out machine ratios in
+                    <a href="https://www.factorio.com/" target="_blank">Factorio</a>
+                </span><br>
+                <span>
+                    Report Bugs or Suggestions on
+                    <a href="https://github.com/DDDGamer/factorio-cheat-sheet/issues" target="_blank">Github Issues</a> or
+                    <a href="https://discord.gg/hmwb3dB" target="_blank">Discord</a>
+                </span><br><hr>
+                <!-- <router-outlet></router-outlet> -->
+                <app-calculator></app-calculator>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-xs-4">
+                    Design by
+                    <br class="d-md-none">
+                    <a href="http://www.deniszholob.com" target="_blank">Denis Zholob</a>
+                </div>
+                <div class="col-xs-4 text-center">
+                    <a href="https://github.com/DDDGamer/factorio-machine-ratio-calc/" target="_blank">Github Source</a>
+                </div>
+                <div class="col-xs-4 text-right">
+                    Updated {{lastUpdate | date:'y/M/d'}}
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
