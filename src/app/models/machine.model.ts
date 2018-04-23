@@ -8,7 +8,7 @@ export interface MachineItem {
 
 export function newMachineItem(): MachineItem {
     return {
-        name: 'Dafault-Item',
+        name: 'Default-Item',
         count: 1,
         rate: 1,
         totalRate: 1
