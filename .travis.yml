@@ -1,6 +1,6 @@
 language: node_js # Building with node js
 node_js:
-    - stable # Download the stable node version
+    - 11.0.0 # Download the stable node version
 
 # Blocklist
 branches:
@@ -16,4 +16,4 @@ deploy:
     github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
     on:
         branch: master # Build only from master
-    local_dir: dist # Only copy the dist conents
+    local_dir: dist # Only copy the dist contents
