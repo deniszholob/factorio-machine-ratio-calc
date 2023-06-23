@@ -1,31 +1,22 @@
-// Angular
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 
-// RXJX
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators';
-
-// Constants
-const UPDATE_URL = './assets/update.json';
+import { APP_UPDATE_DATE } from './app-update';
+import { LayoutComponent } from './views/layout/layout.component';
+import { ProductionViewComponent } from './views/production-view/production-view.component';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    // styleUrls: ['./app.component.scss'] // Enable as needed
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    LayoutComponent,
+    ProductionViewComponent,
+  ],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
 })
 export class AppComponent {
-    public lastUpdate: number;
-    constructor(
-        private httpClientService: HttpClient,
-    ) {
-        this.httpClientService.get(UPDATE_URL).subscribe(
-            (result: Object) => {
-                this.lastUpdate = result['updated'];
-            },
-            error => {
-                console.log(error);
-            }
-        );
-    }
+  public readonly APP_UPDATE_DATE: number = APP_UPDATE_DATE * 1000; // s to ms
 }

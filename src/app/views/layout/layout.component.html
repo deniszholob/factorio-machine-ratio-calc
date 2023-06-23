@@ -1,0 +1,65 @@
+<div class="flex h-screen w-screen flex-col justify-between text-slate-50">
+  <div class="flex bg-stone-900">
+    <ng-container *ngTemplateOutlet="header"></ng-container>
+  </div>
+  <div class="flex flex-1 flex-col overflow-y-auto bg-stone-700">
+    <ng-container *ngTemplateOutlet="intro"></ng-container>
+    <ng-content></ng-content>
+  </div>
+  <div class="flex bg-stone-900">
+    <ng-container *ngTemplateOutlet="footer"></ng-container>
+  </div>
+</div>
+
+<ng-template #header>
+  <div class="mx-auto flex w-full max-w-6xl flex-row justify-between gap-4 px-8">
+    <a href="#" class="nav-link nav-icon py-2">
+      <img
+        src="https://wiki.factorio.com/images/Assembling_machine_1.png"
+        alt="Machine"
+        class="mr-2 inline-block max-h-10"
+      />
+      <span class="text-2xl">Generic Production Ratio Calculator</span>
+    </a>
+  </div>
+</ng-template>
+
+<ng-template #intro>
+  <div class="mx-auto flex w-full max-w-6xl flex-row justify-between gap-4 px-8 pt-4 pb-8">
+    <ul class="list-inside list-disc">
+      <li>
+        Simple, generic calculator to help figure out machine ratios in
+        <a href="https://www.factorio.com/" target="_blank">Factorio</a> or similar games/problems
+      </li>
+      <li>
+        Report Bugs or Suggestions on
+        <a href="https://github.com/deniszholob/factorio-machine-ratio-calc/issues" target="_blank">
+          Github Issues
+        </a>
+        or
+        <a href="https://discord.gg/PkyzXzz" target="_blank">Discord</a>
+      </li>
+      <li>
+        If you found this useful, consider Donating on
+        <a href="https://ko-fi.com/deniszholob" target="_blank">Ko-Fi</a> or
+        <a href="https://www.patreon.com/deniszholob" target="_blank">Patreon</a>.
+      </li>
+    </ul>
+  </div>
+</ng-template>
+
+<ng-template #footer>
+  <div class="mx-auto flex w-full max-w-6xl flex-row justify-between gap-4 px-8 py-4">
+    <div class="text-left">
+      Design by
+      <br class="md:hidden" />
+      <a href="http://www.deniszholob.com" target="_blank">Denis Zholob</a>
+    </div>
+    <div class="text-center">
+      <a href="https://github.com/deniszholob/factorio-machine-ratio-calc" target="_blank">
+        Github Source
+      </a>
+    </div>
+    <div class="text-right">Updated {{ lastUpdate | date : 'y/M/d' }}</div>
+  </div>
+</ng-template>

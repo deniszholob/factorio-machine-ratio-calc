@@ -1,17 +1,13 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# Dev
-/dev
-/src/assets/update.json
-
 # compiled output
-/dist
-/tmp
+dist
+tmp
 /out-tsc
 /public
 
 # dependencies
-/node_modules
+node_modules
 
 # IDEs and editors
 /.idea
@@ -35,15 +31,12 @@
 /coverage
 /libpeerconnection.log
 npm-debug.log
+yarn-error.log
 testem.log
 /typings
-
-# e2e
-/e2e/*.js
-/e2e/*.map
-karma.conf.js
-protractor.conf.js
 
 # System Files
 .DS_Store
 Thumbs.db
+
+.angular

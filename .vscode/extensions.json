@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "nrwl.angular-console",
+    "esbenp.prettier-vscode",
+    "firsttris.vscode-jest-runner",
+    "dbaeumer.vscode-eslint",
+    "deniszholob.angular-files-generator",
+    "angular.ng-template",
+    "editorconfig.editorconfig",
+    "bradlc.vscode-tailwindcss",
+    "adrianwilczynski.toggle-hidden"
+  ]
+}
