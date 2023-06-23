@@ -1,10 +1,21 @@
-# Factorio Machine Ratio Calculator [App](https://deniszholob.github.io/factorio-machine-ratio-calc/) [![Build Status](https://travis-ci.org/deniszholob/factorio-machine-ratio-calc.svg?branch=master)](https://travis-ci.org/deniszholob/factorio-machine-ratio-calc)
+# Generic Production Ratio Calculator [App](https://deniszholob.github.io/factorio-machine-ratio-calc/)
 
 Generic calculator to figure out the machine ratios in [Factorio](https://www.factorio.com/)
 
-Master branch is for the source code thats hosted [here](https://deniszholob.github.io/factorio-machine-ratio-calc/).
+## Deployments [![Build Status](https://github.com/deniszholob/factorio-machine-ratio-calc/actions/workflows/main.yml/badge.svg)](https://github.com/deniszholob/factorio-machine-ratio-calc/actions/workflows/main.yml)
+
+- Master branch is for the source code that's hosted on
+  [GhPages](https://deniszholob.github.io/factorio-machine-ratio-calc/)
 
 # Support Me
-If you found the calculator or the source code useful, consider supporting me on Patreon.
 
-[![button](https://c5.patreon.com/external/logo/downloads_wordmark_white_on_coral.png)](https://www.patreon.com/deniszholob)
+If you find the cheat sheet or the source code useful, consider:
+
+- Donating Ko-fi: https://ko-fi.com/deniszholob
+- Supporting on Patreon: https://www.patreon.com/deniszholob
+
+# Screenshots
+
+![Calculator Production List](screenshots/ratio-calculator-productions-list.png)
+
+![Calculator Production Edit](screenshots/ratio-calculator-production-edit.png)
