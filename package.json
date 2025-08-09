@@ -8,6 +8,8 @@
   "private": true,
   "scripts": {
     "i": "npm i",
+    "storybook": "nx run factorio-machine-ratio-calc:storybook",
+    "reset": "nx reset",
     "start": "nx serve",
     "build": "nx build",
     "build:prod": "nx build factorio-machine-ratio-calc --base-href ./",
@@ -16,9 +18,12 @@
     "lint": "nx lint",
     "lint:fix": "nx lint --fix",
     "lint:err": "nx lint --quiet",
+    "format:fix": "nx format:write",
+    "format:check": "nx format:check",
+    "format": "prettier --write .",
+    "format:nl": "prettier --end-of-line lf --write .",
     "test": "nx test --codeCoverage",
-    "test:view-coverage":"cd coverage/factorio-machine-ratio-calc && index.html",
-    "storybook": "nx run factorio-machine-ratio-calc:storybook",
+    "test:view-coverage": "cd coverage/factorio-machine-ratio-calc && index.html",
     "nx": "nx"
   },
   "dependencies": {
