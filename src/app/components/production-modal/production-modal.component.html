@@ -11,6 +11,7 @@
         <label for="machineName">Production Name:</label>
         <input type="string" name="machineName" [(ngModel)]="machine.name" placeholder="Name" />
       </div>
+      <hr />
 
       <div class="flex max-w-[40rem] flex-row flex-wrap items-center justify-between gap-2">
         <div class="">
@@ -22,6 +23,19 @@
             step="0.05"
             class="max-w-[7rem]"
             [(ngModel)]="machine.craftingSpeed"
+            (change)="reCalcProductionRates(machine)"
+            (keyup)="reCalcProductionRates(machine)"
+          />
+        </div>
+        <div class="">
+          <label for="machineCraftSpeed">Productivity (e.g. +50% = 1.5)</label>
+          <input
+            type="number"
+            name="machineCraftSpeed"
+            min="1"
+            step="0.05"
+            class="max-w-[7rem]"
+            [(ngModel)]="machine.productivity"
             (change)="reCalcProductionRates(machine)"
             (keyup)="reCalcProductionRates(machine)"
           />
@@ -47,7 +61,7 @@
     </div>
 
     <br />
-    <br />
+    <hr />
 
     <div class="flex flex-wrap justify-between gap-8">
       <ng-container
@@ -75,13 +89,12 @@
     [cdkDropListData]="data.ioItems"
     (cdkDropListDropped)="drop($event)"
   >
-    <div class="flex flex-row items-center gap-2 p-2 text-md">
+    <div class="text-md flex flex-row items-center gap-2 p-2">
       <button class="btn btn-icon btn-success" (click)="onAddItem(data.ioItems)">
         <i class="fas fa-plus"></i>
       </button>
       <h5>{{ data.name }}</h5>
     </div>
-    <hr />
 
     <div
       *ngFor="let item of data.ioItems; index as i"

@@ -2,72 +2,102 @@
 <html lang="en">
   <head>
     <!-- HTML Meta Tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="title" content="Factorio Machine Ratio Calculator">
-    <meta name="description" content="Interactive machine ratio calculator for the Factorio game.">
-    <meta name="keywords" content="Factorio, Calculator, Ratios, Production, DDDGamer, Denis Zholob">
-    <meta name="author" content="Denis Zholob">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="title" content="Factorio Machine Ratio Calculator" />
+    <meta
+      name="description"
+      content="Interactive machine ratio calculator for the Factorio game."
+    />
+    <meta
+      name="keywords"
+      content="Factorio, Calculator, Ratios, Production, DDDGamer, Denis Zholob"
+    />
+    <meta name="author" content="Denis Zholob" />
 
     <!-- Google / Search Engine Tags -->
-    <meta itemprop="name" content="Factorio Machine Ratio Calculator">
-    <meta itemprop="description" content="Interactive machine ratio calculator for the Factorio game.">
-    <meta itemprop="image" content="https://wiki.factorio.com/images/Assembling_machine_1.png">
+    <meta itemprop="name" content="Factorio Machine Ratio Calculator" />
+    <meta
+      itemprop="description"
+      content="Interactive machine ratio calculator for the Factorio game."
+    />
+    <meta itemprop="image" content="https://wiki.factorio.com/images/Assembling_machine_1.png" />
 
     <!-- Facebook Meta Tags -->
-    <meta property="og:url" content="https://deniszholob.github.io/factorio-blueprints/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Factorio Machine Ratio Calculator">
-    <meta property="og:description" content="Interactive machine ratio calculator for the Factorio game.">
-    <meta property="og:image" content="https://wiki.factorio.com/images/Assembling_machine_1.png">
+    <meta property="og:url" content="https://deniszholob.github.io/factorio-blueprints/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Factorio Machine Ratio Calculator" />
+    <meta
+      property="og:description"
+      content="Interactive machine ratio calculator for the Factorio game."
+    />
+    <meta property="og:image" content="https://wiki.factorio.com/images/Assembling_machine_1.png" />
 
     <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Factorio Machine Ratio Calculator">
-    <meta name="twitter:description" content="Interactive machine ratio calculator for the Factorio game.">
-    <meta name="twitter:image" content="https://wiki.factorio.com/images/Assembling_machine_1.png">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Factorio Machine Ratio Calculator" />
+    <meta
+      name="twitter:description"
+      content="Interactive machine ratio calculator for the Factorio game."
+    />
+    <meta
+      name="twitter:image"
+      content="https://wiki.factorio.com/images/Assembling_machine_1.png"
+    />
 
     <!-- Title/Icons -->
     <title>Factorio Machine Ratio Calculator</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="https://wiki.factorio.com/images/Assembling_machine_1.png">
-    <meta name="msapplication-TileColor" content="#189ADF">
-    <base href="/">
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://wiki.factorio.com/images/Assembling_machine_1.png"
+    />
+    <meta name="msapplication-TileColor" content="#189ADF" />
+    <base href="/" />
 
     <!-- PWA -->
-    <link rel="manifest" href="manifest.webmanifest">
-    <meta name="theme-color" content="#189ADF">
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#189ADF" />
 
     <!-- Meta Tags Generated via http://heymeta.com -->
 
     <!-- Prefetch/Preconnect -->
-    <link rel="dns-prefetch" href="//use.fontawesome.com">
-    <link rel="preconnect" href="//use.fontawesome.com" crossorigin="anonymous">
+    <link rel="dns-prefetch" href="//use.fontawesome.com" />
+    <link rel="preconnect" href="//use.fontawesome.com" crossorigin="anonymous" />
 
     <!-- Fonts -->
-    <script defer src="https://use.fontawesome.com/releases/v6.4.0/js/all.js" crossorigin="anonymous"></script>
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v6.4.0/js/all.js"
+      integrity="sha384-Y7LSKwoY+C2iyfu/oupNnkGEN3EgA6skmJeVg5AyQk7ttcjX0XsLREmmuJW/SdbU"
+      crossorigin="anonymous"
+    ></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-28080172-12"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
 
-        gtag('config', 'UA-28080172-12');
+      gtag('config', 'UA-28080172-12');
     </script>
   </head>
 
   <body>
     <app-root>
-      <div style="text-align:center; padding-top: 20px;">
-        <p style="padding-bottom:20px; font-size: 1.5em;">Loading</p>
+      <div style="text-align: center; padding-top: 20px">
+        <p style="padding-bottom: 20px; font-size: 1.5em">Loading</p>
         <i class="fas fa-cog fa-spin fa-3x"></i>
         <p class="txt-muted">
-            If this is loading forever, there may be a bug.
-            <br> Hit
-            <strong>F12</strong> to bring up the Debug Console, and
-            <a href="https://github.com/deniszholob/factorio-machine-ratio-calc/issues">report</a>
-            the error.
+          If this is loading forever, there may be a bug.
+          <br />
+          Hit <strong>F12</strong> to bring up the Debug Console, and
+          <a href="https://github.com/deniszholob/factorio-machine-ratio-calc/issues">report</a>
+          the error.
         </p>
       </div>
     </app-root>

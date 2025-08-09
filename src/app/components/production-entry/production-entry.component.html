@@ -1,6 +1,8 @@
-<div class="my-1 flex flex-row items-center gap-3 px-3 py-2 text-slate-50" *ngIf="machine">
+<div class="my-1 flex flex-row items-center gap-3 px-3 py-2 text-slate-50" *ngIf="machine" cdkDrag>
   <!-- <span>{{ machine.name }}</span> -->
-  <i class="fas fa-grip-vertical"></i>
+  <div cdkDragHandle>
+    <i class="fas fa-grip-vertical"></i>
+  </div>
 
   <div class="grid flex-1 grid-cols-12" *ngIf="machine">
     <div class="col-span-6 flex flex-row flex-wrap items-center gap-2">
@@ -18,8 +20,8 @@
           name="machineCount"
           step="0.1"
           [(ngModel)]="machine.count"
-          (change)="reCalcProductionRates(machine)"
-          (keyup)="reCalcProductionRates(machine)"
+          (change)="onUpdateMachineCount(machine)"
+          (keyup)="onUpdateMachineCount(machine)"
         />
         <label for="machineCount" class="ml-2">
           {{ machine.name }}
