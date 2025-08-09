@@ -1,4 +1,5 @@
 {
   "singleQuote": true,
-  "bracketSameLine": false
+  "bracketSameLine": false,
+  "endOfLine": "lf"
 }

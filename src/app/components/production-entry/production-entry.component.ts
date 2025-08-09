@@ -5,16 +5,15 @@ import {
   Machine,
   reCalcProductionRates,
 } from '../production-modal/production.model';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-production-entry',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CdkDragHandle, CdkDrag],
   templateUrl: './production-entry.component.html',
 })
 export class ProductionEntryComponent {
-  public readonly reCalcProductionRates = reCalcProductionRates;
-
   @Input()
   public machine?: Machine;
 
@@ -22,6 +21,8 @@ export class ProductionEntryComponent {
   public editMachine: EventEmitter<Machine> = new EventEmitter();
   @Output()
   public deleteMachine: EventEmitter<Machine> = new EventEmitter();
+  @Output()
+  public updateMachineCount: EventEmitter<Machine> = new EventEmitter();
 
   public onEditMachine(machine: Machine): void {
     this.editMachine.emit(machine);
@@ -29,5 +30,10 @@ export class ProductionEntryComponent {
 
   public onDeleteMachine(machine: Machine): void {
     this.deleteMachine.emit(machine);
+  }
+
+  protected onUpdateMachineCount(machine: Machine): void {
+    this.updateMachineCount.emit(machine);
+    reCalcProductionRates(machine);
   }
 }

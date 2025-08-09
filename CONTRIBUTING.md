@@ -16,7 +16,6 @@ Some files are hidden in vscode by default, see the `files.exclude` option in th
 
 There is a [recommended extension](.vscode/extensions.json) `adrianwilczynski.toggle-hidden` that allows to easily toggle hidden files on and off
 
-
 ## Storybook
 
 You can reference any of the existing components in the storybook instance
