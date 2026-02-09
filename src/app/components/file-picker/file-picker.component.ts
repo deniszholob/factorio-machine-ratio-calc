@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
     selector: 'app-file-picker',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './file-picker.component.html'
 })
 export class FilePickerComponent {

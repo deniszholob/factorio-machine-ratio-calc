@@ -10,69 +10,76 @@
     </app-file-picker>
   </div>
 
-  <ng-container *ngIf="machines && machines.length > 0">
+  @if (machines && machines.length > 0) {
     <div class="text-md ml-10 mt-4 grid grid-cols-12 font-bold">
       <div class="col-span-6">Delta Totals</div>
       <div class="col-span-3">Total Input Rate</div>
       <div class="col-span-3">Total Output Rate</div>
     </div>
     <hr />
-
     <div class="text-md ml-10 mt-4 grid grid-cols-12" style="max-height: 150px; overflow-y: scroll">
       <div class="col-span-6">
-        <ng-container *ngFor="let productionEntry of machinesTotals.deltas">
-          <div
-            *ngIf="productionEntry.totalRate !== 0"
+        @for (productionEntry of machinesTotals.deltas; track productionEntry) {
+          @if (productionEntry.totalRate !== 0) {
+            <div
             [ngClass]="{
               'text-green-500': productionEntry.totalRate > 0,
               'text-red-500': productionEntry.totalRate < 0
             }"
-          >
+              >
+              <strong>{{ productionEntry.totalRate | number : '1.1-2' }} </strong>
+              <span>{{ productionEntry.name }}</span>
+              <strong>/sec</strong>
+            </div>
+          }
+        }
+      </div>
+      <div class="col-span-3">
+        @for (productionEntry of machinesTotals.inputs; track productionEntry) {
+          <div>
             <strong>{{ productionEntry.totalRate | number : '1.1-2' }} </strong>
             <span>{{ productionEntry.name }}</span>
             <strong>/sec</strong>
           </div>
-        </ng-container>
+        }
       </div>
       <div class="col-span-3">
-        <div *ngFor="let productionEntry of machinesTotals.inputs">
-          <strong>{{ productionEntry.totalRate | number : '1.1-2' }} </strong>
-          <span>{{ productionEntry.name }}</span>
-          <strong>/sec</strong>
-        </div>
-      </div>
-      <div class="col-span-3">
-        <div *ngFor="let productionEntry of machinesTotals.outputs">
-          <strong>{{ productionEntry.totalRate | number : '1.1-2' }} </strong>
-          <span>{{ productionEntry.name }}</span>
-          <strong>/sec</strong>
-        </div>
+        @for (productionEntry of machinesTotals.outputs; track productionEntry) {
+          <div>
+            <strong>{{ productionEntry.totalRate | number : '1.1-2' }} </strong>
+            <span>{{ productionEntry.name }}</span>
+            <strong>/sec</strong>
+          </div>
+        }
       </div>
     </div>
     <br />
-
     <div class="text-md ml-10 mt-4 grid grid-cols-12 font-bold">
       <div class="col-span-6">Productions</div>
       <div class="col-span-3">Input Rate</div>
       <div class="col-span-3">Output Rate</div>
     </div>
-
     <hr />
     <div class="overflow-auto" cdkDropList [cdkDropListData]="machines" (cdkDropListDropped)="drop($event)">
-      <app-production-entry
-        *ngFor="let machine of machines; index as i"
-        [machine]="machine"
-        (editMachine)="onEditMachine($event)"
-        (deleteMachine)="onDeleteMachine(i)"
-        (updateMachineCount)="onEditFinish()"
-      >
-      </app-production-entry>
+      @for (machine of machines; track machine; let i = $index) {
+        <app-production-entry
+          [machine]="machine"
+          (editMachine)="onEditMachine($event)"
+          (deleteMachine)="onDeleteMachine(i)"
+          (updateMachineCount)="onEditFinish()"
+          >
+        </app-production-entry>
+      }
     </div>
     <hr />
-  </ng-container>
+  }
 
-  <div *ngIf="!machines || machines.length <= 0" class="flex py-2 text-slate-50">No Productions, why don't you add a new one?</div>
-  <div *ngIf="errorMessage" class="text-red-500">{{ errorMessage }}</div>
+  @if (!machines || machines.length <= 0) {
+    <div class="flex py-2 text-slate-50">No Productions, why don't you add a new one?</div>
+  }
+  @if (errorMessage) {
+    <div class="text-red-500">{{ errorMessage }}</div>
+  }
 </div>
 
 <app-production-modal [(show)]="modalOpen" [machine]="machineToEdit" (showChange)="onEditFinish()"></app-production-modal>

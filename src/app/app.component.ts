@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
@@ -8,11 +8,10 @@ import { ProductionViewComponent } from './views/production-view/production-view
 
 @Component({
     imports: [
-        CommonModule,
-        RouterModule,
-        LayoutComponent,
-        ProductionViewComponent,
-    ],
+    RouterModule,
+    LayoutComponent,
+    ProductionViewComponent
+],
     selector: 'app-root',
     templateUrl: './app.component.html'
 })

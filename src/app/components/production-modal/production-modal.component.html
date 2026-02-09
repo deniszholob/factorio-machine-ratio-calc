@@ -4,15 +4,14 @@
   [title]="'Production Details'"
   [primaryButton]="undefined"
   [secondaryButton]="undefined"
->
-  <ng-container *ngIf="machine">
+  >
+  @if (machine) {
     <div class="flex flex-col gap-4">
       <div>
         <label for="machineName">Production Name:</label>
         <input type="string" name="machineName" [(ngModel)]="machine.name" placeholder="Name" />
       </div>
       <hr />
-
       <div class="flex max-w-[40rem] flex-row flex-wrap items-center justify-between gap-2">
         <div class="">
           <label for="machineCraftSpeed">Craft Speed</label>
@@ -25,7 +24,7 @@
             [(ngModel)]="machine.craftingSpeed"
             (change)="reCalcProductionRates(machine)"
             (keyup)="reCalcProductionRates(machine)"
-          />
+            />
         </div>
         <div class="">
           <label for="machineCraftSpeed">Productivity (e.g. +50% = 1.5)</label>
@@ -38,7 +37,7 @@
             [(ngModel)]="machine.productivity"
             (change)="reCalcProductionRates(machine)"
             (keyup)="reCalcProductionRates(machine)"
-          />
+            />
         </div>
         <div class="">
           <label for="machineCraftTime">Time (s)</label>
@@ -51,7 +50,7 @@
             [(ngModel)]="machine.timeToComplete"
             (change)="reCalcProductionRates(machine)"
             (keyup)="reCalcProductionRates(machine)"
-          />
+            />
         </div>
         <div class="">
           <label class="mr-2">Effective Time</label>
@@ -59,10 +58,8 @@
         </div>
       </div>
     </div>
-
     <br />
     <hr />
-
     <div class="flex flex-wrap justify-between gap-8">
       <ng-container
         [ngTemplateOutlet]="ios"
@@ -77,7 +74,7 @@
         }"
       ></ng-container>
     </div>
-  </ng-container>
+  }
 </app-modal>
 
 <ng-template #ios let-data>
@@ -88,7 +85,7 @@
     [cdkDropListConnectedTo]="['list-' + (data.name === 'Input' ? 'Output' : 'Input')]"
     [cdkDropListData]="data.ioItems"
     (cdkDropListDropped)="drop($event)"
-  >
+    >
     <div class="text-md flex flex-row items-center gap-2 p-2">
       <button class="btn btn-icon btn-success" (click)="onAddItem(data.ioItems)">
         <i class="fas fa-plus"></i>
@@ -96,25 +93,27 @@
       <h5>{{ data.name }}</h5>
     </div>
 
-    <div *ngFor="let item of data.ioItems; index as i" class="flex flex-row items-center justify-between gap-2 p-2" cdkDrag>
-      <div class="flex flex-row flex-wrap items-center gap-2">
-        <button class="btn btn-icon btn-danger" (click)="onDeleteItem(data.ioItems, i)">
-          <i class="fas fa-trash"></i>
-        </button>
-        <input
-          type="number"
-          name="machineItemCount"
-          [(ngModel)]="item.count"
-          (change)="reCalcItemRate(item, data.machine)"
-          (keyup)="reCalcItemRate(item, data.machine)"
-          class="max-w-[7rem]"
-        />
-        <input type="string" name="machineItemName" [(ngModel)]="item.name" />
-        <!-- <input type="string" readonly [value]="(item.rate | number : '0.1-2') + ' i/s'" /> -->
-        <!-- <span>-></span> -->
-        <span>{{ item.rate | number : '0.1-2' }} i/s</span>
+    @for (item of data.ioItems; track item; let i = $index) {
+      <div class="flex flex-row items-center justify-between gap-2 p-2" cdkDrag>
+        <div class="flex flex-row flex-wrap items-center gap-2">
+          <button class="btn btn-icon btn-danger" (click)="onDeleteItem(data.ioItems, i)">
+            <i class="fas fa-trash"></i>
+          </button>
+          <input
+            type="number"
+            name="machineItemCount"
+            [(ngModel)]="item.count"
+            (change)="reCalcItemRate(item, data.machine)"
+            (keyup)="reCalcItemRate(item, data.machine)"
+            class="max-w-[7rem]"
+            />
+          <input type="string" name="machineItemName" [(ngModel)]="item.name" />
+          <!-- <input type="string" readonly [value]="(item.rate | number : '0.1-2') + ' i/s'" /> -->
+          <!-- <span>-></span> -->
+          <span>{{ item.rate | number : '0.1-2' }} i/s</span>
+        </div>
+        <i class="fas fa-grip-vertical fa-lg"></i>
       </div>
-      <i class="fas fa-grip-vertical fa-lg"></i>
-    </div>
+    }
   </div>
 </ng-template>
