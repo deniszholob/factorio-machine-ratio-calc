@@ -26,12 +26,12 @@ interface TotalRate {
   totalRate: number;
 }
 
-function totalsSort(a: TotalRate, b: TotalRate): number {
-  const alphabetical = a.name.localeCompare(b.name);
-  const numeric = a.totalRate - b.totalRate;
-  const sort = alphabetical;
-  return sort;
-}
+// function totalsSort(a: TotalRate, b: TotalRate): number {
+//   const alphabetical = a.name.localeCompare(b.name);
+//   const numeric = a.totalRate - b.totalRate;
+//   const sort = alphabetical;
+//   return sort;
+// }
 const DOWNLOAD_FILE_PREFIX = `PRC`;
 
 @Component({

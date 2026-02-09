@@ -8,9 +8,9 @@ import {
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
-    selector: 'app-production-entry',
-    imports: [CommonModule, FormsModule, CdkDragHandle, CdkDrag],
-    templateUrl: './production-entry.component.html'
+  selector: 'app-production-entry',
+  imports: [CommonModule, FormsModule, CdkDragHandle, CdkDrag],
+  templateUrl: './production-entry.component.html',
 })
 export class ProductionEntryComponent {
   @Input()

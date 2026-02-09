@@ -17,6 +17,6 @@ export const parameters: Parameters = {
 
 export const initialGlobals = {
   backgrounds: {
-    value: 'dark'
-  }
+    value: 'dark',
+  },
 };

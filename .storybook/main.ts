@@ -1,13 +1,13 @@
-import { fileURLToPath } from "node:url";
-import { dirname } from "node:path";
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 import type { StorybookConfig } from '@storybook/angular';
 
 const storyFiles = '*.stories.@(js|jsx|ts|tsx|mdx)';
 const config: StorybookConfig = {
   stories: [`./**/${storyFiles}`, `../src/app/**/${storyFiles}`],
-  addons: [getAbsolutePath("@storybook/addon-docs")],
+  addons: [getAbsolutePath('@storybook/addon-docs')],
   framework: {
-    name: getAbsolutePath("@storybook/angular"),
+    name: getAbsolutePath('@storybook/angular'),
     options: {},
   },
 };

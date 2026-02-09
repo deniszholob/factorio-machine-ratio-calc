@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-
 @Component({
-    selector: 'app-file-picker',
-    imports: [],
-    templateUrl: './file-picker.component.html'
+  selector: 'app-file-picker',
+  imports: [],
+  templateUrl: './file-picker.component.html',
 })
 export class FilePickerComponent {
   @Input()

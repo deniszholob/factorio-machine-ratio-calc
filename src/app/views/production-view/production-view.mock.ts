@@ -1,7 +1,57 @@
-import {
-  Machine,
-  newMachine,
-} from '../../components/production-modal/production.model';
-import data from '../../../machine-ratio-calc-data_GC.json';
+import { Machine } from '../../components/production-modal/production.model';
 
-export const MOCK_Machines: Machine[] = data;
+export const MOCK_Machines: Machine[] = [
+  {
+    name: 'Green Circuits',
+    productivity: 1,
+    craftingSpeed: 0.75,
+    count: 2,
+    timeToComplete: 0.5,
+    effectiveTime: 0.6666666666666666,
+    machineInputs: [
+      { name: 'Iron Plate', count: 1, rate: 1.5, totalRate: 3 },
+      { name: 'Copper Cable', count: 3, rate: 4.5, totalRate: 9 },
+    ],
+    machineOutputs: [
+      { name: 'Electronic circuit', count: 1, rate: 1.5, totalRate: 3 },
+    ],
+  },
+  {
+    name: 'Iron',
+    craftingSpeed: 1,
+    productivity: 1,
+    count: 9.6,
+    timeToComplete: 3.2,
+    effectiveTime: 3.2,
+    machineInputs: [{ name: 'Iron Ore', count: 1, rate: 0.3125, totalRate: 3 }],
+    machineOutputs: [
+      { name: 'Iron Plate', count: 1, rate: 0.3125, totalRate: 3 },
+    ],
+  },
+  {
+    name: 'Wire',
+    craftingSpeed: 0.75,
+    productivity: 1,
+    count: 3,
+    timeToComplete: 0.5,
+    effectiveTime: 0.6666666666666666,
+    machineInputs: [
+      { name: 'Copper Plate', count: 1, rate: 1.5, totalRate: 4.5 },
+    ],
+    machineOutputs: [{ name: 'Copper Cable', count: 2, rate: 3, totalRate: 9 }],
+  },
+  {
+    name: 'Copper',
+    craftingSpeed: 1,
+    productivity: 1,
+    count: 14.4,
+    timeToComplete: 3.2,
+    effectiveTime: 3.2,
+    machineInputs: [
+      { name: 'Copper Ore', count: 1, rate: 0.3125, totalRate: 4.5 },
+    ],
+    machineOutputs: [
+      { name: 'Copper Plate', count: 1, rate: 0.3125, totalRate: 4.5 },
+    ],
+  },
+];
