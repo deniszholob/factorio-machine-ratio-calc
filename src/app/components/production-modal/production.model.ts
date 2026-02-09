@@ -54,7 +54,7 @@ export function reCalcItemRate(item: MachineItem, machine: Machine): void {
 
 export function reCalcItemRates(
   machine: Machine,
-  itemList: MachineItem[]
+  itemList: MachineItem[],
 ): void {
   itemList.forEach((item) => {
     reCalcItemRate(item, machine);

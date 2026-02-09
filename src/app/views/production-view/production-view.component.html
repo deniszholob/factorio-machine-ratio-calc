@@ -21,76 +21,79 @@
   </div>
 
   @if (machines && machines.length > 0) {
-  <div class="text-md ml-10 mt-4 grid grid-cols-12 font-bold">
-    <div class="col-span-6">Delta Totals</div>
-    <div class="col-span-3">Total Input Rate</div>
-    <div class="col-span-3">Total Output Rate</div>
-  </div>
-  <hr />
-  <div class="text-md ml-10 mt-4 grid grid-cols-12" style="max-height: 150px; overflow-y: scroll">
-    <div class="col-span-6">
-      <!-- TODO: track productionEntry.id -->
-      @for (productionEntry of machinesTotals.deltas; track productionEntry) { @if
-      (productionEntry.totalRate !== 0) {
-      <div
-        [ngClass]="{
-          'text-green-500': productionEntry.totalRate > 0,
-          'text-red-500': productionEntry.totalRate < 0
-        }"
-      >
-        <strong>{{ productionEntry.totalRate | number : '1.1-2' }} </strong>
-        <span>{{ productionEntry.name }}</span>
-        <strong>/sec</strong>
-      </div>
-      } }
+    <div class="text-md mt-4 ml-10 grid grid-cols-12 font-bold">
+      <div class="col-span-6">Delta Totals</div>
+      <div class="col-span-3">Total Input Rate</div>
+      <div class="col-span-3">Total Output Rate</div>
     </div>
-    <div class="col-span-3">
-      @for (productionEntry of machinesTotals.inputs; track productionEntry) {
-      <div>
-        <strong>{{ productionEntry.totalRate | number : '1.1-2' }} </strong>
-        <span>{{ productionEntry.name }}</span>
-        <strong>/sec</strong>
+    <hr />
+    <div class="text-md mt-4 ml-10 grid grid-cols-12" style="max-height: 150px; overflow-y: scroll">
+      <div class="col-span-6">
+        <!-- TODO: track productionEntry.id -->
+        @for (productionEntry of machinesTotals.deltas; track productionEntry) {
+          @if (productionEntry.totalRate !== 0) {
+            <div
+              [ngClass]="{
+                'text-green-500': productionEntry.totalRate > 0,
+                'text-red-500': productionEntry.totalRate < 0,
+              }"
+            >
+              <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
+              <span>{{ productionEntry.name }}</span>
+              <strong>/sec</strong>
+            </div>
+          }
+        }
       </div>
-      }
-    </div>
-    <div class="col-span-3">
-      @for (productionEntry of machinesTotals.outputs; track productionEntry) {
-      <div>
-        <strong>{{ productionEntry.totalRate | number : '1.1-2' }} </strong>
-        <span>{{ productionEntry.name }}</span>
-        <strong>/sec</strong>
+      <div class="col-span-3">
+        @for (productionEntry of machinesTotals.inputs; track productionEntry) {
+          <div>
+            <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
+            <span>{{ productionEntry.name }}</span>
+            <strong>/sec</strong>
+          </div>
+        }
       </div>
-      }
+      <div class="col-span-3">
+        @for (productionEntry of machinesTotals.outputs; track productionEntry) {
+          <div>
+            <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
+            <span>{{ productionEntry.name }}</span>
+            <strong>/sec</strong>
+          </div>
+        }
+      </div>
     </div>
-  </div>
-  <br />
-  <div class="text-md ml-10 mt-4 grid grid-cols-12 font-bold">
-    <div class="col-span-6">Productions</div>
-    <div class="col-span-3">Input Rate</div>
-    <div class="col-span-3">Output Rate</div>
-  </div>
-  <hr />
-  <div
-    class="overflow-auto"
-    cdkDropList
-    [cdkDropListData]="machines"
-    (cdkDropListDropped)="drop($event)"
-  >
-    @for (machine of machines; track machine; let i = $index) {
-    <app-production-entry
-      [machine]="machine"
-      (editMachine)="onEditMachine($event)"
-      (deleteMachine)="onDeleteMachine(i)"
-      (updateMachineCount)="onEditFinish()"
+    <br />
+    <div class="text-md mt-4 ml-10 grid grid-cols-12 font-bold">
+      <div class="col-span-6">Productions</div>
+      <div class="col-span-3">Input Rate</div>
+      <div class="col-span-3">Output Rate</div>
+    </div>
+    <hr />
+    <div
+      class="overflow-auto"
+      [cdkDropListData]="machines"
+      (cdkDropListDropped)="drop($event)"
+      cdkDropList
     >
-    </app-production-entry>
-    }
-  </div>
-  <hr />
-  } @if (!machines || machines.length <= 0) {
-  <div class="flex py-2 text-slate-50">No Productions, why don't you add a new one?</div>
-  } @if (errorMessage) {
-  <div class="text-red-500">{{ errorMessage }}</div>
+      @for (machine of machines; track machine; let i = $index) {
+        <app-production-entry
+          [machine]="machine"
+          (editMachine)="onEditMachine($event)"
+          (deleteMachine)="onDeleteMachine(i)"
+          (updateMachineCount)="onEditFinish()"
+        >
+        </app-production-entry>
+      }
+    </div>
+    <hr />
+  }
+  @if (!machines || machines.length <= 0) {
+    <div class="flex py-2 text-slate-50">No Productions, why don't you add a new one?</div>
+  }
+  @if (errorMessage) {
+    <div class="text-red-500">{{ errorMessage }}</div>
   }
 </div>
 

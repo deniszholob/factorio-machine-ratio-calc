@@ -35,19 +35,19 @@
 }
 
 @utility btn-primary {
-  @apply bg-sky-600 text-white hover:bg-sky-700  focus:ring-sky-400;
+  @apply bg-sky-600 text-white hover:bg-sky-700 focus:ring-sky-400;
 }
 
 @utility btn-success {
-  @apply bg-lime-600 text-white hover:bg-lime-700  focus:ring-lime-400;
+  @apply bg-lime-600 text-white hover:bg-lime-700 focus:ring-lime-400;
 }
 
 @utility btn-warning {
-  @apply bg-amber-500 text-white hover:bg-amber-600  focus:ring-yellow-400;
+  @apply bg-amber-500 text-white hover:bg-amber-600 focus:ring-yellow-400;
 }
 
 @utility btn-danger {
-  @apply bg-red-600 text-white hover:bg-red-700  focus:ring-red-400;
+  @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-400;
 }
 
 @utility row {
@@ -109,7 +109,7 @@
     @apply m-0 ml-2;
   }
   input[type='checkbox'] {
-    @apply form-checkbox cursor-pointer rounded-sm focus:shadow-none focus:outline-hidden focus:ring-0 disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
+    @apply form-checkbox cursor-pointer rounded-sm focus:shadow-none focus:ring-0 focus:outline-hidden disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
   }
   input[type='checkbox'] + label {
     @apply m-0 ml-2 cursor-pointer;
@@ -130,8 +130,10 @@
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
   color: white;
 }
 

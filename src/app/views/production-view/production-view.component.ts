@@ -81,12 +81,12 @@ export class ProductionViewComponent {
     this.addUpTotalItems(
       this.machinesTotals.outputs,
       this.machinesTotals.deltas,
-      1
+      1,
     );
     this.addUpTotalItems(
       this.machinesTotals.inputs,
       this.machinesTotals.deltas,
-      -1
+      -1,
     );
     // this.machinesTotals.deltas.sort(totalsSort);
 
@@ -96,7 +96,7 @@ export class ProductionViewComponent {
   private addUpTotalItems(
     items: TotalRate[],
     totals: TotalRate[],
-    sign: 1 | -1 = 1
+    sign: 1 | -1 = 1,
   ): void {
     for (const mI of items) {
       const existingInputIdx = totals.findIndex((tI) => tI.name === mI.name);
@@ -171,7 +171,7 @@ export class ProductionViewComponent {
     const element: HTMLAnchorElement = document.createElement('a');
     element.setAttribute(
       'href',
-      'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson)
+      'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson),
     );
     element.setAttribute('download', `${DOWNLOAD_FILE_PREFIX}_data.json`);
     element.style.display = 'none';

@@ -1,55 +1,57 @@
 <!-- Overlay -->
 @if (show) {
-<div
-  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-neutral-500/50 outline-hidden focus:outline-hidden"
->
-  <div class="relative mx-auto my-6 w-full max-w-5xl">
-    <!--content-->
-    <div
-      class="relative flex w-full flex-col rounded-lg border-0 bg-zinc-800 text-slate-50 shadow-lg outline-hidden focus:outline-hidden"
-    >
-      <!--header-->
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-neutral-500/50 outline-hidden focus:outline-hidden"
+  >
+    <div class="relative mx-auto my-6 w-full max-w-5xl">
+      <!--content-->
       <div
-        class="flex items-start justify-between rounded-t border-b border-solid border-zinc-600 p-5"
+        class="relative flex w-full flex-col rounded-lg border-0 bg-zinc-800 text-slate-50 shadow-lg outline-hidden focus:outline-hidden"
       >
-        <h3 class="text-2xl font-semibold">
-          {{ title }}
-        </h3>
-        <button
-          class="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-red-500 outline-hidden focus:outline-hidden"
-          (click)="closeModal()"
+        <!--header-->
+        <div
+          class="flex items-start justify-between rounded-t border-b border-solid border-zinc-600 p-5"
         >
-          <span class="block h-6 w-6 bg-transparent outline-hidden focus:outline-hidden"> × </span>
-        </button>
-      </div>
-      <!--body-->
-      <div class="flex-auto overflow-auto p-6">
-        <ng-content></ng-content>
-      </div>
-      <!--footer-->
-      @if (secondaryButton) {
-      <div
-        class="flex items-center justify-end rounded-b border-t border-solid border-zinc-600 p-6"
-      >
-        <button
-          class="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-slate-500 outline-hidden transition-all duration-150 ease-linear focus:outline-hidden"
-          type="button"
-          (click)="onSecondaryButtonClick()"
-        >
-          {{ secondaryButton }}
-        </button>
-        @if (primaryButton) {
-        <button
-          class="mb-1 mr-1 rounded-sm bg-emerald-500 px-6 py-3 text-sm font-bold uppercase text-white shadow-sm outline-hidden transition-all duration-150 ease-linear hover:shadow-lg focus:outline-hidden active:bg-emerald-600"
-          type="button"
-          (click)="onPrimaryButtonClick()"
-        >
-          {{ primaryButton }}
-        </button>
+          <h3 class="text-2xl font-semibold">
+            {{ title }}
+          </h3>
+          <button
+            class="float-right ml-auto border-0 bg-transparent p-1 text-3xl leading-none font-semibold text-red-500 outline-hidden focus:outline-hidden"
+            (click)="closeModal()"
+          >
+            <span class="block h-6 w-6 bg-transparent outline-hidden focus:outline-hidden">
+              ×
+            </span>
+          </button>
+        </div>
+        <!--body-->
+        <div class="flex-auto overflow-auto p-6">
+          <ng-content></ng-content>
+        </div>
+        <!--footer-->
+        @if (secondaryButton) {
+          <div
+            class="flex items-center justify-end rounded-b border-t border-solid border-zinc-600 p-6"
+          >
+            <button
+              class="background-transparent mr-1 mb-1 px-6 py-2 text-sm font-bold text-slate-500 uppercase outline-hidden transition-all duration-150 ease-linear focus:outline-hidden"
+              (click)="onSecondaryButtonClick()"
+              type="button"
+            >
+              {{ secondaryButton }}
+            </button>
+            @if (primaryButton) {
+              <button
+                class="mr-1 mb-1 rounded-sm bg-emerald-500 px-6 py-3 text-sm font-bold text-white uppercase shadow-sm outline-hidden transition-all duration-150 ease-linear hover:shadow-lg focus:outline-hidden active:bg-emerald-600"
+                (click)="onPrimaryButtonClick()"
+                type="button"
+              >
+                {{ primaryButton }}
+              </button>
+            }
+          </div>
         }
       </div>
-      }
     </div>
   </div>
-</div>
 }

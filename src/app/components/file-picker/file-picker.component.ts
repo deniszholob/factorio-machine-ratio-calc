@@ -30,7 +30,7 @@ export class FilePickerComponent {
       return files;
     }
     throw new Error(
-      `Invalid ${typeof event} event, should be HTMLInputElement`
+      `Invalid ${typeof event} event, should be HTMLInputElement`,
     );
   }
 }
