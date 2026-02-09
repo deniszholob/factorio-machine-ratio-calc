@@ -53,10 +53,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "factorio-machine-ratio-calc:build:production"
+          "buildTarget": "factorio-machine-ratio-calc:build:production"
         },
         "development": {
-          "browserTarget": "factorio-machine-ratio-calc:build:development"
+          "buildTarget": "factorio-machine-ratio-calc:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -64,7 +64,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "factorio-machine-ratio-calc:build"
+        "buildTarget": "factorio-machine-ratio-calc:build"
       }
     },
     "lint": {
@@ -78,14 +78,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectName}"],
       "options": {
-        "jestConfig": "jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "jest.config.ts"
       }
     },
     "serve-static": {

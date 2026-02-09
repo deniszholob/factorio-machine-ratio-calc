@@ -4,3 +4,5 @@
 /coverage
 .angular
 # package-lock.json
+
+/.nx/cache
