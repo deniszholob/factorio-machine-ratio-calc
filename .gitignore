@@ -43,3 +43,6 @@ migrations.json
 storybook-migration-summary.md
 tools/ai-migrations/**
 *.log
+
+vite.config.*.timestamp*
+vitest.config.*.timestamp*

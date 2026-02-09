@@ -1,25 +1,15 @@
 {
   "root": true,
-  "ignorePatterns": [
-    "!**/*"
-  ],
-  "plugins": [
-    "@nx"
-  ],
+  "ignorePatterns": ["!**/*"],
+  "plugins": ["@nx"],
   "overrides": [
     {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "plugin:@nx/angular-template"
-      ],
+      "files": ["*.html"],
+      "extends": ["plugin:@nx/angular-template"],
       "rules": {}
     },
     {
-      "files": [
-        "*.ts"
-      ],
+      "files": ["*.ts"],
       "extends": [
         "plugin:@nx/typescript",
         "plugin:@nx/angular",
@@ -45,16 +35,12 @@
         "@typescript-eslint/explicit-member-accessibility": "error",
         "@typescript-eslint/no-inferrable-types": "off",
         "max-len": "off",
-        "eqeqeq": [
-          "error",
-          "smart"
-        ],
+        "eqeqeq": ["error", "smart"],
         "@typescript-eslint/no-extra-semi": "error",
-        "no-extra-semi": "off"
+        "no-extra-semi": "off",
+        "@angular-eslint/prefer-standalone": "off"
       }
     }
   ],
-  "extends": [
-    "plugin:storybook/recommended"
-  ]
+  "extends": ["plugin:storybook/recommended"]
 }

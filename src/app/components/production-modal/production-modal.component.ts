@@ -21,20 +21,18 @@ import {
 } from './production.model';
 
 @Component({
-  selector: 'app-production-modal',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ModalComponent,
-
-    // CDK
-    DragDropModule,
-    CdkDropList,
-    CdkDrag,
-    CdkDragPlaceholder,
-  ],
-  templateUrl: './production-modal.component.html',
+    selector: 'app-production-modal',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ModalComponent,
+        // CDK
+        DragDropModule,
+        CdkDropList,
+        CdkDrag,
+        CdkDragPlaceholder,
+    ],
+    templateUrl: './production-modal.component.html'
 })
 export class ProductionModalComponent {
   public readonly reCalcProductionRates = reCalcProductionRates;
