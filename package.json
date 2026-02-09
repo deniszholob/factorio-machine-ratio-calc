@@ -7,10 +7,10 @@
   "repository": "github:factorio-machine-ratio-calc",
   "private": true,
   "scripts": {
-    "i": "npm i",
+    "i": "pnpm i",
     "storybook": "nx run factorio-machine-ratio-calc:storybook",
     "reset": "nx reset",
-    "start": "nx serve",
+    "start": "nx serve --port=4985",
     "build": "nx build",
     "build:prod": "nx build factorio-machine-ratio-calc --base-href ./",
     "build:sh": "sh ./.github/build/build.sh",

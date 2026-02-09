@@ -19,7 +19,7 @@ max_line_length = 80
 # HTML
 [*.html]
 indent_size = 2
-max_line_length = 140
+max_line_length = 100
 
 # Markdown
 [*.md]
