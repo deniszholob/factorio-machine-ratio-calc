@@ -1,12 +1,12 @@
 <!-- Overlay -->
 @if (show) {
 <div
-  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-neutral-500 bg-opacity-50 outline-none focus:outline-none"
+  class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-neutral-500/50 outline-hidden focus:outline-hidden"
 >
   <div class="relative mx-auto my-6 w-full max-w-5xl">
     <!--content-->
     <div
-      class="relative flex w-full flex-col rounded-lg border-0 bg-zinc-800 text-slate-50 shadow-lg outline-none focus:outline-none"
+      class="relative flex w-full flex-col rounded-lg border-0 bg-zinc-800 text-slate-50 shadow-lg outline-hidden focus:outline-hidden"
     >
       <!--header-->
       <div
@@ -16,10 +16,10 @@
           {{ title }}
         </h3>
         <button
-          class="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-red-500 outline-none focus:outline-none"
+          class="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-red-500 outline-hidden focus:outline-hidden"
           (click)="closeModal()"
         >
-          <span class="block h-6 w-6 bg-transparent outline-none focus:outline-none"> × </span>
+          <span class="block h-6 w-6 bg-transparent outline-hidden focus:outline-hidden"> × </span>
         </button>
       </div>
       <!--body-->
@@ -32,7 +32,7 @@
         class="flex items-center justify-end rounded-b border-t border-solid border-zinc-600 p-6"
       >
         <button
-          class="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-slate-500 outline-none transition-all duration-150 ease-linear focus:outline-none"
+          class="background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase text-slate-500 outline-hidden transition-all duration-150 ease-linear focus:outline-hidden"
           type="button"
           (click)="onSecondaryButtonClick()"
         >
@@ -40,7 +40,7 @@
         </button>
         @if (primaryButton) {
         <button
-          class="mb-1 mr-1 rounded bg-emerald-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-emerald-600"
+          class="mb-1 mr-1 rounded-sm bg-emerald-500 px-6 py-3 text-sm font-bold uppercase text-white shadow-sm outline-hidden transition-all duration-150 ease-linear hover:shadow-lg focus:outline-hidden active:bg-emerald-600"
           type="button"
           (click)="onPrimaryButtonClick()"
         >

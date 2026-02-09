@@ -1,19 +1,115 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@source './src/**/*.{html,ts}';
+
+@plugin '@tailwindcss/forms' {
+  strategy: 'class';
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility ng-invalid {
+  &input {
+    @apply ring-1 ring-red-700 focus:ring-red-500;
+  }
+}
+
+@utility btn {
+  @apply rounded-xs px-4 py-2 font-semibold shadow-md focus:outline-hidden disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
+}
+
+@utility btn-primary {
+  @apply bg-sky-600 text-white hover:bg-sky-700  focus:ring-sky-400;
+}
+
+@utility btn-success {
+  @apply bg-lime-600 text-white hover:bg-lime-700  focus:ring-lime-400;
+}
+
+@utility btn-warning {
+  @apply bg-amber-500 text-white hover:bg-amber-600  focus:ring-yellow-400;
+}
+
+@utility btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700  focus:ring-red-400;
+}
+
+@utility row {
+  @apply grid grid-cols-12;
+}
+
+@utility col-sm-12 {
+  @apply sm:col-span-12;
+}
+
+@utility col-md-6 {
+  @apply md:col-span-6;
+}
+
+@utility col-md-4 {
+  @apply md:col-span-4;
+}
+
+@utility col-md-3 {
+  @apply md:col-span-3;
+}
+
+@utility col-xs-4 {
+  @apply col-span-4;
+}
+
+@utility main-container {
+  @apply flex h-screen flex-col;
+}
+
+@utility content-container {
+  @apply flex-1;
+}
+
+@utility containter {
+  @apply mx-auto max-w-full px-8 sm:w-[540px] md:w-[702px];
+}
+
+@utility header {
+  @apply flex text-slate-200;
+}
+
+@utility footer {
+  @apply w-full items-center bg-slate-600;
+}
+
+@utility cdk-drag {
+  @apply block cursor-move bg-neutral-800 hover:shadow-md hover:shadow-stone-900;
+}
 
 @layer components {
   label {
     @apply mb-2 text-sm font-bold text-slate-400;
   }
   input {
-    @apply form-input rounded border-0 bg-neutral-700 px-3 py-2 text-sm text-slate-200 placeholder-slate-500 shadow transition-all duration-150 ease-linear focus:outline-none;
+    @apply form-input rounded-sm border-0 bg-neutral-700 px-3 py-2 text-sm text-slate-200 placeholder-slate-500 shadow-sm transition-all duration-150 ease-linear focus:outline-hidden;
   }
   label + input {
     @apply m-0 ml-2;
   }
   input[type='checkbox'] {
-    @apply form-checkbox cursor-pointer rounded focus:shadow-none focus:outline-none focus:ring-0 disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
+    @apply form-checkbox cursor-pointer rounded-sm focus:shadow-none focus:outline-hidden focus:ring-0 disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
   }
   input[type='checkbox'] + label {
     @apply m-0 ml-2 cursor-pointer;
@@ -21,69 +117,9 @@
   input[type='checkbox']:disabled + label {
     @apply cursor-default;
   }
-  input.ng-invalid {
-    @apply ring-1 ring-red-700 focus:ring-red-500;
-  }
-
-  .btn {
-    @apply rounded-sm px-4 py-2 font-semibold shadow-md focus:outline-none disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
-  }
-  .btn-primary {
-    @apply bg-sky-600 text-white hover:bg-sky-700  focus:ring-sky-400;
-  }
-  .btn-success {
-    @apply bg-lime-600 text-white hover:bg-lime-700  focus:ring-lime-400;
-  }
-  .btn-warning {
-    @apply bg-amber-500 text-white hover:bg-amber-600  focus:ring-yellow-400;
-  }
-  .btn-danger {
-    @apply bg-red-600 text-white hover:bg-red-700  focus:ring-red-400;
-  }
-
-  .row {
-    @apply grid grid-cols-12;
-  }
-  .col-sm-12 {
-    @apply sm:col-span-12;
-  }
-  .col-md-6 {
-    @apply md:col-span-6;
-  }
-  .col-md-4 {
-    @apply md:col-span-4;
-  }
-  .col-md-3 {
-    @apply md:col-span-3;
-  }
-  .col-xs-4 {
-    @apply col-span-4;
-  }
-
-  .main-container {
-    @apply flex h-screen flex-col;
-  }
-  .content-container {
-    @apply flex-1;
-  }
-  .containter {
-    @apply mx-auto max-w-full px-8 sm:w-[540px] md:w-[702px];
-  }
-
-  .header {
-    @apply flex text-slate-200;
-  }
-
-  .footer {
-    @apply w-full items-center bg-slate-600;
-  }
 
   a {
     @apply text-orange-400 hover:text-orange-500;
-  }
-
-  .cdk-drag {
-    @apply block cursor-move bg-neutral-800 hover:shadow-md hover:shadow-stone-900;
   }
 
   hr {
