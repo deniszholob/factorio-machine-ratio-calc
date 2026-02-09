@@ -88,6 +88,8 @@
     "angular.json": true,
     "**/.browserslistrc": true,
     "**/environments": true,
+    "**/src/icons": true,
+    "**/src/meta": true,
     "**/src/main.ts": true,
     "**/polyfills.ts": true,
     "**/test-setup*": true,
