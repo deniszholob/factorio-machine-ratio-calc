@@ -1,0 +1,21 @@
+{
+  "name": "Generic Ratio Calculator",
+  "short_name": "Ratio Calc",
+  "description": "Interactive machine ratio calculator for factory automation games like Factorio, etc...",
+  "theme_color": "#ffffff",
+  "background_color": "#000000",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./?utm_source=homescreen",
+  "dir": "ltr",
+  "lang": "en-US",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/icon"
+    }
+  ]
+}

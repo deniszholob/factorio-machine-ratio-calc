@@ -2,6 +2,7 @@
   {
     "name": "Green Circuits",
     "craftingSpeed": 0.75,
+    "productivity": 1,
     "count": 2,
     "timeToComplete": 0.5,
     "effectiveTime": 0.6666666666666666,
@@ -16,6 +17,7 @@
   {
     "name": "Iron",
     "craftingSpeed": 1,
+    "productivity": 1,
     "count": 9.6,
     "timeToComplete": 3.2,
     "effectiveTime": 3.2,
@@ -29,6 +31,7 @@
   {
     "name": "Wire",
     "craftingSpeed": 0.75,
+    "productivity": 1,
     "count": 3,
     "timeToComplete": 0.5,
     "effectiveTime": 0.6666666666666666,
@@ -42,6 +45,7 @@
   {
     "name": "Copper",
     "craftingSpeed": 1,
+    "productivity": 1,
     "count": 14.4,
     "timeToComplete": 3.2,
     "effectiveTime": 3.2,
