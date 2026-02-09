@@ -29,6 +29,7 @@
     "upgrade:nx:create-latest": "pnpx nx@latest migrate 22",
     "upgrade:nx:install": "pnpm install --no-frozen-lockfile",
     "upgrade:nx:apply": "nx migrate --run-migrations",
+    "upgrade:tailwind": "pnpx @tailwindcss/upgrade",
     "upgrade:storybook": "pnpx storybook@9.0.15 upgrade --config-dir ./.storybook",
     "upgrade:storybook-auto": "pnpx storybook@9.0.15 automigrate --config-dir ./.storybook",
     "nx": "nx"
@@ -43,8 +44,6 @@
     "@angular/platform-browser": "21.1.3",
     "@angular/platform-browser-dynamic": "21.1.3",
     "@angular/router": "21.1.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "0.16.0"
