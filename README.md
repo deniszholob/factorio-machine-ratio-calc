@@ -1,4 +1,4 @@
-# Generic Production Ratio Calculator [App](https://deniszholob.github.io/factorio-machine-ratio-calc/)
+#Production Ratio Calculator [App](https://deniszholob.github.io/factorio-machine-ratio-calc/)
 
 Generic calculator to figure out the machine ratios in [Factorio](https://www.factorio.com/)
 
