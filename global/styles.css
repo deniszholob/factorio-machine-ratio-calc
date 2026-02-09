@@ -5,6 +5,17 @@
 @plugin '@tailwindcss/forms' {
   strategy: 'class';
 }
+:root {
+  --c-pallette-accent: #ff7800;
+  --c-pallette-accent-dark: #cc5f00;
+  --c-pallette-neutral-dark: #111;
+}
+
+@theme {
+  --color-accent: var(--c-pallette-accent);
+  --color-accent-dark: var(--c-pallette-accent-dark);
+  --color-neutral-dark: var(--c-pallette-neutral-dark);
+}
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
