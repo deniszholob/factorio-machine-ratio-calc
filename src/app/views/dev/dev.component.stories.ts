@@ -23,5 +23,5 @@ const meta: Meta<ComponentWithCustomControls> = {
 export default meta;
 
 export const Dev: StoryObj<ComponentWithCustomControls> = {
-  render: (args: ComponentWithCustomControls) => ({ props: args }),
+  render: (args) => ({ props: args }),
 };

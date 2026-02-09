@@ -26,5 +26,5 @@ const meta: Meta<ComponentWithCustomControls> = {
 export default meta;
 
 export const Modal: StoryObj<ComponentWithCustomControls> = {
-  render: (args: ComponentWithCustomControls) => ({ props: args }),
+  render: (args) => ({ props: args }),
 };

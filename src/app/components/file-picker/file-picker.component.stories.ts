@@ -31,7 +31,7 @@ const meta: Meta<ComponentWithCustomControls> = {
 export default meta;
 
 export const FilePicker: StoryObj<ComponentWithCustomControls> = {
-  render: (args: ComponentWithCustomControls) => ({
+  render: (args) => ({
     props: args,
     template: `
     <app-file-picker

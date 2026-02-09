@@ -2,9 +2,15 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import type { StorybookConfig } from '@storybook/angular';
 
-const storyFiles = '*.stories.@(js|jsx|ts|tsx|mdx)';
+const storyFiles = '*.stories.@(js|jsx|ts|tsx)';
+const docsFiles = '*.mdx';
 const config: StorybookConfig = {
-  stories: [`./**/${storyFiles}`, `../src/app/**/${storyFiles}`],
+  stories: [
+    `./**/${storyFiles}`,
+    `../src/app/**/${storyFiles}`,
+    `./**/${docsFiles}`,
+    `../src/app/**/${docsFiles}`,
+  ],
   addons: [getAbsolutePath('@storybook/addon-docs')],
   framework: {
     name: getAbsolutePath('@storybook/angular'),

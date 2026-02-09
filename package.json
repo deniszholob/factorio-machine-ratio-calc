@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "i": "pnpm i",
-    "storybook": "nx run factorio-machine-ratio-calc:storybook",
+    "storybook": "nx run factorio-machine-ratio-calc:storybook --no-open",
     "reset": "nx reset",
     "start": "nx serve --port=4985",
     "build": "nx build",
