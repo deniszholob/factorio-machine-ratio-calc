@@ -74,6 +74,26 @@
       crossorigin="anonymous"
     ></script>
 
+    <!-- Stylesheets -->
+    <style>
+      .app-loading-spinner {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        margin-right: 6px;
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        border-top-color: rgba(255, 255, 255, 0.9);
+        border-radius: 9999px;
+        animation: app-spin 0.9s linear infinite;
+        vertical-align: text-bottom;
+      }
+      @keyframes app-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-28080172-12"></script>
     <script>
@@ -90,14 +110,30 @@
   <body>
     <app-root>
       <div style="text-align: center; padding-top: 20px">
-        <p style="padding-bottom: 20px; font-size: 1.5em">Loading</p>
-        <i class="fas fa-cog fa-spin fa-3x"></i>
-        <p class="txt-muted">
+        <span class="app-loading-spinner" aria-hidden="true"></span>
+        Loading...
+
+        <p>
           If this is loading forever, there may be a bug.
           <br />
           Hit <strong>F12</strong> to bring up the Debug Console, and
-          <a href="https://github.com/deniszholob/factorio-machine-ratio-calc/issues">report</a>
-          the error.
+          <a
+            href="https://github.com/deniszholob/factorio-machine-ratio-calc/issues"
+            target="_blank"
+            rel="noopener"
+          >
+            report
+          </a>
+          any errors.
+        </p>
+
+        <br />
+
+        <p class="text-muted">
+          <span>
+            <strong>Build: </strong>
+            {{BUILD_VERSION}} - {{BUILD_DATE_FORMATTED}}
+          </span>
         </p>
       </div>
     </app-root>

@@ -19,29 +19,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18.12.1'
+      - name: Install Deps
+        uses: ./.github/actions/setup-pnpm
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
-      - name: Cache node modules
-        id: npm-cache
-        uses: actions/cache@v4
-        with:
-          path: ${{steps.npm-cache-dir.outputs.dir}}
-          key: ${{runner.os}}-node-${{hashFiles('**/package.json')}}
-          restore-keys: |
-            ${{runner.os}}-node-
-            ${{runner.os}}-
-
-      - name: Install NPM Dependencies
-        run: npm ci
-
-      - name: Build
-        run: sh ./.github/build/build.sh # Generates the dist folder with built angular app
+      # Generates the dist folder with built angular app
+      - name: Build Web
+        run: |
+          pnpm run build:gh-prod
+          echo "Build complete, listing output:"
+          ls -R dist
 
       # Save dist artifacts for deployment jobs
       # https://docs.github.com/en/actions/learn-github-actions/essential-features-of-github-actions#sharing-data-between-jobs

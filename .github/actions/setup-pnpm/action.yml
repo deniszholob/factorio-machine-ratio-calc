@@ -1,0 +1,53 @@
+name: Setup pnpm
+description: Setup Node.js, pnpm, and install dependencies
+runs:
+    using: 'composite'
+    steps:
+        - name: Setup pnpm
+          uses: pnpm/action-setup@v4
+          # with:
+          # version: 10
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v4
+          with:
+              node-version: 22
+              cache: 'pnpm'
+
+        - name: Cache pnpm store
+          uses: actions/cache@v4
+          with:
+              path: .pnpm-store
+              key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+              restore-keys: |
+                  pnpm-store-
+
+        # pnpm uses hardlinks/symlinks inside .pnpm/ → Windows often blocks or errors with EPERM.
+        # Cached node_modules can get into a bad state (especially with native deps like lmdb).
+        - name: Cache node_modules
+          uses: actions/cache@v4
+          with:
+              path: node_modules
+              key: node-modules-${{ hashFiles('pnpm-lock.yaml') }}
+              restore-keys: |
+                  node-modules-
+          if: runner.os != 'Windows'
+
+        - name: Install dependencies
+          run: pnpm install
+          shell: bash
+          if: runner.os != 'Windows'
+
+        - name: Install dependencies (Windows)
+          run: pnpm install --no-frozen-lockfile
+          shell: bash
+          if: runner.os == 'Windows'
+
+        - name: Cache Nx
+          uses: actions/cache@v4
+          with:
+              path: |
+                  node_modules/.cache/nx
+                  .nx/cache
+              key: nx-cache
+              restore-keys: nx-cache
