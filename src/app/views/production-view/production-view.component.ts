@@ -1,8 +1,5 @@
 import {
-  CdkDrag,
   CdkDragDrop,
-  CdkDragHandle,
-  CdkDragPlaceholder,
   CdkDropList,
   DragDropModule,
   moveItemInArray,
@@ -15,7 +12,6 @@ import { ProductionEntryComponent } from '../../components/production-entry/prod
 import { ProductionModalComponent } from '../../components/production-modal/production-modal.component';
 import {
   Machine,
-  MachineItem,
   newMachine,
 } from '../../components/production-modal/production.model';
 
@@ -39,20 +35,17 @@ function totalsSort(a: TotalRate, b: TotalRate): number {
 const DOWNLOAD_FILE_PREFIX = `PRC`;
 
 @Component({
-    selector: 'app-production-view',
-    imports: [
-        CommonModule,
-        ProductionEntryComponent,
-        ProductionModalComponent,
-        FilePickerComponent,
-        // CDK
-        DragDropModule,
-        CdkDropList,
-        CdkDrag,
-        CdkDragHandle,
-        CdkDragPlaceholder,
-    ],
-    templateUrl: './production-view.component.html'
+  selector: 'app-production-view',
+  imports: [
+    CommonModule,
+    ProductionEntryComponent,
+    ProductionModalComponent,
+    FilePickerComponent,
+    // CDK
+    DragDropModule,
+    CdkDropList,
+  ],
+  templateUrl: './production-view.component.html',
 })
 export class ProductionViewComponent {
   public machines: Machine[] = [];

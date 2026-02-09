@@ -6,11 +6,10 @@ import {
   Output,
 } from '@angular/core';
 
-
 @Component({
-    selector: 'app-modal',
-    imports: [],
-    templateUrl: './modal.component.html'
+  selector: 'app-modal',
+  imports: [],
+  templateUrl: './modal.component.html',
 })
 export class ModalComponent {
   @Input()
@@ -30,8 +29,9 @@ export class ModalComponent {
   @Output()
   public secondaryButtonClick: EventEmitter<void> = new EventEmitter();
 
-  @HostListener('document:keydown.escape', ['$event'])
-  protected onKeydownHandler(event: KeyboardEvent): void {
+  // @HostListener('document:keydown.escape', ['$event'])
+  @HostListener('document:keydown.escape')
+  protected onKeydownHandler(): void {
     this.closeModal();
   }
 

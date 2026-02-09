@@ -1,7 +1,6 @@
 import {
   CdkDrag,
   CdkDragDrop,
-  CdkDragPlaceholder,
   CdkDropList,
   DragDropModule,
   moveItemInArray,
@@ -21,18 +20,17 @@ import {
 } from './production.model';
 
 @Component({
-    selector: 'app-production-modal',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ModalComponent,
-        // CDK
-        DragDropModule,
-        CdkDropList,
-        CdkDrag,
-        CdkDragPlaceholder,
-    ],
-    templateUrl: './production-modal.component.html'
+  selector: 'app-production-modal',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ModalComponent,
+    // CDK
+    DragDropModule,
+    CdkDropList,
+    CdkDrag,
+  ],
+  templateUrl: './production-modal.component.html',
 })
 export class ProductionModalComponent {
   public readonly reCalcProductionRates = reCalcProductionRates;
