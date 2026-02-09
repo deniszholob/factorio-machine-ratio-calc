@@ -1,0 +1,62 @@
+
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { format } from 'prettier';
+
+import { {{constantCaseName}}_CONFIG as CFG } from "./{{dashCaseName}}.script.config";
+
+async function main(): Promise<void> {
+  // TODO: Your Code
+  const data: string = await readFileContents(CFG.inputPath);
+  const precessedData: string = await processData(data);
+  await saveFileContents(CFG.outputPath, precessedData);
+}
+
+async function processData(data: string): Promise<string> {
+  console.log(`Processing data...`);
+  return data;
+}
+
+// ========================================================================== //
+
+async function fetchUrl(url: string): Promise<Record<string, string>> {
+  // Promise<string>
+  console.log(`Fetching from: ${url}...`);
+  return await fetch(url).then(
+    (r) => r.json(), // r.txt(),
+  );
+}
+
+async function readFileContents(filePath: string): Promise<string> {
+  console.log(`Reading from: ${filePath}...`);
+  return await fs.readFile(filePath, 'utf-8');
+}
+
+async function saveFileContents(
+  filePath: string,
+  contents: string,
+): Promise<void> {
+  const formattedContents: string = await prettierFormat(filePath, contents);
+  console.log(`Writing to: ${filePath}...`);
+  await fs.writeFile(filePath, formattedContents);
+}
+
+async function prettierFormat(
+  filePath: string,
+  contents: string,
+): Promise<string> {
+  console.log(`Prettifying: ${filePath}...`);
+  return await format(contents, {
+    filepath: filePath, // uses .prettierrc and file extension to infer parser
+  });
+}
+
+// 👇 This ensures main() only runs when this file is executed directly,
+if (require.main === module) {
+  main()
+    .then(() => console.log('✅ Done'))
+    .catch((e) => {
+      console.error('❌ Error:', e);
+      process.exit(1);
+    });
+}

@@ -1,0 +1,8 @@
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: '{{componentPrefix}}{{upperCamelCaseName}}' })
+export class {{upperCamelCaseName}}Pipe implements PipeTransform {
+  public transform(value: unknown, args?: unknown): null {
+    return null;
+  }
+}
