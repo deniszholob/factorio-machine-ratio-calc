@@ -1,5 +1,11 @@
 {
   "singleQuote": true,
   "bracketSameLine": false,
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "semi": true,
+  "trailingComma": "all",
+  "plugins": [
+    "prettier-plugin-organize-attributes",
+    "prettier-plugin-tailwindcss"
+  ]
 }

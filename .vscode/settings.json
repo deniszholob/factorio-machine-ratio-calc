@@ -73,6 +73,11 @@
     }
   ],
   "workbench.editor.pinnedTabsOnSeparateRow": true,
+  // Do not include tailwind.config.js as its necessary for tailwind extension to work
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.scss": "tailwindcss"
+  },
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.eol": "\n",

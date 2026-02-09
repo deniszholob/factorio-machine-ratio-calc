@@ -19,7 +19,7 @@
           "./src/favicon.ico",
           "./src/machine-ratio-calc-data_GC.json"
         ],
-        "styles": ["./global/styles.scss"],
+        "styles": ["./global/styles.css"],
         "scripts": []
       },
       "configurations": {
