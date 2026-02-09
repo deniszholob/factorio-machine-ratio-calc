@@ -41,16 +41,16 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: sh ./.github/build/build.sh # Generates the public folder with built angular app
+        run: sh ./.github/build/build.sh # Generates the dist folder with built angular app
 
-      # Save public artifacts for deployment jobs
+      # Save dist artifacts for deployment jobs
       # https://docs.github.com/en/actions/learn-github-actions/essential-features-of-github-actions#sharing-data-between-jobs
       - name: Archive web demo build
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: public
-          path: public # Directory to push to GitHub Pages
+          name: dist
+          path: dist # Directory to push to GitHub Pages
 
   # Ref: https://focisolutions.com/2020/04/github-actions-deploying-an-angular-app/
   deploy-github:
@@ -63,15 +63,15 @@ jobs:
       - name: Download build
         uses: actions/download-artifact@v4
         with:
-          name: public
-          path: public
+          name: dist
+          path: dist
 
       - name: Display structure of downloaded files
         run: ls -R
-        working-directory: public
+        working-directory: dist
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages
-          folder: public
+          folder: dist

@@ -5,6 +5,7 @@ dist
 tmp
 /out-tsc
 /public
+/dist
 .dev
 
 # dependencies

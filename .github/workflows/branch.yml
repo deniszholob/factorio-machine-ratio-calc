@@ -43,13 +43,13 @@ jobs:
         run: npm run lint
 
       - name: Build
-        run: sh ./.github/build/build.sh # Generates the public folder with built angular app
+        run: sh ./.github/build/build.sh # Generates the dist folder with built angular app
 
-      # Save public artifacts for deployment jobs
+      # Save dist artifacts for deployment jobs
       # https://docs.github.com/en/actions/learn-github-actions/essential-features-of-github-actions#sharing-data-between-jobs
       - name: Archive web demo build
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: public
-          path: public # Directory to push to GitHub Pages
+          name: dist
+          path: dist # Directory to push to GitHub Pages

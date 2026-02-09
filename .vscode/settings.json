@@ -100,9 +100,11 @@
     "**/dist/": true,
     "**/screenshots/": true,
     "**/tools/": true,
+    "**/.postcssrc.*": true,
     "**/.editorconfig": true,
     "**/.gitignore": true,
     "**/.gitkeep": true,
+    "**/.gitattributes": true,
     "**/.npmrc": true,
     "**/.prettierignore": true,
     "**/.prettierrc": true,
@@ -114,6 +116,8 @@
     "**/.angular": true,
     "**/.github": true,
     "**/.husky": true,
+    "**/.nx": true,
+    "**/.pnpm-store": true,
     "**/node_modules": true
   },
   "cSpell.words": [
