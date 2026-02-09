@@ -1,5 +1,5 @@
 import { Parameters } from '@storybook/angular';
-import { themes } from '@storybook/theming';
+import { themes } from 'storybook/theming';
 
 export const parameters: Parameters = {
   docs: { inlineStories: true, source: { state: 'open' }, theme: themes.dark },
@@ -12,5 +12,11 @@ export const parameters: Parameters = {
       date: /Date$/,
     },
   },
-  backgrounds: { default: 'dark' },
+  backgrounds: {},
+};
+
+export const initialGlobals = {
+  backgrounds: {
+    value: 'dark'
+  }
 };
