@@ -29,6 +29,7 @@
   <hr />
   <div class="text-md ml-10 mt-4 grid grid-cols-12" style="max-height: 150px; overflow-y: scroll">
     <div class="col-span-6">
+      <!-- TODO: track productionEntry.id -->
       @for (productionEntry of machinesTotals.deltas; track productionEntry) { @if
       (productionEntry.totalRate !== 0) {
       <div
