@@ -24,6 +24,13 @@
     "format:nl": "prettier --end-of-line lf --write .",
     "test": "nx test --codeCoverage",
     "test:view-coverage": "cd coverage/factorio-machine-ratio-calc && index.html",
+    "storybook:doctor": "pnpx storybook doctor --config-dir 'apps/web/.storybook'",
+    "upgrade:nx:create-latest": "nx migrate latest",
+    "upgrade:nx:create-angular": "nx migrate @nx/angular@22",
+    "upgrade:nx:install": "pnpm install --no-frozen-lockfile",
+    "upgrade:nx:apply": "nx migrate --run-migrations",
+    "upgrade:storybook": "pnpx storybook@9.0.15 upgrade --config-dir ./.storybook",
+    "upgrade:storybook-auto": "pnpx storybook@9.0.15 automigrate --config-dir ./.storybook",
     "nx": "nx"
   },
   "dependencies": {
