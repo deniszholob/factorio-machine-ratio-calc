@@ -38,3 +38,8 @@ Thumbs.db
 .angular
 .nx
 migrations.json
+
+# Storybook
+storybook-migration-summary.md
+tools/ai-migrations/**
+*.log
