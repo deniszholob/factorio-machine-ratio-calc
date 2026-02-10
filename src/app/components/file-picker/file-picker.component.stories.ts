@@ -16,16 +16,16 @@ const meta: Meta<ComponentWithCustomControls> = {
   },
   argTypes: {
     // Output
-    fileChange: { action: 'fileChange', table: { disable: true } },
+    $fileChange: { action: 'fileChange', table: { disable: true } },
     // Hide
     // someControl: { table: { disable: true } }
   },
   args: {
     title: 'Upload',
-    btnClass: 'btn btn-icon btn-primary',
-    disabled: false,
-    multi: false,
-    filesTypesAccepted: '.json',
+    $btnClass: 'btn btn-icon btn-primary',
+    $disabled: false,
+    $multi: false,
+    $filesTypesAccepted: '.json',
   },
 };
 export default meta;
@@ -35,10 +35,10 @@ export const FilePicker: StoryObj<ComponentWithCustomControls> = {
     props: args,
     template: `
     <app-file-picker
-      [disabled]="disabled"
-      [multi]="multi"
-      [filesTypesAccepted]="filesTypesAccepted"
-      [btnClass]="btnClass"
+      [$disabled]="$disabled"
+      [$multi]="$multi"
+      [$filesTypesAccepted]="$filesTypesAccepted"
+      [$btnClass]="$btnClass"
       (fileChange)="fileChange()"
     >
       <i class="fas fa-upload"></i>

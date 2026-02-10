@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   Machine,
@@ -9,30 +9,27 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-production-entry',
-  imports: [CommonModule, FormsModule, CdkDragHandle, CdkDrag],
   templateUrl: './production-entry.component.html',
+  host: { class: 'contents' },
+  imports: [CommonModule, FormsModule, CdkDragHandle, CdkDrag],
 })
 export class ProductionEntryComponent {
-  @Input()
-  public machine?: Machine;
+  public readonly $machine = input.required<Machine>();
 
-  @Output()
-  public editMachine: EventEmitter<Machine> = new EventEmitter();
-  @Output()
-  public deleteMachine: EventEmitter<Machine> = new EventEmitter();
-  @Output()
-  public updateMachineCount: EventEmitter<Machine> = new EventEmitter();
+  public readonly $editMachine = output<Machine>();
+  public readonly $deleteMachine = output<Machine>();
+  public readonly $updateMachineCount = output<Machine>();
 
-  public onEditMachine(machine: Machine): void {
-    this.editMachine.emit(machine);
+  protected onEditMachine(machine: Machine): void {
+    this.$editMachine.emit(machine);
   }
 
-  public onDeleteMachine(machine: Machine): void {
-    this.deleteMachine.emit(machine);
+  protected onDeleteMachine(machine: Machine): void {
+    this.$deleteMachine.emit(machine);
   }
 
   protected onUpdateMachineCount(machine: Machine): void {
-    this.updateMachineCount.emit(machine);
+    this.$updateMachineCount.emit(machine);
     reCalcProductionRates(machine);
   }
 }

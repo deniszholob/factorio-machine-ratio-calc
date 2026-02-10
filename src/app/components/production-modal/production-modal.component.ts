@@ -7,7 +7,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ModalComponent } from '../modal/modal.component';
@@ -21,6 +21,8 @@ import {
 
 @Component({
   selector: 'app-production-modal',
+  templateUrl: './production-modal.component.html',
+  host: { class: 'contents' },
   imports: [
     CommonModule,
     FormsModule,
@@ -30,31 +32,25 @@ import {
     CdkDropList,
     CdkDrag,
   ],
-  templateUrl: './production-modal.component.html',
 })
 export class ProductionModalComponent {
   public readonly reCalcProductionRates = reCalcProductionRates;
   public readonly reCalcItemRate = reCalcItemRate;
 
-  @Input()
-  public machine?: Machine;
+  public readonly $machine = input.required<Machine | undefined>();
+  public readonly $show = model<boolean>(false);
 
-  @Input()
-  public show: boolean = false;
-  @Output()
-  public showChange: EventEmitter<boolean> = new EventEmitter();
-
-  public onAddItem(itemList: MachineItem[]): void {
+  protected onAddItem(itemList: MachineItem[]): void {
     itemList.push(newMachineItem());
   }
 
-  public onDeleteItem(itemList: MachineItem[], index: number): void {
+  protected onDeleteItem(itemList: MachineItem[], index: number): void {
     if (index > -1) {
       itemList.splice(index, 1);
     }
   }
 
-  public drop(event: CdkDragDrop<Machine[]>): void {
+  protected drop(event: CdkDragDrop<Machine[]>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,

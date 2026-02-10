@@ -7,7 +7,6 @@ type ComponentWithCustomControls = AppComponent;
 const meta: Meta<ComponentWithCustomControls> = {
   title: 'App',
   component: AppComponent,
-  // decorators: [moduleMetadata({imports: []})],
   parameters: {
     controls: { hideNoControlsWarning: true },
     docs: { description: { component: `App` } },

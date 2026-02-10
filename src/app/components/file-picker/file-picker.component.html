@@ -1,15 +1,15 @@
 <div class="inline-block">
-  <button class="{{ btnClass }}" [disabled]="disabled" (click)="fileInput.click()">
+  <button class="{{ $btnClass() }}" [disabled]="$disabled()" (click)="fileInput.click()">
     <ng-content></ng-content>
   </button>
   <!-- https://stackoverflow.com/questions/42355858/input-file-onchange-event-not-firing -->
   <input
     #fileInput
-    [multiple]="multi"
+    [multiple]="$multi()"
     (change)="onFilesSelected($event)"
     type="file"
     hidden
-    accept="{{ filesTypesAccepted }}"
+    accept="{{ $filesTypesAccepted() }}"
     onclick="this.value = null"
   />
 </div>

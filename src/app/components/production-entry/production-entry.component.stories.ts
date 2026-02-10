@@ -15,13 +15,13 @@ const meta: Meta<ComponentWithCustomControls> = {
   },
   argTypes: {
     // Output
-    editMachine: { action: 'editMachine', table: { disable: true } },
-    deleteMachine: { action: 'deleteMachine', table: { disable: true } },
+    $editMachine: { action: 'editMachine', table: { disable: true } },
+    $deleteMachine: { action: 'deleteMachine', table: { disable: true } },
     // Hide
     // someControl: { table: { disable: true } }
   },
   args: {
-    machine: MOCK_Machine,
+    $machine: MOCK_Machine,
   },
 };
 export default meta;

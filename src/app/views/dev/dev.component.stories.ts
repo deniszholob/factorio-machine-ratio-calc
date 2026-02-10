@@ -5,19 +5,14 @@ import { DevComponent } from './dev.component';
 type ComponentWithCustomControls = DevComponent;
 
 const meta: Meta<ComponentWithCustomControls> = {
-  title: 'Components/Dev',
+  title: 'Dev',
   component: DevComponent,
   // decorators: [moduleMetadata({imports: []})],
   parameters: {
     docs: { description: { component: `Dev` } },
     // layout: 'fullscreen',
   },
-  argTypes: {
-    // Output
-    // inputChange: { action: 'inputChange', table: { disable: true } }
-    // Hide
-    // someControl: { table: { disable: true } }
-  },
+  argTypes: {},
   args: {},
 };
 export default meta;

@@ -1,5 +1,5 @@
 <!-- Overlay -->
-@if (show) {
+@if ($show()) {
   <div
     class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-neutral-500/50 outline-hidden focus:outline-hidden"
   >
@@ -13,7 +13,7 @@
           class="flex items-start justify-between rounded-t border-b border-solid border-zinc-600 p-5"
         >
           <h3 class="text-2xl font-semibold">
-            {{ title }}
+            {{ $title() }}
           </h3>
           <button
             class="float-right ml-auto border-0 bg-transparent p-1 text-3xl leading-none font-semibold text-red-500 outline-hidden focus:outline-hidden"
@@ -29,7 +29,7 @@
           <ng-content></ng-content>
         </div>
         <!--footer-->
-        @if (secondaryButton) {
+        @if ($secondaryButton()) {
           <div
             class="flex items-center justify-end rounded-b border-t border-solid border-zinc-600 p-6"
           >
@@ -38,15 +38,15 @@
               (click)="onSecondaryButtonClick()"
               type="button"
             >
-              {{ secondaryButton }}
+              {{ $secondaryButton() }}
             </button>
-            @if (primaryButton) {
+            @if ($primaryButton()) {
               <button
                 class="mr-1 mb-1 rounded-sm bg-emerald-500 px-6 py-3 text-sm font-bold text-white uppercase shadow-sm outline-hidden transition-all duration-150 ease-linear hover:shadow-lg focus:outline-hidden active:bg-emerald-600"
                 (click)="onPrimaryButtonClick()"
                 type="button"
               >
-                {{ primaryButton }}
+                {{ $primaryButton() }}
               </button>
             }
           </div>

@@ -7,19 +7,13 @@ type ComponentWithCustomControls = LayoutComponent;
 const meta: Meta<ComponentWithCustomControls> = {
   title: 'Views/Layout',
   component: LayoutComponent,
-  // decorators: [moduleMetadata({imports: []})],
   parameters: {
     docs: { description: { component: `Layout` } },
     layout: 'fullscreen',
   },
-  argTypes: {
-    // Output
-    // inputChange: { action: 'inputChange', table: { disable: true } }
-    // Hide
-    // someControl: { table: { disable: true } }
-  },
+  argTypes: {},
   args: {
-    lastUpdate: Date.now(),
+    $lastUpdate: Date.now(),
   },
 };
 export default meta;

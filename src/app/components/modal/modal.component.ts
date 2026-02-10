@@ -1,52 +1,38 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, input, model, output } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
-  imports: [],
   templateUrl: './modal.component.html',
+  host: {
+    class: 'contents',
+    '(document:keydown.escape)': 'onKeydownHandler()',
+  },
+  imports: [],
 })
 export class ModalComponent {
-  @Input()
-  public title: string = 'Title';
-  @Input()
-  public primaryButton?: string = 'Save';
-  @Input()
-  public secondaryButton?: string = 'Cancel';
+  public readonly $title = input<string>('Title');
+  public readonly $primaryButton = input<string | undefined>('Save');
+  public readonly $secondaryButton = input<string | undefined>('Cancel');
+  public readonly $show = model<boolean>(false);
 
-  @Input()
-  public show: boolean = false;
-  @Output()
-  public showChange: EventEmitter<boolean> = new EventEmitter();
+  public readonly $primaryButtonClick = output<void>();
+  public readonly $secondaryButtonClick = output<void>();
 
-  @Output()
-  public primaryButtonClick: EventEmitter<void> = new EventEmitter();
-  @Output()
-  public secondaryButtonClick: EventEmitter<void> = new EventEmitter();
-
-  // @HostListener('document:keydown.escape', ['$event'])
-  @HostListener('document:keydown.escape')
   protected onKeydownHandler(): void {
     this.closeModal();
   }
 
-  public closeModal(): void {
-    this.show = false;
-    this.showChange.emit(this.show);
+  protected closeModal(): void {
+    this.$show.set(false);
   }
 
-  public onPrimaryButtonClick(): void {
-    this.primaryButtonClick.emit();
+  protected onPrimaryButtonClick(): void {
+    this.$primaryButtonClick.emit();
     this.closeModal();
   }
 
-  public onSecondaryButtonClick(): void {
-    this.secondaryButtonClick.emit();
+  protected onSecondaryButtonClick(): void {
+    this.$secondaryButtonClick.emit();
     this.closeModal();
   }
 }

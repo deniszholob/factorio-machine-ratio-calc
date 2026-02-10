@@ -36,6 +36,8 @@ const DOWNLOAD_FILE_PREFIX = `PRC`;
 
 @Component({
   selector: 'app-production-view',
+  templateUrl: './production-view.component.html',
+  host: { class: 'contents' },
   imports: [
     CommonModule,
     ProductionEntryComponent,
@@ -45,7 +47,6 @@ const DOWNLOAD_FILE_PREFIX = `PRC`;
     DragDropModule,
     CdkDropList,
   ],
-  templateUrl: './production-view.component.html',
 })
 export class ProductionViewComponent {
   public machines: Machine[] = [];
@@ -53,13 +54,13 @@ export class ProductionViewComponent {
   public modalOpen: boolean = false;
   public errorMessage?: string;
 
-  public machinesTotals: MachineTotals = {
+  protected machinesTotals: MachineTotals = {
     deltas: [],
     inputs: [],
     outputs: [],
   };
 
-  public onAddMachine(): void {
+  protected onAddMachine(): void {
     this.machines.push(newMachine());
     this.onEditMachine(this.machines[this.machines.length - 1]);
   }
@@ -115,32 +116,32 @@ export class ProductionViewComponent {
     }, 1);
   }
 
-  public onEditMachine(machine: Machine): void {
+  protected onEditMachine(machine: Machine): void {
     this.machineToEdit = machine;
     this.modalOpen = true;
   }
 
-  public onDeleteMachine(index: number): void {
+  protected onDeleteMachine(index: number): void {
     if (index > -1) {
       this.machines.splice(index, 1);
     }
     this.updateTotals();
   }
 
-  public onClearAll(): void {
+  protected onClearAll(): void {
     this.machines = [];
     this.updateTotals();
   }
 
-  public openModal(): void {
+  protected openModal(): void {
     this.modalOpen = true;
   }
 
-  public drop(event: CdkDragDrop<Machine[]>): void {
+  protected drop(event: CdkDragDrop<Machine[]>): void {
     moveItemInArray(this.machines, event.previousIndex, event.currentIndex);
   }
 
-  public uploadData(files: File[]): void {
+  protected uploadData(files: File[]): void {
     const selectedFile: File = files[0];
     this.readFile(selectedFile);
   }
@@ -161,7 +162,7 @@ export class ProductionViewComponent {
     };
   }
 
-  public downloadData(): void {
+  protected downloadData(): void {
     const data: string = JSON.stringify(this.machines);
     // this.downloadFile(data);
     this.downloadJson(data);

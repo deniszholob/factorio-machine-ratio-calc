@@ -15,13 +15,14 @@ const meta: Meta<ComponentWithCustomControls> = {
   },
   argTypes: {
     // Output
-    showChange: { action: 'showChange', table: { disable: true } },
+    // $showChange: { action: 'showChange', table: { disable: true } },
+    $show: { action: 'showModalChange' },
     // Hide
     // someControl: { table: { disable: true } }
   },
   args: {
-    show: true,
-    machine: MOCK_Machine,
+    $show: true,
+    $machine: MOCK_Machine,
   },
 };
 export default meta;

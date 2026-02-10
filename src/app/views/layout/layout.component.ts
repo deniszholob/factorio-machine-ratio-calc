@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-layout',
-  imports: [CommonModule],
   templateUrl: './layout.component.html',
+  host: { class: 'contents' },
+  imports: [CommonModule],
 })
 export class LayoutComponent {
-  @Input()
-  public lastUpdate: number = 0;
+  public $lastUpdate = input.required<number>();
 }

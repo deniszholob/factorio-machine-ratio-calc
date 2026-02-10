@@ -1,10 +1,10 @@
 <app-modal
-  [(show)]="show"
-  [title]="'Production Details'"
-  [primaryButton]="undefined"
-  [secondaryButton]="undefined"
-  (showChange)="showChange.emit($event)"
+  [($show)]="$show"
+  [$title]="'Production Details'"
+  [$primaryButton]="undefined"
+  [$secondaryButton]="undefined"
 >
+  @let machine = $machine();
   @if (machine) {
     <div class="flex flex-col gap-4">
       <div>
