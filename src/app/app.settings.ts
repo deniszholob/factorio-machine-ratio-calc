@@ -5,7 +5,7 @@ export const APP_INFO: AppInfo = {
   factoryTime: {
     name: 'Factory Time Game',
     url: 'https://deniszholob.github.io/factory-time/',
-    title: 'Factory Time Game',
+    title: 'Factory Time',
     icon: 'fas fa-industry',
   },
 };

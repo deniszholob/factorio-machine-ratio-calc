@@ -10,7 +10,8 @@
     class="flex w-72 shrink-0 flex-col gap-4 overflow-auto border-r border-slate-800 bg-slate-900/80 px-4 py-5"
     aria-label="Production navigation"
   >
-    <!-- Header -->
+    <!-- Sidebar Header -->
+    <!-- TODO: Extract to separate component, then project via a slot <ng-content select="side-header"></ng-content> -->
     <div class="flex flex-col gap-3 border-b border-slate-800 pb-3">
       <div class="flex items-center justify-between gap-3">
         <div class="flex items-center gap-3">
@@ -66,6 +67,8 @@
       </div>
     </div>
 
+    <!-- Sidebar Content -->
+    <!-- TODO: Extract to separate component, then project via a slot <ng-content select="side-content"></ng-content> -->
     <!-- Productions -->
     <div class="flex flex-1 flex-col gap-2">
       <div class="text-[11px] font-semibold tracking-[0.32em] text-slate-500 uppercase">
@@ -73,61 +76,60 @@
       </div>
 
       <div class="flex flex-1 flex-col gap-2 overflow-auto">
-        @if ($hasProductions()) {
-          @for (production of productions; track production.id) {
-            <button
-              class="flex items-center justify-between gap-2 rounded-sm border border-slate-800 bg-slate-950/40 px-3 py-3 transition"
-              [class.border-orange-400]="production.id === activeId"
-              [class.bg-neutral-900]="production.id === activeId"
-              [class.text-orange-200]="production.id === activeId"
-              (click)="onSelectProduction(production.id)"
-              type="button"
-            >
-              @if (production.id === editingId) {
-                <div class="flex min-w-0 flex-1 flex-col gap-2">
-                  <label class="sr-only" [attr.for]="'production-name-' + production.id">
-                    Chain name
-                  </label>
-                  <input
-                    class="w-full text-sm"
-                    [attr.id]="'production-name-' + production.id"
-                    [value]="$editingName()"
-                    (input)="onEditInput($event)"
-                    (keydown.enter)="onCommitRename()"
-                    (keydown.escape)="onCancelRename()"
-                    (blur)="onCommitRename()"
-                    type="text"
-                  />
-                </div>
-              } @else {
-                <span class="truncate text-sm font-semibold">
-                  {{ production.name }}
-                </span>
-              }
-
-              <div class="flex items-center gap-1">
-                <button
-                  class="rounded-sm border border-slate-700 px-2 py-1 text-xs text-slate-300 transition hover:border-slate-500 hover:text-slate-100 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:outline-hidden"
-                  (click)="
-                    production.id === editingId ? onCommitRename() : onStartRename(production.id)
-                  "
-                  type="button"
-                >
-                  <span class="sr-only">Rename chain</span>
-                  <i class="fas fa-pen"></i>
-                </button>
-                <button
-                  class="rounded-sm border border-slate-700 px-2 py-1 text-xs text-slate-300 transition hover:border-red-400 hover:text-red-200 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-hidden"
-                  (click)="onDeleteProduction(production.id)"
-                  type="button"
-                >
-                  <span class="sr-only">Delete chain</span>
-                  <i class="fas fa-trash"></i>
-                </button>
+        <!-- TODO: Extract to separate <app-production-chain-list> component -->
+        @for (production of productions; track production.id) {
+          <button
+            class="flex items-center justify-between gap-2 rounded-sm border border-slate-800 bg-slate-950/40 px-3 py-3 transition"
+            [class.border-orange-400]="production.id === activeId"
+            [class.bg-neutral-900]="production.id === activeId"
+            [class.text-orange-200]="production.id === activeId"
+            (click)="onSelectProduction(production.id)"
+            type="button"
+          >
+            @if (production.id === editingId) {
+              <div class="flex min-w-0 flex-1 flex-col gap-2">
+                <label class="sr-only" [attr.for]="'production-name-' + production.id">
+                  Chain name
+                </label>
+                <input
+                  class="w-full text-sm"
+                  [attr.id]="'production-name-' + production.id"
+                  [value]="$editingName()"
+                  (input)="onEditInput($event)"
+                  (keydown.enter)="onCommitRename()"
+                  (keydown.escape)="onCancelRename()"
+                  (blur)="onCommitRename()"
+                  type="text"
+                />
               </div>
-            </button>
-          }
-        } @else {
+            } @else {
+              <span class="truncate text-sm font-semibold">
+                {{ production.name }}
+              </span>
+            }
+
+            <div class="flex items-center gap-1">
+              <button
+                class="rounded-sm border border-slate-700 px-2 py-1 text-xs text-slate-300 transition hover:border-slate-500 hover:text-slate-100 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:outline-hidden"
+                (click)="
+                  production.id === editingId ? onCommitRename() : onStartRename(production.id)
+                "
+                type="button"
+              >
+                <span class="sr-only">Rename chain</span>
+                <i class="fas fa-pen"></i>
+              </button>
+              <button
+                class="rounded-sm border border-slate-700 px-2 py-1 text-xs text-slate-300 transition hover:border-red-400 hover:text-red-200 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-hidden"
+                (click)="onDeleteProduction(production.id)"
+                type="button"
+              >
+                <span class="sr-only">Delete chain</span>
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </button>
+        } @empty {
           <div
             class="rounded-sm border border-dashed border-slate-700 px-3 py-4 text-xs text-slate-400"
           >
@@ -137,6 +139,8 @@
       </div>
     </div>
 
+    <!-- Sidebar Footer -->
+    <!-- TODO: Extract to separate component, then project via a slot <ng-content select="side-footer"></ng-content> -->
     <!-- Links -->
     <div
       class="flex flex-col gap-3 rounded-sm border border-slate-800 bg-slate-950/50 px-3 py-3 text-xs text-slate-400"
@@ -206,22 +210,16 @@
 
   <!-- Right Content -->
   <main class="flex min-w-0 flex-1 flex-col overflow-auto">
-    <!-- LEAVING THE HEADER COMMENT OUT ON PURPOSE -->
-    <!-- <header
-      class="flex flex-wrap items-center justify-between gap-3 border-b border-border-warm bg-surface-strong/90 px-6 py-3"
-    >
-      <div class="flex flex-col gap-1">
-        <h1 class="text-lg font-semibold">Production Components</h1>
-        <span class="text-[11px] uppercase tracking-[0.28em] text-muted-warm">
-          Active Chain: {{ activeName }}
-        </span>
-      </div>
-    </header> -->
+    <!-- Content Header -->
+    <ng-content select="main-header"></ng-content>
 
+    <!-- Content Main-->
     <div class="min-h-0 flex-1 overflow-y-auto">
-      <ng-content></ng-content>
+      <ng-content select="main-content"></ng-content>
     </div>
 
+    <!-- Content Footer -->
+    <!-- TODO: Extract to separate component, then project via a slot <ng-content select="main-footer"></ng-content> -->
     <footer
       class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 bg-slate-950/70 px-6 py-3 text-xs text-slate-400"
     >

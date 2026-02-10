@@ -1,23 +1,4 @@
-<!-- CURRENT MAIN VIEW -->
-<!-- <app-layout [$lastUpdate]="APP_BUILD_DATE">
-  <app-production-view
-    class="mx-auto flex w-full max-w-6xl overflow-auto px-8"
-  ></app-production-view>
-</app-layout> -->
-
-<!-- EXPERIMENTAL -->
-<app-dev></app-dev>
+<router-outlet></router-outlet>
 
 <!-- Floating promo link to "Factory Time" -->
-<div
-  class="fixed top-1/2 right-0 -translate-y-1/2 rounded bg-black/80 [text-orientation:mixed] [writing-mode:sideways-rl]"
->
-  <a
-    class="border-accent text-accent hover:bg-accent-dark hover:border-accent-dark hover:text-neutral-dark flex rounded border px-2 py-1 font-bold transition-colors focus:ring-2 focus:ring-orange-500/50 focus:outline-none"
-    [href]="APP_INFO.factoryTime.url"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Play my game: "Factory Time"
-  </a>
-</div>
+<app-promo-factory-time></app-promo-factory-time>

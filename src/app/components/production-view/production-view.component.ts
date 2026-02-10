@@ -5,7 +5,7 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { FilePickerComponent } from '../../components/file-picker/file-picker.component';
 import { ProductionEntryComponent } from '../../components/production-entry/production-entry.component';
@@ -14,6 +14,8 @@ import {
   Machine,
   newMachine,
 } from '../../components/production-modal/production.model';
+import { ProductionService } from 'src/app/shared/production/production.service';
+import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
 
 interface MachineTotals {
   deltas: TotalRate[];
@@ -34,6 +36,7 @@ interface TotalRate {
 // }
 const DOWNLOAD_FILE_PREFIX = `PRC`;
 
+// TODO: Move logic to production service
 @Component({
   selector: 'app-production-view',
   templateUrl: './production-view.component.html',
@@ -49,6 +52,9 @@ const DOWNLOAD_FILE_PREFIX = `PRC`;
   ],
 })
 export class ProductionViewComponent {
+  protected readonly productionService = inject(ProductionService);
+  protected readonly importExportService = inject(ImportExportService);
+
   public machines: Machine[] = [];
   public machineToEdit?: Machine;
   public modalOpen: boolean = false;

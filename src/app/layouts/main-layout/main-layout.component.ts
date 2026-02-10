@@ -2,10 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   signal,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
+import { ProductionService } from 'src/app/shared/production/production.service';
+import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
 
 interface ProductionTab {
   readonly id: number;
@@ -13,13 +17,17 @@ interface ProductionTab {
 }
 
 @Component({
-  selector: 'app-production-shell-layout',
-  templateUrl: './production-shell-layout.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-main-layout',
+  templateUrl: './main-layout.component.html',
   host: { class: 'contents' },
   imports: [DatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductionShellLayoutComponent {
+export class MainLayoutComponent {
+  protected readonly productionService = inject(ProductionService);
+  protected readonly productionChainService = inject(ProductionChainService);
+  protected readonly importExportService = inject(ImportExportService);
+
   public readonly $lastUpdate = input<number>(0);
 
   public readonly $productions = signal<ProductionTab[]>([

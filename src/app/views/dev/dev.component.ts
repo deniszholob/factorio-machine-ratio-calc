@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { ProductionShellLayoutComponent } from '../../layouts/production-shell-layout/production-shell-layout.component';
-import { ProductionViewComponent } from '../production-view/production-view.component';
+import { ProductionViewComponent } from '../../components/production-view/production-view.component';
+import { MainLayoutComponent } from '../../layouts/main-layout/main-layout.component';
+import { APP_BUILD_DATE } from 'src/app/app.build';
 
 @Component({
   selector: 'app-dev',
   templateUrl: './dev.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'contents' },
-  imports: [ProductionShellLayoutComponent, ProductionViewComponent],
+  imports: [MainLayoutComponent, ProductionViewComponent],
 })
-export class DevComponent {}
+export class DevComponent {
+  protected readonly APP_BUILD_DATE: number = APP_BUILD_DATE;
+}

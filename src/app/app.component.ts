@@ -1,24 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { LayoutComponent } from './views/layout/layout.component';
-import { ProductionViewComponent } from './views/production-view/production-view.component';
-import { APP_INFO, AppInfo } from './app.settings';
-import { APP_BUILD_DATE } from './app.build';
-import { DevComponent } from './views/dev/dev.component';
+import { PromoFactoryTimeComponent } from './components/promo-factory-time/promo-factory-time.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   host: { class: 'contents' },
-  imports: [
-    RouterModule,
-    LayoutComponent,
-    ProductionViewComponent,
-    DevComponent,
-  ],
+  imports: [RouterModule, PromoFactoryTimeComponent],
 })
-export class AppComponent {
-  protected readonly APP_BUILD_DATE: number = APP_BUILD_DATE;
-  protected readonly APP_INFO: AppInfo = APP_INFO;
-}
+export class AppComponent {}
