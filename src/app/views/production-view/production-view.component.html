@@ -1,101 +1,113 @@
-<div class="flex w-full flex-col overflow-auto text-slate-50">
-  <div class="flex flex-row flex-wrap gap-2">
-    <button class="btn btn-icon btn-success" (click)="onAddMachine()">
-      <i class="fas fa-plus"></i> Production
-    </button>
-    <button class="btn btn-icon btn-danger" (click)="onClearAll()">
-      <i class="fas fa-trash"></i> Clear All
-    </button>
-    <button class="btn btn-icon btn-primary" (click)="downloadData()">
-      <i class="fas fa-download"></i> Save Data
-    </button>
+<div class="flex min-h-0 flex-1 flex-col gap-3 overflow-auto bg-slate-950/70 p-4">
+  <div
+    class="flex flex-row flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-slate-950/70 px-6 py-3"
+  >
+    <!-- Buttons here -->
+    <div class="flex flex-row flex-wrap gap-2">
+      <button class="btn btn-icon btn-success" (click)="onAddMachine()">
+        <i class="fas fa-plus"></i> Production
+      </button>
+      <button class="btn btn-icon btn-danger" (click)="onClearAll()">
+        <i class="fas fa-trash"></i> Clear All
+      </button>
+    </div>
 
-    <!-- <input type="file" class="form-control" id="file" (change)="uploadFile($event)" /> -->
-    <app-file-picker
-      [$filesTypesAccepted]="'.json'"
-      [$btnClass]="'btn btn-icon btn-primary'"
-      ($fileChange)="uploadData($event)"
-    >
-      <i class="fas fa-cloud-arrow-up"></i> Load Data
-    </app-file-picker>
+    <div class="flex flex-row flex-wrap gap-2">
+      <button class="btn btn-icon btn-primary" (click)="downloadData()">
+        <i class="fas fa-download"></i> Import Production
+      </button>
+      <!-- <input type="file" class="form-control" id="file" (change)="uploadFile($event)" /> -->
+      <app-file-picker
+        [$filesTypesAccepted]="'.json'"
+        [$btnClass]="'btn btn-icon btn-primary'"
+        ($fileChange)="uploadData($event)"
+      >
+        <i class="fas fa-cloud-arrow-up"></i> Export Production
+      </app-file-picker>
+    </div>
   </div>
 
-  @if (machines && machines.length > 0) {
-    <div class="text-md mt-4 ml-10 grid grid-cols-12 font-bold">
-      <div class="col-span-6">Delta Totals</div>
-      <div class="col-span-3">Total Input Rate</div>
-      <div class="col-span-3">Total Output Rate</div>
-    </div>
-    <hr />
-    <div class="text-md mt-4 ml-10 grid grid-cols-12" style="max-height: 150px; overflow-y: scroll">
-      <div class="col-span-6">
-        <!-- TODO: track productionEntry.id -->
-        @for (productionEntry of machinesTotals.deltas; track productionEntry) {
-          @if (productionEntry.totalRate !== 0) {
-            <div
-              [ngClass]="{
-                'text-green-500': productionEntry.totalRate > 0,
-                'text-red-500': productionEntry.totalRate < 0,
-              }"
-            >
+  <div class="flex w-full flex-col overflow-auto text-slate-50">
+    @if (machines && machines.length > 0) {
+      <div class="text-md mt-4 ml-10 grid grid-cols-12 font-bold">
+        <div class="col-span-6">Delta Totals</div>
+        <div class="col-span-3">Total Input Rate</div>
+        <div class="col-span-3">Total Output Rate</div>
+      </div>
+      <hr />
+      <div
+        class="text-md mt-4 ml-10 grid grid-cols-12"
+        style="max-height: 150px; overflow-y: scroll"
+      >
+        <div class="col-span-6">
+          <!-- TODO: track productionEntry.id -->
+          @for (productionEntry of machinesTotals.deltas; track productionEntry) {
+            @if (productionEntry.totalRate !== 0) {
+              <div
+                [ngClass]="{
+                  'text-green-500': productionEntry.totalRate > 0,
+                  'text-red-500': productionEntry.totalRate < 0,
+                }"
+              >
+                <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
+                <span>{{ productionEntry.name }}</span>
+                <strong>/sec</strong>
+              </div>
+            }
+          }
+        </div>
+        <div class="col-span-3">
+          <!-- TODO: track productionEntry.id -->
+          @for (productionEntry of machinesTotals.inputs; track productionEntry) {
+            <div>
               <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
               <span>{{ productionEntry.name }}</span>
               <strong>/sec</strong>
             </div>
           }
+        </div>
+        <div class="col-span-3">
+          <!-- TODO: track productionEntry.id -->
+          @for (productionEntry of machinesTotals.outputs; track productionEntry) {
+            <div>
+              <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
+              <span>{{ productionEntry.name }}</span>
+              <strong>/sec</strong>
+            </div>
+          }
+        </div>
+      </div>
+      <br />
+      <div class="text-md mt-4 ml-10 grid grid-cols-12 font-bold">
+        <div class="col-span-6">Productions</div>
+        <div class="col-span-3">Input Rate</div>
+        <div class="col-span-3">Output Rate</div>
+      </div>
+      <hr />
+      <div
+        class="overflow-auto"
+        [cdkDropListData]="machines"
+        (cdkDropListDropped)="drop($event)"
+        cdkDropList
+      >
+        @for (machine of machines; track machine; let i = $index) {
+          <app-production-entry
+            [$machine]="machine"
+            ($editMachine)="onEditMachine($event)"
+            ($deleteMachine)="onDeleteMachine(i)"
+            ($updateMachineCount)="onEditFinish()"
+          ></app-production-entry>
         }
       </div>
-      <div class="col-span-3">
-        <!-- TODO: track productionEntry.id -->
-        @for (productionEntry of machinesTotals.inputs; track productionEntry) {
-          <div>
-            <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
-            <span>{{ productionEntry.name }}</span>
-            <strong>/sec</strong>
-          </div>
-        }
-      </div>
-      <div class="col-span-3">
-        <!-- TODO: track productionEntry.id -->
-        @for (productionEntry of machinesTotals.outputs; track productionEntry) {
-          <div>
-            <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
-            <span>{{ productionEntry.name }}</span>
-            <strong>/sec</strong>
-          </div>
-        }
-      </div>
-    </div>
-    <br />
-    <div class="text-md mt-4 ml-10 grid grid-cols-12 font-bold">
-      <div class="col-span-6">Productions</div>
-      <div class="col-span-3">Input Rate</div>
-      <div class="col-span-3">Output Rate</div>
-    </div>
-    <hr />
-    <div
-      class="overflow-auto"
-      [cdkDropListData]="machines"
-      (cdkDropListDropped)="drop($event)"
-      cdkDropList
-    >
-      @for (machine of machines; track machine; let i = $index) {
-        <app-production-entry
-          [$machine]="machine"
-          ($editMachine)="onEditMachine($event)"
-          ($deleteMachine)="onDeleteMachine(i)"
-          ($updateMachineCount)="onEditFinish()"
-        ></app-production-entry>
-      }
-    </div>
-    <hr />
-  }
-  @if (!machines || machines.length <= 0) {
-    <div class="flex py-2 text-slate-50">No Productions, why don't you add a new one?</div>
-  }
-  @if (errorMessage) {
-    <div class="text-red-500">{{ errorMessage }}</div>
-  }
+      <hr />
+    }
+    @if (!machines || machines.length <= 0) {
+      <div class="flex py-2 text-slate-50">No Productions, why don't you add a new one?</div>
+    }
+    @if (errorMessage) {
+      <div class="text-red-500">{{ errorMessage }}</div>
+    }
+  </div>
 </div>
 
 <app-production-modal
