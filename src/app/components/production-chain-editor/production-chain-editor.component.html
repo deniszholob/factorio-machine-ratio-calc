@@ -5,13 +5,19 @@
 @let isEditorOpen = $isEditorOpen();
 
 @if (displayMode === 'full' && isEditorOpen) {
-  <!-- TODO: Add a subtitle for displaying selected production name -->
-  <app-content-layout [$title]="'Production Editor'" ($close)="closeEditor()">
+  <app-content-layout
+    [$title]="'Production Editor'"
+    [$subTitle]="$editorSubtitle()"
+    ($close)="closeEditor()"
+  >
     <app-production-editor-full [$machine]="$machineToEdit()"></app-production-editor-full>
   </app-content-layout>
 } @else {
-  <!-- TODO: Add a subtitle for displaying selected production chain name -->
-  <app-content-layout [$title]="'Production Chains'" [$showClose]="false">
+  <app-content-layout
+    [$title]="'Production Chain Editor'"
+    [$subTitle]="$editorSubtitle()"
+    [$showClose]="false"
+  >
     <div
       class="flex flex-1 flex-wrap items-center justify-between gap-2"
       ngProjectAs="content-header"

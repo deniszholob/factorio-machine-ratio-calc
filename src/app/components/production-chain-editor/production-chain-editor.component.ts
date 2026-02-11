@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   Signal,
+  computed,
   effect,
   inject,
   signal,
@@ -53,6 +54,16 @@ export class ProductionChainEditorComponent {
   protected readonly $errorMessage = signal<string | undefined>(undefined);
   protected readonly $editorDisplayMode =
     this.settingsService.$editorDisplayMode;
+  protected readonly $activeChainName =
+    this.productionChainService.$activeProductionName;
+  protected readonly $editorSubtitle = computed(() => {
+    const machine = this.$machineToEdit();
+    if (machine && this.$isEditorOpen()) {
+      return `${machine.name || 'Untitled Production'}`;
+    }
+    const chainName = this.$activeChainName();
+    return chainName ? `${chainName}` : undefined;
+  });
 
   public constructor() {
     effect(() => {

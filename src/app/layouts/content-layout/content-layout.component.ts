@@ -19,7 +19,7 @@ export class ContentLayoutComponent {
   public readonly $title = input.required<string>();
   public readonly $subTitle = input<string>();
   public readonly $showClose = input<boolean>(true);
-  public readonly $closeLabel = input<string>('Close');
+  public readonly $closeLabel = input<string>();
   public readonly $close = output<void>();
 
   protected onEscape(): void {
