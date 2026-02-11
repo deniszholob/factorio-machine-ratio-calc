@@ -30,6 +30,7 @@ export class ProductionItemComponent {
   public readonly $machine = input.required<Production>();
 
   public readonly $editMachine = output<Production>();
+  public readonly $duplicateMachine = output<Production>();
   public readonly $deleteMachine = output<Production>();
   public readonly $updateMachineCount = output<Production>();
 
@@ -39,6 +40,10 @@ export class ProductionItemComponent {
 
   protected onDeleteMachine(machine: Production): void {
     this.$deleteMachine.emit(machine);
+  }
+
+  protected onDuplicateMachine(machine: Production): void {
+    this.$duplicateMachine.emit(machine);
   }
 
   protected onUpdateMachineCount(machine: Production): void {

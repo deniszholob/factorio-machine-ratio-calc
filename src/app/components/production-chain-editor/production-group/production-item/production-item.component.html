@@ -17,6 +17,13 @@
         <i class="fas fa-pencil-alt"></i>
       </button>
       <button
+        class="btn btn-icon btn-secondary"
+        [title]="'Duplicate production'"
+        (click)="onDuplicateMachine(machine)"
+      >
+        <i class="fas fa-copy"></i>
+      </button>
+      <button
         class="btn btn-icon btn-danger"
         [title]="'Delete production'"
         (click)="onDeleteMachine(machine)"

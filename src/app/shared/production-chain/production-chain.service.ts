@@ -158,6 +158,29 @@ export class ProductionChainService {
     this.persist();
   }
 
+  public duplicateProductionChain(productionId: string): void {
+    const chain = this.$productionChains().find(
+      (item) => item.id === productionId,
+    );
+    if (!chain) {
+      return;
+    }
+
+    const nextDisplay = `${chain.display} Copy`;
+    const duplicated: ProductionChain = {
+      id: guid(),
+      display: nextDisplay,
+      productions: chain.productions.map((production) => ({
+        ...production,
+        id: guid(),
+      })),
+    };
+
+    this.$productionChains.update((items) => [...items, duplicated]);
+    this.$activeProductionChainId.set(duplicated.id);
+    this.persist();
+  }
+
   public resetAllProductionChains(): void {
     this.$productionChains.set([]);
     this.$activeProductionChainId.set(undefined);

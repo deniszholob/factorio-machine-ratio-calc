@@ -23,12 +23,17 @@ export class ProductionGroupComponent {
   public readonly $machineTotals = input.required<ProductionTotals>();
 
   public readonly $editMachine = output<Production>();
+  public readonly $duplicateMachine = output<Production>();
   public readonly $deleteMachine = output<number>();
   public readonly $updateMachineCount = output<Production>();
   public readonly $drop = output<CdkDragDrop<Production[]>>();
 
   protected onEditMachine(machine: Production): void {
     this.$editMachine.emit(machine);
+  }
+
+  protected onDuplicateMachine(machine: Production): void {
+    this.$duplicateMachine.emit(machine);
   }
 
   protected onDeleteMachine(index: number): void {

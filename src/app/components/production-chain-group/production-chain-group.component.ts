@@ -54,6 +54,10 @@ export class ProductionChainGroupComponent {
     this.productionChainService.deleteProduction(productionId);
   }
 
+  protected onDuplicateProductionChain(productionId: string): void {
+    this.productionChainService.duplicateProductionChain(productionId);
+  }
+
   protected onSelectProductionChain(productionId: string): void {
     this.productionChainService.selectProduction(productionId);
   }

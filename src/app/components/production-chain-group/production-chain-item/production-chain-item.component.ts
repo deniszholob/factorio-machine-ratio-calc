@@ -37,6 +37,7 @@ export class ProductionChainItemComponent {
   public readonly $commitRename = output<void>();
   public readonly $editName = output<string>();
   public readonly $delete = output<string>();
+  public readonly $duplicate = output<string>();
 
   protected readonly $confirmDeleteOpen = signal<boolean>(false);
 
@@ -90,5 +91,11 @@ export class ProductionChainItemComponent {
   protected onCommitRename(event: Event): void {
     event.stopPropagation();
     this.$commitRename.emit();
+  }
+
+  protected onDuplicate(event: Event): void {
+    event.stopPropagation();
+    const productionChain = this.$productionChain();
+    this.$duplicate.emit(productionChain.id);
   }
 }

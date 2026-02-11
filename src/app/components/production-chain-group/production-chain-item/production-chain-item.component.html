@@ -67,6 +67,16 @@
       }
     </button>
 
+    <button
+      class="btn btn-secondary-outline-fill px-2 py-1 text-xs"
+      [title]="'Duplicate production chain'"
+      (click)="onDuplicate($event)"
+      type="button"
+    >
+      <span class="sr-only">Duplicate chain</span>
+      <i class="fas fa-copy"></i>
+    </button>
+
     <!-- class="cursor-pointer rounded-sm border border-stone-700 px-2 py-1 text-xs text-stone-300 transition hover:border-red-400 hover:text-red-200 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-hidden" -->
     <button
       class="btn btn-danger-outline-fill px-2 py-1 text-xs"

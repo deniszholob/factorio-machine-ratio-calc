@@ -94,6 +94,11 @@ export class ProductionChainEditorComponent {
     this.productionService.deleteMachineAt(index);
   }
 
+  protected onDuplicateMachine(machine: Production): void {
+    const duplicated = this.productionService.duplicateMachine(machine);
+    this.onEditMachine(duplicated);
+  }
+
   protected onClearAll(): void {
     this.productionService.clearMachines();
   }

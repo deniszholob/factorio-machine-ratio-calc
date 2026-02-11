@@ -66,6 +66,18 @@ export class ProductionService {
     );
   }
 
+  public duplicateMachine(source: Production): Production {
+    const duplicated: Production = {
+      ...source,
+      id: guid(),
+      name: `${source.name} Copy`,
+      machineInputs: source.machineInputs.map((item) => ({ ...item })),
+      machineOutputs: source.machineOutputs.map((item) => ({ ...item })),
+    };
+    this._$productions.update((items) => [...items, duplicated]);
+    return duplicated;
+  }
+
   public deleteMachineAt(index: number): void {
     this._$productions.update((items) => {
       if (index < 0 || index >= items.length) {
