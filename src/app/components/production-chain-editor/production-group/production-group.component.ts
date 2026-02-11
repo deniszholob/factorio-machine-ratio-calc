@@ -1,5 +1,5 @@
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe, NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,7 +16,7 @@ import { ProductionItemComponent } from './production-item/production-item.compo
   templateUrl: './production-group.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ProductionItemComponent, DragDropModule],
+  imports: [NgClass, DecimalPipe, ProductionItemComponent, DragDropModule],
 })
 export class ProductionGroupComponent {
   public readonly $machines = input.required<Production[]>();

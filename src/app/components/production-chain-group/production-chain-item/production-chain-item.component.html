@@ -47,6 +47,7 @@
         'btn-warning-outline-fill': productionChain.id !== editingProductionChainId,
         'btn-success-outline-fill': productionChain.id === editingProductionChainId,
       }"
+      [title]="'Rename production chain'"
       (click)="
         productionChain.id === editingProductionChainId
           ? onCommitRename($event)
@@ -69,6 +70,7 @@
     <!-- class="cursor-pointer rounded-sm border border-stone-700 px-2 py-1 text-xs text-stone-300 transition hover:border-red-400 hover:text-red-200 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-hidden" -->
     <button
       class="btn btn-danger-outline-fill px-2 py-1 text-xs"
+      [title]="'Delete production chain'"
       (click)="onDelete($event)"
       type="button"
     >

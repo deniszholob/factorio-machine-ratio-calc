@@ -12,6 +12,7 @@
     <div class="flex items-center gap-1">
       <button
         class="btn btn-success flex items-center px-2 py-1 text-sm"
+        [title]="'Add production chain'"
         (click)="onAddProductionChain()"
         type="button"
       >
@@ -19,6 +20,7 @@
       </button>
       <button
         class="btn btn-danger-outline-fill flex items-center px-2 py-1 text-sm"
+        [title]="'Reset all saved production chains'"
         (click)="onResetProductionChains()"
         type="button"
         aria-label="Reset all saved production chains"

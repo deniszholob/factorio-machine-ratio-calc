@@ -12,13 +12,14 @@ import {
 
 import { ProductionChain } from './production-chain.model';
 import { ModalComponent } from '../../modal/modal.component';
+import { TooltipDirective } from '../../tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-production-chain-item',
   templateUrl: './production-chain-item.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, ModalComponent],
+  imports: [NgClass, ModalComponent, TooltipDirective],
 })
 export class ProductionChainItemComponent {
   public readonly $productionChain = input.required<ProductionChain>();

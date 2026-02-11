@@ -9,10 +9,18 @@
   </div>
   <div class="grid flex-1 grid-cols-12">
     <div class="col-span-6 flex flex-row flex-wrap items-center gap-2">
-      <button class="btn btn-icon btn-warning" (click)="onEditMachine(machine)">
+      <button
+        class="btn btn-icon btn-warning"
+        [title]="'Edit production'"
+        (click)="onEditMachine(machine)"
+      >
         <i class="fas fa-pencil-alt"></i>
       </button>
-      <button class="btn btn-icon btn-danger" (click)="onDeleteMachine(machine)">
+      <button
+        class="btn btn-icon btn-danger"
+        [title]="'Delete production'"
+        (click)="onDeleteMachine(machine)"
+      >
         <i class="fas fa-trash"></i>
       </button>
       <div class="flex flex-wrap items-center">

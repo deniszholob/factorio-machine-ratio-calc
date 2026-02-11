@@ -199,6 +199,10 @@
   input[type='checkbox']:disabled + label {
     @apply cursor-default;
   }
+
+  kbd {
+    @apply rounded border border-stone-600 bg-stone-900/80 px-1.5 py-0.5 text-[10px] font-semibold text-stone-200 shadow-sm;
+  }
 }
 
 .cdk-drag-preview {

@@ -9,7 +9,13 @@
       <div class="text-[11px] font-semibold tracking-[0.32em] text-stone-400 uppercase">
         Production Editor
       </div>
-      <button class="btn btn-icon btn-danger-outline" (click)="onClose()" type="button">
+
+      <button
+        class="btn btn-icon btn-danger-outline"
+        [title]="'Close editor'"
+        (click)="onClose()"
+        type="button"
+      >
         <span class="sr-only">Close editor</span>
         <i class="fas fa-xmark"></i>
       </button>

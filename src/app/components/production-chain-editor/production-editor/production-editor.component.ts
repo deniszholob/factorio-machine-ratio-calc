@@ -7,11 +7,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import {
@@ -21,13 +17,21 @@ import {
   reCalcItemRate,
   reCalcProductionRates,
 } from './production.model';
+import { TooltipDirective } from '../../tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-production-editor',
   templateUrl: './production-editor.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, DragDropModule, CdkDropList, CdkDrag],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DragDropModule,
+    CdkDropList,
+    CdkDrag,
+    TooltipDirective,
+  ],
 })
 export class ProductionEditorComponent {
   public readonly reCalcProductionRates = reCalcProductionRates;

@@ -22,6 +22,12 @@ export class SettingsViewComponent {
   protected readonly $importChainsMode = this.settingsService.$importChainsMode;
   protected readonly $importProductionsMode =
     this.settingsService.$importProductionsMode;
+  protected readonly $defaultEditorDisplayMode =
+    this.settingsService.defaultSettings.editorDisplayMode;
+  protected readonly $defaultImportChainsMode =
+    this.settingsService.defaultSettings.importChainsMode;
+  protected readonly $defaultImportProductionsMode =
+    this.settingsService.defaultSettings.importProductionsMode;
 
   protected setEditorDisplayMode(mode: EditorDisplayMode): void {
     this.settingsService.setEditorDisplayMode(mode);

@@ -19,6 +19,8 @@ const DEFAULT_SETTINGS: SettingsState = {
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
+  public readonly defaultSettings: Readonly<SettingsState> = DEFAULT_SETTINGS;
+
   public readonly $editorDisplayMode = signal<EditorDisplayMode>(
     DEFAULT_SETTINGS.editorDisplayMode,
   );

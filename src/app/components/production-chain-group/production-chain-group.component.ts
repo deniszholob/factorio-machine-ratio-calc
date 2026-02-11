@@ -10,13 +10,14 @@ import { ProductionChainService } from 'src/app/shared/production-chain/producti
 import { ProductionChainItemComponent } from './production-chain-item/production-chain-item.component';
 import { ProductionChain } from './production-chain-item/production-chain.model';
 import { ModalComponent } from '../modal/modal.component';
+import { TooltipDirective } from '../tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-production-chain-group',
   templateUrl: './production-chain-group.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ProductionChainItemComponent, ModalComponent],
+  imports: [ProductionChainItemComponent, ModalComponent, TooltipDirective],
 })
 export class ProductionChainGroupComponent {
   private readonly productionChainService = inject(ProductionChainService);

@@ -11,13 +11,20 @@ import {
   Production,
   reCalcProductionRates,
 } from '../../production-editor/production.model';
+import { TooltipDirective } from 'src/app/components/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-production-item',
   templateUrl: './production-item.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, CdkDragHandle, CdkDrag],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CdkDragHandle,
+    CdkDrag,
+    TooltipDirective,
+  ],
 })
 export class ProductionItemComponent {
   public readonly $machine = input.required<Production>();

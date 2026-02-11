@@ -1,6 +1,9 @@
 @let editorMode = $editorDisplayMode();
 @let importChainsMode = $importChainsMode();
 @let importProductionsMode = $importProductionsMode();
+@let defaultEditorMode = $defaultEditorDisplayMode;
+@let defaultImportChainsMode = $defaultImportChainsMode;
+@let defaultImportProductionsMode = $defaultImportProductionsMode;
 
 <app-content-layout [$title]="'Settings'" ($close)="onClose()">
   <div class="flex flex-1 flex-row items-center justify-end" ngProjectAs="content-header">
@@ -49,7 +52,16 @@
               ></span>
             </span>
             <span class="flex flex-col gap-0.5">
-              <span class="font-semibold">Modal Popup</span>
+              <span class="flex items-center gap-2 font-semibold">
+                Modal Popup
+                @if (defaultEditorMode === 'modal') {
+                  <span
+                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                  >
+                    Default
+                  </span>
+                }
+              </span>
               <span class="text-xs text-stone-400">Keep focus in a dialog overlay.</span>
             </span>
           </label>
@@ -76,7 +88,16 @@
               ></span>
             </span>
             <span class="flex flex-col gap-0.5">
-              <span class="font-semibold">Right Sidebar</span>
+              <span class="flex items-center gap-2 font-semibold">
+                Right Sidebar
+                @if (defaultEditorMode === 'sidebar') {
+                  <span
+                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                  >
+                    Default
+                  </span>
+                }
+              </span>
               <span class="text-xs text-stone-400">Slide out editor beside the list.</span>
             </span>
           </label>
@@ -103,7 +124,16 @@
               ></span>
             </span>
             <span class="flex flex-col gap-0.5">
-              <span class="font-semibold">Full Main Content</span>
+              <span class="flex items-center gap-2 font-semibold">
+                Full Main Content
+                @if (defaultEditorMode === 'full') {
+                  <span
+                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                  >
+                    Default
+                  </span>
+                }
+              </span>
               <span class="text-xs text-stone-400">Replace the list with the editor.</span>
             </span>
           </label>
@@ -144,10 +174,19 @@
                   ></span>
                 </span>
                 <span class="flex flex-col gap-0.5">
-                  <span class="font-semibold">Add (Default)</span>
-                  <span class="text-xs text-stone-400"
-                    >Merge uploads alongside existing chains.</span
-                  >
+                  <span class="flex items-center gap-2 font-semibold">
+                    Add
+                    @if (defaultImportChainsMode === 'add') {
+                      <span
+                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                      >
+                        Default
+                      </span>
+                    }
+                  </span>
+                  <span class="text-xs text-stone-400">
+                    Merge uploads alongside existing chains.
+                  </span>
                 </span>
               </label>
 
@@ -174,7 +213,16 @@
                   ></span>
                 </span>
                 <span class="flex flex-col gap-0.5">
-                  <span class="font-semibold">Override</span>
+                  <span class="flex items-center gap-2 font-semibold">
+                    Override
+                    @if (defaultImportChainsMode === 'override') {
+                      <span
+                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                      >
+                        Default
+                      </span>
+                    }
+                  </span>
                   <span class="text-xs text-stone-400">Replace everything with the upload.</span>
                 </span>
               </label>
@@ -207,7 +255,16 @@
                   ></span>
                 </span>
                 <span class="flex flex-col gap-0.5">
-                  <span class="font-semibold">Add (Default)</span>
+                  <span class="flex items-center gap-2 font-semibold">
+                    Add
+                    @if (defaultImportProductionsMode === 'add') {
+                      <span
+                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                      >
+                        Default
+                      </span>
+                    }
+                  </span>
                   <span class="text-xs text-stone-400">Create a new chain for this upload.</span>
                 </span>
               </label>
@@ -235,7 +292,16 @@
                   ></span>
                 </span>
                 <span class="flex flex-col gap-0.5">
-                  <span class="font-semibold">Override</span>
+                  <span class="flex items-center gap-2 font-semibold">
+                    Override
+                    @if (defaultImportProductionsMode === 'override') {
+                      <span
+                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                      >
+                        Default
+                      </span>
+                    }
+                  </span>
                   <span class="text-xs text-stone-400">Replace a chain if names match.</span>
                 </span>
               </label>
