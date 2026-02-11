@@ -5,11 +5,9 @@ import {
   inject,
 } from '@angular/core';
 
-import {
-  ProductionChainService,
-  ProductionTab,
-} from 'src/app/shared/production-chain/production-chain.service';
+import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
 import { ProductionChainComponent } from '../production-chain/production-chain.component';
+import { ProductionChain } from '../production-chain/production-chain.model';
 
 @Component({
   selector: 'app-production-chain-list',
@@ -21,40 +19,40 @@ import { ProductionChainComponent } from '../production-chain/production-chain.c
 export class ProductionChainListComponent {
   private readonly productionChainService = inject(ProductionChainService);
 
-  protected readonly $productions: Signal<ProductionTab[]> =
-    this.productionChainService.$productions;
-  protected readonly $activeProductionId: Signal<number> =
-    this.productionChainService.$activeProductionId;
-  protected readonly $editingProductionId: Signal<number | null> =
-    this.productionChainService.$editingProductionId;
+  protected readonly $productions: Signal<ProductionChain[]> =
+    this.productionChainService.$productionChains;
+  protected readonly $activeProductionId: Signal<string | undefined> =
+    this.productionChainService.$activeProductionChainId;
+  protected readonly $editingProductionId: Signal<string | undefined> =
+    this.productionChainService.$editingProductionChainId;
   protected readonly $editingName: Signal<string> =
-    this.productionChainService.$editingName;
+    this.productionChainService.$editingProductionChainDisplay;
 
-  protected onAddProduction(): void {
+  protected onAddProductionChain(): void {
     this.productionChainService.addProduction();
   }
 
-  protected onDeleteProduction(productionId: number): void {
+  protected onDeleteProductionChain(productionId: string): void {
     this.productionChainService.deleteProduction(productionId);
   }
 
-  protected onSelectProduction(productionId: number): void {
+  protected onSelectProductionChain(productionId: string): void {
     this.productionChainService.selectProduction(productionId);
   }
 
-  protected onStartRename(productionId: number): void {
+  protected onStartProductionChainRename(productionId: string): void {
     this.productionChainService.startRename(productionId);
   }
 
-  protected onCancelRename(): void {
+  protected onCancelProductionChainRename(): void {
     this.productionChainService.cancelRename();
   }
 
-  protected onCommitRename(): void {
+  protected onCommitProductionChainRename(): void {
     this.productionChainService.commitRename();
   }
 
-  protected onEditInput(value: string): void {
+  protected onEditProductionChainInput(value: string): void {
     this.productionChainService.updateEditingName(value);
   }
 }

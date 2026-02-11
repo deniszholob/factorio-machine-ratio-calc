@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 
 import { ModalComponent } from '../modal/modal.component';
 import {
-  Machine,
+  Production,
   MachineItem,
   newMachineItem,
   reCalcItemRate,
@@ -37,7 +37,7 @@ export class ProductionModalComponent {
   public readonly reCalcProductionRates = reCalcProductionRates;
   public readonly reCalcItemRate = reCalcItemRate;
 
-  public readonly $machine = input.required<Machine | undefined>();
+  public readonly $machine = input.required<Production | undefined>();
   public readonly $show = model<boolean>(false);
 
   protected onAddItem(itemList: MachineItem[]): void {
@@ -50,7 +50,7 @@ export class ProductionModalComponent {
     }
   }
 
-  protected drop(event: CdkDragDrop<Machine[]>): void {
+  protected drop(event: CdkDragDrop<Production[]>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,

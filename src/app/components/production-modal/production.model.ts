@@ -16,7 +16,7 @@ export function newMachineItem(): MachineItem {
   };
 }
 
-export interface Machine {
+export interface Production {
   name: string;
   count: number;
   craftingSpeed: number;
@@ -27,8 +27,8 @@ export interface Machine {
   machineOutputs: MachineItem[];
 }
 
-export function newMachine(): Machine {
-  const machine: Machine = {
+export function newProduction(): Production {
+  const machine: Production = {
     name: 'Project Assembly',
     craftingSpeed: 1,
     productivity: 1,
@@ -43,9 +43,9 @@ export function newMachine(): Machine {
   return machine;
 }
 
-export const MOCK_Machine: Machine = newMachine();
+export const MOCK_Machine: Production = newProduction();
 
-export function reCalcItemRate(item: MachineItem, machine: Machine): void {
+export function reCalcItemRate(item: MachineItem, machine: Production): void {
   item.rate =
     (item.count * (machine.productivity < 0 ? 0 : machine.productivity)) /
     machine.effectiveTime;
@@ -53,7 +53,7 @@ export function reCalcItemRate(item: MachineItem, machine: Machine): void {
 }
 
 export function reCalcItemRates(
-  machine: Machine,
+  machine: Production,
   itemList: MachineItem[],
 ): void {
   itemList.forEach((item) => {
@@ -61,7 +61,7 @@ export function reCalcItemRates(
   });
 }
 
-export function reCalcProductionRates(machine: Machine): void {
+export function reCalcProductionRates(machine: Production): void {
   // console.log(machine)
   machine.effectiveTime = machine.timeToComplete / machine.craftingSpeed;
   reCalcItemRates(machine, machine.machineInputs);

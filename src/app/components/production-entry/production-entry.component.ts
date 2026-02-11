@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
-  Machine,
+  Production,
   reCalcProductionRates,
 } from '../production-modal/production.model';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
@@ -14,21 +14,21 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
   imports: [CommonModule, FormsModule, CdkDragHandle, CdkDrag],
 })
 export class ProductionEntryComponent {
-  public readonly $machine = input.required<Machine>();
+  public readonly $machine = input.required<Production>();
 
-  public readonly $editMachine = output<Machine>();
-  public readonly $deleteMachine = output<Machine>();
-  public readonly $updateMachineCount = output<Machine>();
+  public readonly $editMachine = output<Production>();
+  public readonly $deleteMachine = output<Production>();
+  public readonly $updateMachineCount = output<Production>();
 
-  protected onEditMachine(machine: Machine): void {
+  protected onEditMachine(machine: Production): void {
     this.$editMachine.emit(machine);
   }
 
-  protected onDeleteMachine(machine: Machine): void {
+  protected onDeleteMachine(machine: Production): void {
     this.$deleteMachine.emit(machine);
   }
 
-  protected onUpdateMachineCount(machine: Machine): void {
+  protected onUpdateMachineCount(machine: Production): void {
     this.$updateMachineCount.emit(machine);
     reCalcProductionRates(machine);
   }

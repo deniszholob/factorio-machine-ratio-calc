@@ -1,56 +1,103 @@
-import { Injectable, computed, signal } from '@angular/core';
-
-export interface ProductionTab {
-  readonly id: number;
-  readonly name: string;
-}
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { ProductionChain } from '../../components/production-chain/production-chain.model';
+import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
+import { ProductionService } from '../production/production.service';
+import { Production } from '../../components/production-modal/production.model';
+import { guid } from 'src/app/shared/guid/guid.util';
 
 @Injectable({ providedIn: 'root' })
 export class ProductionChainService {
-  public readonly $productions = signal<ProductionTab[]>([
-    { id: 1, name: 'Starter Smelter' },
-    { id: 2, name: 'Green Circuits' },
-  ]);
+  private readonly importExportService = inject(ImportExportService);
+  private readonly productionService = inject(ProductionService);
 
-  public readonly $activeProductionId = signal<number>(1);
-  public readonly $editingProductionId = signal<number | null>(null);
-  public readonly $editingName = signal<string>('');
-
-  private readonly $nextProductionId = signal<number>(3);
+  public readonly $productionChains = signal<ProductionChain[]>([]);
+  public readonly $activeProductionChainId = signal<string | undefined>(
+    undefined,
+  );
+  public readonly $editingProductionChainId = signal<string | undefined>(
+    undefined,
+  );
+  public readonly $editingProductionChainDisplay = signal<string>('');
 
   public readonly $activeProductionName = computed(() => {
-    const activeId = this.$activeProductionId();
-    const activeProduction = this.$productions().find(
+    const activeId = this.$activeProductionChainId();
+    const activeProduction = this.$productionChains().find(
       (production) => production.id === activeId,
     );
-    return activeProduction?.name ?? 'Production';
+    return activeProduction?.display ?? 'Production';
   });
 
-  public readonly $hasProductions = computed(
-    () => this.$productions().length > 0,
+  public readonly $hasProductionChains = computed(
+    () => this.$productionChains().length > 0,
   );
 
-  public addProduction(): void {
-    const nextId = this.$nextProductionId();
-    this.$nextProductionId.update((id) => id + 1);
+  /** On service init, load any stored production chains from localstorage */
+  public constructor() {
+    // TODO: use storedChains are initial signal value
+    // TODO: make activeProductionChainId a linked signal with storedChains[0]?.id as initial value
+    effect(() => {
+      const storedChains: ProductionChain[] =
+        this.importExportService.loadAllProductionChains();
+      if (storedChains.length === 0 || this.$productionChains().length > 0) {
+        return;
+      }
 
-    const newProduction: ProductionTab = {
-      id: nextId,
-      name: 'New Production',
+      this.$productionChains.set(storedChains);
+      this.$activeProductionChainId.set(storedChains[0]?.id);
+    });
+
+    // TODO: Inspect further if this can be converted to an effect and removed
+    effect(() => {
+      const activeId = this.$activeProductionChainId();
+      if (!activeId) {
+        return;
+      }
+
+      const activeChain = this.$productionChains().find(
+        (chain) => chain.id === activeId,
+      );
+      if (!activeChain) {
+        return;
+      }
+
+      const activeProductions = Array.isArray(activeChain.productions)
+        ? activeChain.productions
+        : [];
+
+      if (!Array.isArray(activeChain.productions)) {
+        this.$productionChains.update((items) =>
+          items.map((item) =>
+            item.id === activeId ? { ...item, productions: [] } : item,
+          ),
+        );
+      }
+
+      this.productionService.setMachines(activeProductions);
+    });
+  }
+
+  public addProduction(): void {
+    const id: string = guid();
+    const newProduction: ProductionChain = {
+      id,
+      display: 'New Production Chain',
+      productions: [],
     };
 
-    this.$productions.update((items) => [...items, newProduction]);
-    this.$activeProductionId.set(nextId);
-    this.$editingProductionId.set(nextId);
-    this.$editingName.set(newProduction.name);
+    this.$productionChains.update((items) => [...items, newProduction]);
+    this.$activeProductionChainId.set(id);
+    this.$editingProductionChainId.set(id);
+    this.$editingProductionChainDisplay.set(newProduction.display);
+    this.persist();
   }
 
-  public selectProduction(productionId: number): void {
-    this.$activeProductionId.set(productionId);
+  public selectProduction(productionId: string): void {
+    this.$activeProductionChainId.set(productionId);
+    this.persist();
   }
 
-  public startRename(productionId: number): void {
-    const production = this.$productions().find(
+  public startRename(productionId: string): void {
+    const production = this.$productionChains().find(
       (item) => item.id === productionId,
     );
 
@@ -58,53 +105,87 @@ export class ProductionChainService {
       return;
     }
 
-    this.$activeProductionId.set(productionId);
-    this.$editingProductionId.set(productionId);
-    this.$editingName.set(production.name);
+    this.$activeProductionChainId.set(productionId);
+    this.$editingProductionChainId.set(productionId);
+    this.$editingProductionChainDisplay.set(production.display);
   }
 
   public cancelRename(): void {
-    this.$editingProductionId.set(null);
+    this.$editingProductionChainId.set(undefined);
   }
 
   public commitRename(): void {
-    const editingId = this.$editingProductionId();
-    if (editingId === null) {
+    const editingId = this.$editingProductionChainId();
+    if (!editingId) {
       return;
     }
 
-    const nextName = this.$editingName().trim();
+    const nextName = this.$editingProductionChainDisplay().trim();
     if (!nextName) {
       this.cancelRename();
       return;
     }
 
-    this.$productions.update((items) =>
+    this.$productionChains.update((items) =>
       items.map((item) =>
-        item.id === editingId ? { ...item, name: nextName } : item,
+        item.id === editingId ? { ...item, display: nextName } : item,
       ),
     );
 
-    this.$editingProductionId.set(null);
+    this.$editingProductionChainId.set(undefined);
+    this.persist();
   }
 
   public updateEditingName(value: string): void {
-    this.$editingName.set(value);
+    this.$editingProductionChainDisplay.set(value);
   }
 
-  public deleteProduction(productionId: number): void {
-    const nextItems = this.$productions().filter(
+  public deleteProduction(productionId: string): void {
+    const nextItems = this.$productionChains().filter(
       (item) => item.id !== productionId,
     );
 
-    this.$productions.set(nextItems);
+    this.$productionChains.set(nextItems);
 
-    if (this.$activeProductionId() === productionId) {
-      this.$activeProductionId.set(nextItems[0]?.id ?? 0);
+    if (this.$activeProductionChainId() === productionId) {
+      this.$activeProductionChainId.set(nextItems[0]?.id);
     }
 
-    if (this.$editingProductionId() === productionId) {
-      this.$editingProductionId.set(null);
+    if (this.$editingProductionChainId() === productionId) {
+      this.$editingProductionChainId.set(undefined);
     }
+
+    this.persist();
+  }
+
+  public setActiveChainProductions(machines: Production[]): void {
+    const activeId = this.$activeProductionChainId();
+    if (!activeId) {
+      return;
+    }
+
+    this.$productionChains.update((items) =>
+      items.map((item) =>
+        item.id === activeId ? { ...item, productions: machines } : item,
+      ),
+    );
+    this.persist();
+  }
+
+  public reloadFromStorage(): void {
+    const storedChains = this.importExportService.loadAllProductionChains();
+    this.$productionChains.set(storedChains);
+
+    if (!this.$activeProductionChainId() && storedChains.length > 0) {
+      this.$activeProductionChainId.set(storedChains[0]?.id);
+    }
+  }
+
+  public getActiveProductionChainId(): string | undefined {
+    return this.$activeProductionChainId();
+  }
+
+  private persist(): void {
+    this.importExportService.saveAllProductionChains(this.$productionChains());
   }
 }

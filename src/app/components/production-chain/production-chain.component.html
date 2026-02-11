@@ -1,25 +1,31 @@
-@let production = $production();
-@let activeId = $activeProductionId();
-@let editingId = $editingProductionId();
-@let editingName = $editingName();
+@let productionChain = $productionChain();
+@let activeProductionChainId = $activeProductionChainId();
+@let editingProductionChainId = $editingProductionChainId();
+@let editingProductionChainName = $editingProductionChainName();
 
-<button
+<div
   class="flex cursor-pointer items-center justify-between gap-2 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-3 text-stone-100 transition hover:border-stone-600 hover:bg-stone-900/70"
   [ngClass]="{
     'border-b-orange-400 bg-stone-900 text-orange-200 hover:border-b-orange-300':
-      production.id === activeId,
+      productionChain.id === activeProductionChainId,
   }"
-  (click)="$select.emit(production.id)"
-  type="button"
+  (click)="onSelect()"
+  (keydown.enter)="onSelect()"
+  (keydown.space)="onSelectKey($event)"
+  (dblclick)="onStartRename($event)"
+  role="button"
+  tabindex="0"
 >
-  @if (production.id === editingId) {
+  @if (productionChain.id === editingProductionChainId) {
     <div class="flex min-w-0 flex-1 flex-col gap-2">
-      <label class="sr-only" [attr.for]="'production-name-' + production.id"> Chain name </label>
+      <label class="sr-only" [attr.for]="'production-name-' + productionChain.id">
+        Chain name
+      </label>
       <input
         class="m-0 w-full px-2 py-1 text-sm"
         #editInput
-        [attr.id]="'production-name-' + production.id"
-        [value]="editingName"
+        [attr.id]="'production-name-' + productionChain.id"
+        [value]="editingProductionChainName"
         (input)="$editName.emit(editInput.value)"
         (keydown.enter)="$commitRename.emit()"
         (keydown.escape)="$cancelRename.emit()"
@@ -29,7 +35,7 @@
     </div>
   } @else {
     <span class="truncate px-2 py-1 text-sm font-semibold">
-      {{ production.name }}
+      {{ productionChain.display }}
     </span>
   }
 
@@ -38,7 +44,9 @@
     <button
       class="btn btn-warning-outline-fill px-2 py-1 text-xs"
       (click)="
-        production.id === editingId ? $commitRename.emit() : $startRename.emit(production.id)
+        productionChain.id === editingProductionChainId
+          ? onCommitRename($event)
+          : onStartRename($event)
       "
       type="button"
     >
@@ -48,11 +56,11 @@
     <!-- class="cursor-pointer rounded-sm border border-stone-700 px-2 py-1 text-xs text-stone-300 transition hover:border-red-400 hover:text-red-200 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-hidden" -->
     <button
       class="btn btn-danger-outline-fill px-2 py-1 text-xs"
-      (click)="$delete.emit(production.id)"
+      (click)="onDelete($event)"
       type="button"
     >
       <span class="sr-only">Delete chain</span>
       <i class="fas fa-trash"></i>
     </button>
   </div>
-</button>
+</div>

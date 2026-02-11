@@ -1,21 +1,19 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
 import { ProductionViewComponent } from './production-view.component';
-import { MOCK_Machines } from './production-view.mock';
 
 type ComponentWithCustomControls = ProductionViewComponent;
 
 const meta: Meta<ComponentWithCustomControls> = {
   title: 'Views/Production View',
   component: ProductionViewComponent,
+  // TODO: inject mock productionService
   // decorators: [moduleMetadata({imports: []})],
   parameters: {
     docs: { description: { component: `ProductionView` } },
   },
   argTypes: {},
-  args: {
-    machines: MOCK_Machines,
-  },
+  args: {},
 };
 export default meta;
 

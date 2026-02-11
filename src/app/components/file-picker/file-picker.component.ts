@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 
 @Component({
   selector: 'app-file-picker',
@@ -12,6 +12,13 @@ export class FilePickerComponent {
   public readonly $filesTypesAccepted = input<string>('');
   public readonly $btnClass = input<string>('btn btn-icon btn-primary');
   public readonly $fileChange = output<File[]>();
+
+  // private readonly $fileInput =
+  //   viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
+
+  // public open(): void {
+  //   this.$fileInput().nativeElement.click();
+  // }
 
   /** @see https://stackoverflow.com/questions/58351711/angular-open-file-dialog-upon-button-click */
   protected onFilesSelected(event: Event): void {

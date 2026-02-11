@@ -1,4 +1,4 @@
-import { Machine } from '../production-modal/production.model';
+import { Production } from '../production-modal/production.model';
 
 export interface ProductionChain {
   /** guid */
@@ -6,5 +6,5 @@ export interface ProductionChain {
   /** Editable Display Name */
   display: string;
   /** Productions to display in the main screen */
-  productions: Machine[];
+  productions: Production[];
 }

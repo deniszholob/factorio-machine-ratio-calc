@@ -11,7 +11,7 @@
 
     <button
       class="btn btn-success flex items-center px-2 py-1 text-sm"
-      (click)="onAddProduction()"
+      (click)="onAddProductionChain()"
       type="button"
     >
       <i class="fas fa-plus"></i>
@@ -21,16 +21,16 @@
   <div class="flex flex-1 flex-col gap-2 overflow-auto">
     @for (production of productions; track production.id) {
       <app-production-chain
-        [$production]="production"
-        [$activeProductionId]="activeId"
-        [$editingProductionId]="editingId"
-        [$editingName]="editingName"
-        ($select)="onSelectProduction($event)"
-        ($startRename)="onStartRename($event)"
-        ($cancelRename)="onCancelRename()"
-        ($commitRename)="onCommitRename()"
-        ($editName)="onEditInput($event)"
-        ($delete)="onDeleteProduction($event)"
+        [$productionChain]="production"
+        [$activeProductionChainId]="activeId"
+        [$editingProductionChainId]="editingId"
+        [$editingProductionChainName]="editingName"
+        ($selectId)="onSelectProductionChain($event)"
+        ($startRename)="onStartProductionChainRename($event)"
+        ($cancelRename)="onCancelProductionChainRename()"
+        ($commitRename)="onCommitProductionChainRename()"
+        ($editName)="onEditProductionChainInput($event)"
+        ($delete)="onDeleteProductionChain($event)"
       ></app-production-chain>
     } @empty {
       <div

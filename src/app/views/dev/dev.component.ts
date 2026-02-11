@@ -1,9 +1,15 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Signal,
+  inject,
+} from '@angular/core';
 
 import { FooterComponent } from 'src/app/components/footer/footer.component';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { LinksComponent } from 'src/app/components/links/links.component';
 import { ProductionChainListComponent } from 'src/app/components/production-chain-list/production-chain-list.component';
+import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
 import { ProductionViewComponent } from '../../components/production-view/production-view.component';
 import { MainLayoutComponent } from '../../layouts/main-layout/main-layout.component';
 
@@ -21,4 +27,9 @@ import { MainLayoutComponent } from '../../layouts/main-layout/main-layout.compo
     FooterComponent,
   ],
 })
-export class DevComponent {}
+export class DevComponent {
+  private readonly productionChainService = inject(ProductionChainService);
+
+  protected readonly $hasProductionChains: Signal<boolean> =
+    this.productionChainService.$hasProductionChains;
+}

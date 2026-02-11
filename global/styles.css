@@ -79,7 +79,7 @@
 }
 
 @utility btn {
-  @apply flex cursor-pointer items-center justify-center gap-2 rounded-xs border border-transparent px-4 py-2 font-semibold shadow-md transition focus:outline-hidden disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
+  @apply flex cursor-pointer items-center justify-center gap-2 rounded-sm border border-transparent px-4 py-2 font-semibold shadow-md transition focus:outline-hidden disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
 }
 
 @utility btn-primary {

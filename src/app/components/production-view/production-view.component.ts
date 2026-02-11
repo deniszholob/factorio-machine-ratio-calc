@@ -9,14 +9,13 @@ import { Component, Signal, effect, inject, viewChild } from '@angular/core';
 import { FilePickerComponent } from '../../components/file-picker/file-picker.component';
 import { ProductionEntryComponent } from '../../components/production-entry/production-entry.component';
 import { ProductionModalComponent } from '../../components/production-modal/production-modal.component';
-import { Machine } from '../../components/production-modal/production.model';
+import { Production } from '../../components/production-modal/production.model';
 import {
-  MachineTotals,
+  ProductionTotals,
   ProductionService,
 } from 'src/app/shared/production/production.service';
 import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
-
-const DOWNLOAD_FILE_PREFIX = `PRC`;
+import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
 
 @Component({
   selector: 'app-production-view',
@@ -33,36 +32,25 @@ const DOWNLOAD_FILE_PREFIX = `PRC`;
   ],
 })
 export class ProductionViewComponent {
-  protected readonly productionService = inject(ProductionService);
-  protected readonly importExportService = inject(ImportExportService);
-  // protected readonly $importPicker =
-  //   viewChild<FilePickerComponent>('importPicker');
+  private readonly productionService = inject(ProductionService);
+  private readonly importExportService = inject(ImportExportService);
+  private readonly productionChainService = inject(ProductionChainService);
 
-  protected readonly $machines: Signal<Machine[]> =
-    this.productionService.$machines;
-  protected readonly $machineTotals: Signal<MachineTotals> =
+  protected readonly $machines: Signal<Production[]> =
+    this.productionService.$productions;
+  protected readonly $machineTotals: Signal<ProductionTotals> =
     this.productionService.$machineTotals;
 
-  public machineToEdit?: Machine;
+  public machineToEdit?: Production;
   public modalOpen: boolean = false;
   public errorMessage?: string;
 
-  // private readonly importRequestEffect = effect(() => {
-  //   const requestCount = this.importExportService.$importRequest();
-  //   const importPicker = this.$importPicker();
-
-  //   if (requestCount > 0 && importPicker) {
-  //     importPicker.open();
-  //   }
-  // });
-
-  // private readonly exportRequestEffect = effect(() => {
-  //   const requestCount = this.importExportService.$exportRequest();
-
-  //   if (requestCount > 0) {
-  //     this.downloadData();
-  //   }
-  // });
+  public constructor() {
+    effect(() => {
+      const machines = this.$machines();
+      this.productionChainService.setActiveChainProductions(machines);
+    });
+  }
 
   protected onAddMachine(): void {
     const machine = this.productionService.addMachine();
@@ -75,7 +63,7 @@ export class ProductionViewComponent {
     }, 1);
   }
 
-  protected onEditMachine(machine: Machine): void {
+  protected onEditMachine(machine: Production): void {
     this.machineToEdit = machine;
     this.modalOpen = true;
   }
@@ -92,50 +80,33 @@ export class ProductionViewComponent {
     this.modalOpen = true;
   }
 
-  protected drop(event: CdkDragDrop<Machine[]>): void {
+  protected drop(event: CdkDragDrop<Production[]>): void {
     this.productionService.moveMachine(event.previousIndex, event.currentIndex);
   }
 
   protected uploadData(files: File[]): void {
-    const selectedFile: File = files[0];
-    this.readFile(selectedFile);
-  }
-
-  /* TODO: Generalize and extract to the import/export service */
-  private readFile(file: File): void {
-    const fileReader = new FileReader();
-    fileReader.readAsText(file, 'UTF-8');
-    fileReader.onload = () => {
-      const fileResult: string | undefined = fileReader.result?.toString();
-      const stringified = fileResult ? JSON.parse(fileResult) : undefined;
-      // console.log(stringified);
-      this.productionService.setMachines(stringified ?? []);
-      this.onEditFinish();
-    };
-    fileReader.onerror = (error) => {
-      console.log(error);
-      this.errorMessage = 'Error reading file, see console for details';
-    };
+    this.importExportService
+      .uploadProductionChainById(files)
+      .then(() => {
+        this.productionChainService.reloadFromStorage();
+      })
+      .catch((error) => {
+        console.log(error);
+        this.errorMessage = 'Error reading file, see console for details';
+      });
   }
 
   protected downloadData(): void {
-    const data: string = JSON.stringify(this.$machines());
-    // this.downloadFile(data);
-    this.downloadJson(data);
-  }
+    const activeChainId =
+      this.productionChainService.getActiveProductionChainId();
+    if (!activeChainId) {
+      return;
+    }
 
-  /* TODO: Generalize and extract to the import/export service */
-  private downloadJson(sJson: string): void {
-    const element: HTMLAnchorElement = document.createElement('a');
-    element.setAttribute(
-      'href',
-      'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson),
+    this.importExportService.downloadProductionChainById(
+      activeChainId,
+      this.$machines(),
     );
-    element.setAttribute('download', `${DOWNLOAD_FILE_PREFIX}_data.json`);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
   }
 
   // private downloadFile(data: string): void {

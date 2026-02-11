@@ -46,6 +46,13 @@ export class {{ClassName}} {
   protected toggleServerStatus() {
     this.$isServerRunning.update(isServerRunning => !isServerRunning);
   }
+
+  constructor(){
+    effect(() => {
+      const isServerRunning = this.$isServerRunning();
+      console.log(`Server Running changed to:`, isServerRunning)
+    })
+  }
 }
 ```
 
@@ -106,6 +113,7 @@ Here is a link to the most recent Angular style guide https://angular.dev/style-
 - Use `input()` signal instead of decorators, learn more here https://angular.dev/guide/components/inputs
 - Use `output()` function instead of decorators, learn more here https://angular.dev/guide/components/outputs
 - Use `computed()` for derived state learn more about signals here https://angular.dev/guide/signals.
+- Use `effect()` only in constructor, do not create properties with effect! Also do not write `allowSignalWrites` as that is deprecated
 - When there is an input and output signal (two-way-binding) merge them into a model when possible.  
   For context: https://v18.angular.dev/guide/signals/model  
   Example:
@@ -130,9 +138,9 @@ public readonly $myValue = model<boolean>(true);
 - Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
 - Prefer using `@let myValue = $myValue();` instead of doing `$myValue(); as myValue` in @if statements etc...
 - Prefer Signal forms instead of Reactive forms instead of Template-driven ones in that priority. For context: https://angular.dev/guide/forms/signals/models
-- Do NOT use `class`, use `ngClass` bindings instead, when using conditional classes to group all the tailwind classes under one condition.
-- Do NOT use `ngClass`, use `class` bindings instead, for any other reasons, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
-- Do NOT use `ngStyle`, use `style` bindings instead, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
+- Do NOT use `[class.*]`, DO use `[ngClass]={}` bindings instead, when using conditional classes to group all the tailwind classes under one condition.
+- Do NOT use `[ngClass]`, use `[class.*]` bindings instead, for any other reasons, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
+- Do NOT use `[ngStyle]`, use `[style.*]` bindings instead, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
 - DO NOT use functions in html templates for getting data (signals and events are ok)
 
 ### State Management

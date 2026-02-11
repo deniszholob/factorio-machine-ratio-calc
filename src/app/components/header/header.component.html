@@ -1,6 +1,12 @@
 <div class="flex flex-col gap-3 border-b border-stone-700 pb-3">
   <div class="flex items-center justify-between gap-3">
-    <a class="flex items-center gap-3" href="#">
+    <a
+      class="flex items-center gap-3"
+      [title]="'Interactive ratio calculator for optimizing production setups in factory automation games.'"
+      href="#"
+      aria-label="About the Production Ratio Calculator"
+    >
+      <!-- TODO: Add Shadow to image -->
       <div class="flex h-9 w-9 items-center justify-center text-stone-300">
         <!-- <i class="fas fa-industry"></i> -->
         <img
@@ -19,15 +25,26 @@
       </div>
     </a>
 
-    <div class="group relative">
-      <button
-        class="hover:stone-700 flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm border border-stone-700 text-stone-300 transition hover:text-stone-300 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:outline-hidden"
-        [title]="'Interactive ratio calculator for optimizing production setups in factory automation games.'"
+    <div class="flex flex-row gap-1">
+      <!-- TODO: Editor for all the saved data -->
+      <!-- <button
+        class="btn btn-secondary-outline h-8 w-8"
+        [title]="'Edit'"
         type="button"
-        aria-label="About the Production Ratio Calculator"
+        aria-label="Edit"
       >
-        <i class="fas fa-circle-info"></i>
-      </button>
+        <i class="fas fa-database"></i>
+      </button> -->
+
+      <!-- TODO: Add settings -->
+      <!-- <button
+        class="btn btn-secondary-outline h-8 w-8"
+        [title]="'Settings'"
+        type="button"
+        aria-label="Settings"
+      >
+        <i class="fas fa-gear"></i>
+      </button> -->
     </div>
   </div>
 
@@ -35,21 +52,30 @@
     <!-- class="btn flex flex-1 cursor-pointer items-center justify-center gap-2 border border-amber-500 text-xs hover:bg-amber-600" -->
     <button
       class="btn btn-primary-outline-fill flex-1 gap-2 text-xs"
+      (click)="onExportProductionChains()"
+      type="button"
+    >
+      <i class="fas fa-download"></i>
+      Download All
+    </button>
+
+    <!-- class="btn flex flex-1 cursor-pointer items-center justify-center gap-2 border border-amber-500 text-xs hover:bg-amber-600" -->
+    <!-- <button
+      class="btn btn-primary-outline-fill flex-1 gap-2 text-xs"
       (click)="onImportProduction()"
       type="button"
     >
       <i class="fas fa-cloud-arrow-up"></i>
       Import
-    </button>
+    </button> -->
 
-    <!-- class="btn flex flex-1 cursor-pointer items-center justify-center gap-2 border border-amber-500 text-xs hover:bg-amber-600" -->
-    <button
-      class="btn btn-primary-outline-fill flex-1 gap-2 text-xs"
-      (click)="onExportProduction()"
-      type="button"
+    <app-file-picker
+      #importPicker
+      [$filesTypesAccepted]="'.json'"
+      [$btnClass]="'btn btn-primary-outline-fill flex-1 gap-2 text-xs'"
+      ($fileChange)="onImportProductionChains($event)"
     >
-      <i class="fas fa-download"></i>
-      Export
-    </button>
+      <i class="fas fa-cloud-arrow-up"></i> Upload All
+    </app-file-picker>
   </div>
 </div>

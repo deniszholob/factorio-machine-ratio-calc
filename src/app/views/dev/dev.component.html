@@ -43,7 +43,16 @@
       <button class="btn btn-danger-outline">danger Outline</button>
     </div>
   </div> -->
-  <app-production-view ngProjectAs="main-content"></app-production-view>
+  @if ($hasProductionChains()) {
+    <app-production-view ngProjectAs="main-content"></app-production-view>
+  } @else {
+    <div
+      class="flex min-h-0 flex-1 items-center justify-center px-6 py-10 text-center text-sm text-stone-300"
+      ngProjectAs="main-content"
+    >
+      Add a production chain in the sidebar to begin building ratios.
+    </div>
+  }
 
   <app-footer ngProjectAs="main-footer"></app-footer>
 </app-main-layout>

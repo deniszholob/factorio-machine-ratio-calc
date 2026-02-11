@@ -1,6 +1,6 @@
-import { Machine } from '../../components/production-modal/production.model';
+import { Production } from '../../components/production-modal/production.model';
 
-export const MOCK_Machines: Machine[] = [
+export const MOCK_Machines: Production[] = [
   {
     name: 'Green Circuits',
     productivity: 1,
