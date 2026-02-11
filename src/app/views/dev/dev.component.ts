@@ -14,6 +14,7 @@ import { SettingsViewComponent } from 'src/app/components/settings-view/settings
 import { SettingsService } from 'src/app/shared/settings/settings.service';
 import { ProductionChainEditorComponent } from '../../components/production-chain-editor/production-chain-editor.component';
 import { MainLayoutComponent } from '../../layouts/main-layout/main-layout.component';
+import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
 
 @Component({
   selector: 'app-dev',
@@ -28,6 +29,7 @@ import { MainLayoutComponent } from '../../layouts/main-layout/main-layout.compo
     LinksComponent,
     FooterComponent,
     SettingsViewComponent,
+    ContentLayoutComponent,
   ],
 })
 export class DevComponent {

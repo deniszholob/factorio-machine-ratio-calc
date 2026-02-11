@@ -21,6 +21,7 @@ import { ProductionEditorModalComponent } from './production-editor/production-e
 import { ProductionEditorSidebarComponent } from './production-editor/production-editor-sidebar/production-editor-sidebar.component';
 import { ProductionEditorFullComponent } from './production-editor/production-editor-full/production-editor-full.component';
 import { SettingsService } from 'src/app/shared/settings/settings.service';
+import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
 
 @Component({
   selector: 'app-production-chain-editor',
@@ -28,6 +29,7 @@ import { SettingsService } from 'src/app/shared/settings/settings.service';
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ContentLayoutComponent,
     ProductionGroupComponent,
     ProductionEditorModalComponent,
     ProductionEditorSidebarComponent,

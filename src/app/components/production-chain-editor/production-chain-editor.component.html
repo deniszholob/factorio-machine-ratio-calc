@@ -5,85 +5,44 @@
 @let isEditorOpen = $isEditorOpen();
 
 @if (displayMode === 'full' && isEditorOpen) {
-  <div class="flex min-h-0 flex-1 flex-col overflow-auto">
-    <div
-      class="flex flex-wrap items-center gap-3 border-b border-stone-700 bg-stone-950/60 px-6 py-3"
-    >
-      <button
-        class="btn btn-secondary-outline flex items-center gap-2"
-        (click)="closeEditor()"
-        type="button"
-      >
-        <i class="fas fa-arrow-left"></i>
-      </button>
-      <div class="flex flex-col gap-1">
-        <span class="text-[11px] font-semibold tracking-[0.32em] text-stone-400 uppercase">
-          Production Editor
-        </span>
-        <span class="text-sm text-stone-200">
-          <!-- TODO: Display selected production name -->
-        </span>
-      </div>
-    </div>
-
+  <!-- TODO: Add a subtitle for displaying selected production name -->
+  <app-content-layout [$title]="'Production Editor'" ($close)="closeEditor()">
     <app-production-editor-full [$machine]="$machineToEdit()"></app-production-editor-full>
-  </div>
+  </app-content-layout>
 } @else {
-  <div class="flex min-h-0 flex-1 flex-col overflow-auto">
-    <!-- Header -->
+  <!-- TODO: Add a subtitle for displaying selected production chain name -->
+  <app-content-layout [$title]="'Production Chains'" [$showClose]="false">
     <div
-      class="flex flex-row flex-wrap items-center gap-3 border-b border-stone-700 bg-stone-950/60 px-6 py-3"
+      class="flex flex-1 flex-wrap items-center justify-between gap-2"
+      ngProjectAs="content-header"
     >
-      <div class="flex flex-row gap-3">
-        <button
-          class="btn btn-secondary-outline flex items-center gap-2"
-          (click)="closeEditor()"
-          type="button"
-        >
-          <i class="fas fa-arrow-left"></i>
+      <div class="flex flex-wrap items-center gap-2">
+        <button class="btn btn-icon btn-success cursor-pointer" (click)="onAddMachine()">
+          <i class="fas fa-plus"></i> Production
         </button>
-
-        <div class="flex flex-col gap-1">
-          <span class="text-[11px] font-semibold tracking-[0.32em] text-stone-400 uppercase">
-            Production Chain Editor
-          </span>
-          <span class="text-sm text-stone-200">
-            <!-- TODO: Display selected production chain name -->
-          </span>
-        </div>
+        <button class="btn btn-icon btn-danger-outline cursor-pointer" (click)="onClearAll()">
+          <i class="fas fa-trash"></i> Clear All
+        </button>
       </div>
 
-      <div class="flex flex-1 flex-row justify-between gap-3">
-        <div class="flex flex-row flex-wrap gap-2">
-          <button class="btn btn-icon btn-success cursor-pointer" (click)="onAddMachine()">
-            <i class="fas fa-plus"></i> Production
-          </button>
-          <button class="btn btn-icon btn-danger-outline cursor-pointer" (click)="onClearAll()">
-            <i class="fas fa-trash"></i> Clear All
-          </button>
-        </div>
-
-        <div class="flex flex-row flex-wrap gap-2">
-          <button
-            class="btn btn-icon btn-primary-outline cursor-pointer gap-2"
-            (click)="downloadData()"
-          >
-            <i class="fas fa-download"></i> Download Productions
-          </button>
-          <!-- <input type="file" class="form-control" id="file" (change)="uploadFile($event)" /> -->
-          <app-file-picker
-            #importPicker
-            [$filesTypesAccepted]="'.json'"
-            [$btnClass]="'btn btn-icon btn-primary-outline cursor-pointer gap-2'"
-            ($fileChange)="uploadData($event)"
-          >
-            <i class="fas fa-cloud-arrow-up"></i> Upload Productions
-          </app-file-picker>
-        </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          class="btn btn-icon btn-primary-outline cursor-pointer gap-2"
+          (click)="downloadData()"
+        >
+          <i class="fas fa-download"></i> Download Productions
+        </button>
+        <app-file-picker
+          #importPicker
+          [$filesTypesAccepted]="'.json'"
+          [$btnClass]="'btn btn-icon btn-primary-outline cursor-pointer gap-2'"
+          ($fileChange)="uploadData($event)"
+        >
+          <i class="fas fa-cloud-arrow-up"></i> Upload Productions
+        </app-file-picker>
       </div>
     </div>
 
-    <!-- Production View -->
     <div class="mx-auto flex w-full max-w-[1920px] flex-1 gap-4 overflow-hidden text-slate-50">
       <div class="flex min-h-0 flex-1 flex-col gap-2 overflow-auto">
         <app-production-group
@@ -110,7 +69,7 @@
         </div>
       }
     </div>
-  </div>
+  </app-content-layout>
 }
 
 @if (displayMode === 'modal') {

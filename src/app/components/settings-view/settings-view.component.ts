@@ -6,13 +6,14 @@ import {
   ImportMode,
   SettingsService,
 } from 'src/app/shared/settings/settings.service';
+import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
 
 @Component({
   selector: 'app-settings-view',
   templateUrl: './settings-view.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass],
+  imports: [NgClass, ContentLayoutComponent],
 })
 export class SettingsViewComponent {
   private readonly settingsService = inject(SettingsService);
@@ -36,5 +37,9 @@ export class SettingsViewComponent {
 
   protected onClose(): void {
     this.settingsService.closeSettings();
+  }
+
+  protected onResetSettings(): void {
+    this.settingsService.resetSettings();
   }
 }

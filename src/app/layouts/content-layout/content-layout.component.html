@@ -1,0 +1,37 @@
+@let title = $title();
+@let subTitle = $subTitle();
+@let showClose = $showClose();
+
+<div class="flex min-h-17 flex-1 flex-col overflow-auto">
+  <header
+    class="flex flex-wrap items-center gap-3 border-b border-stone-700 bg-stone-950/60 px-6 py-3"
+  >
+    <div class="flex items-center gap-2">
+      @if (showClose) {
+        <button
+          class="btn btn-secondary-outline flex items-center gap-2"
+          (click)="$close.emit()"
+          type="button"
+        >
+          <i class="fas fa-arrow-left"></i>
+          <kbd>ESC</kbd>
+        </button>
+      }
+      <div class="flex flex-col gap-1">
+        <span class="text-[11px] font-semibold tracking-[0.32em] text-stone-400 uppercase">
+          {{ title }}
+        </span>
+
+        @if (subTitle) {
+          <span class="text-sm text-stone-200">{{ subTitle }}</span>
+        }
+      </div>
+    </div>
+
+    <ng-content select="content-header"></ng-content>
+  </header>
+
+  <section class="flex min-h-0 flex-1 flex-col overflow-auto">
+    <ng-content></ng-content>
+  </section>
+</div>

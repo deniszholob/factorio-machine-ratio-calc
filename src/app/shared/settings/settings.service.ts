@@ -70,6 +70,12 @@ export class SettingsService {
     this.$isSettingsOpen.update((isOpen) => !isOpen);
   }
 
+  public resetSettings(): void {
+    this.$editorDisplayMode.set(DEFAULT_SETTINGS.editorDisplayMode);
+    this.$importChainsMode.set(DEFAULT_SETTINGS.importChainsMode);
+    this.$importProductionsMode.set(DEFAULT_SETTINGS.importProductionsMode);
+  }
+
   private loadSettings(): SettingsState {
     const payload = localStorage.getItem(LOCAL_STORAGE_KEY_SETTINGS);
     if (!payload) {
