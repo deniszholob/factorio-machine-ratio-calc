@@ -18,6 +18,9 @@ import {
 import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
 import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
 import { ProductionEditorModalComponent } from './production-editor/production-editor-modal/production-editor-modal.component';
+import { ProductionEditorSidebarComponent } from './production-editor/production-editor-sidebar/production-editor-sidebar.component';
+import { ProductionEditorFullComponent } from './production-editor/production-editor-full/production-editor-full.component';
+import { SettingsService } from 'src/app/shared/settings/settings.service';
 
 @Component({
   selector: 'app-production-chain-editor',
@@ -27,6 +30,8 @@ import { ProductionEditorModalComponent } from './production-editor/production-e
   imports: [
     ProductionGroupComponent,
     ProductionEditorModalComponent,
+    ProductionEditorSidebarComponent,
+    ProductionEditorFullComponent,
     FilePickerComponent,
   ],
 })
@@ -34,6 +39,7 @@ export class ProductionChainEditorComponent {
   private readonly productionService = inject(ProductionService);
   private readonly importExportService = inject(ImportExportService);
   private readonly productionChainService = inject(ProductionChainService);
+  private readonly settingsService = inject(SettingsService);
 
   protected readonly $machines: Signal<Production[]> =
     this.productionService.$productions;
@@ -43,6 +49,8 @@ export class ProductionChainEditorComponent {
   protected readonly $machineToEdit = signal<Production | undefined>(undefined);
   protected readonly $isEditorOpen = signal<boolean>(false);
   protected readonly $errorMessage = signal<string | undefined>(undefined);
+  protected readonly $editorDisplayMode =
+    this.settingsService.$editorDisplayMode;
 
   public constructor() {
     effect(() => {
@@ -88,8 +96,9 @@ export class ProductionChainEditorComponent {
   }
 
   protected uploadData(files: File[]): void {
+    const mode = this.settingsService.$importProductionsMode();
     this.importExportService
-      .uploadProductionChainById(files)
+      .uploadProductionChainById(files, mode)
       .then(() => {
         this.$errorMessage.set(undefined);
         this.productionChainService.reloadFromStorage();
@@ -111,6 +120,10 @@ export class ProductionChainEditorComponent {
       activeChainId,
       this.$machines(),
     );
+  }
+
+  protected closeEditor(): void {
+    this.onEditorVisibilityChange(false);
   }
 
   // private downloadFile(data: string): void {

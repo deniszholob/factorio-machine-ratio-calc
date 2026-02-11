@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
 import { ProductionItemComponent } from './production-item.component';
-import { MOCK_Machine } from '../production-editor/production.model';
+import { MOCK_Machine } from '../../production-editor/production.model';
 
 type ComponentWithCustomControls = ProductionItemComponent;
 

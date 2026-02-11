@@ -4,6 +4,7 @@ import { Production } from 'src/app/components/production-chain-editor/productio
 import { guid } from '../guid/guid.util';
 import { LOCAL_STORAGE_KEY_STATE } from '../local-storage/local-storage.data';
 import { ProductionChain } from 'src/app/components/production-chain-group/production-chain-item/production-chain.model';
+import { ImportMode } from '../settings/settings.service';
 
 // const DOWNLOAD_FILE_PREFIX = `PRC`;
 // const DOWNLOAD_FILE_SUFFIX = `data`;
@@ -22,7 +23,10 @@ const DOWNLOAD_FILE_NAME = `PRC_production_chains`;
 export class ImportExportService {
   // #region IO
   /** Load/Upload/Import from json file to localstorage */
-  public async uploadAllProductionChains(files: File[]): Promise<void> {
+  public async uploadAllProductionChains(
+    files: File[],
+    mode: ImportMode,
+  ): Promise<void> {
     if (files.length === 0) {
       return;
     }
@@ -34,7 +38,14 @@ export class ImportExportService {
 
     const chains: ProductionChain[] =
       await readJsonFile<ProductionChain[]>(file);
-    this.saveProductionChains(chains);
+    if (mode === 'override') {
+      this.saveProductionChains(chains);
+      return;
+    }
+
+    const existingChains = this.loadAllProductionChains();
+    const mergedChains = mergeProductionChains(existingChains, chains);
+    this.saveProductionChains(mergedChains);
   }
 
   /** Save/Download/Export from localstorage to json file */
@@ -44,7 +55,10 @@ export class ImportExportService {
   }
 
   /** Load/Upload/Import from json file to localstorage*/
-  public async uploadProductionChainById(files: File[]): Promise<void> {
+  public async uploadProductionChainById(
+    files: File[],
+    mode: ImportMode,
+  ): Promise<void> {
     if (files.length === 0) {
       return;
     }
@@ -60,7 +74,7 @@ export class ImportExportService {
       '',
     );
     const productions: Production[] = await readJsonFile<Production[]>(file);
-    this.saveProductionChainById(productionChainName, productions);
+    this.saveProductionChainById(productionChainName, productions, mode);
   }
 
   /** Save/Download/Export from localstorage to json file */
@@ -84,6 +98,10 @@ export class ImportExportService {
     this.saveProductionChains(chains);
   }
 
+  public clearAllProductionChains(): void {
+    localStorage.removeItem(LOCAL_STORAGE_KEY_STATE);
+  }
+
   private loadProductionChainById(productionChainId: string): Production[] {
     const productionChains = this.loadAllProductionChains();
     const productionChain = productionChains.find(
@@ -98,18 +116,32 @@ export class ImportExportService {
   private saveProductionChainById(
     productionChainName: string,
     productions: Production[],
+    mode: ImportMode,
   ): void {
     const existingChains: ProductionChain[] = this.loadAllProductionChains();
     const existingChain: ProductionChain | undefined = existingChains.find(
       (chain) => chain.display === productionChainName,
     );
-    if (existingChain) {
-      return;
+    if (mode === 'override') {
+      if (existingChain) {
+        const nextChains = existingChains.map((chain) =>
+          chain.display === productionChainName
+            ? { ...chain, productions }
+            : chain,
+        );
+        this.saveProductionChains(nextChains);
+        return;
+      }
     }
+
+    const nextDisplay = ensureUniqueDisplayName(
+      productionChainName,
+      existingChains.map((chain) => chain.display),
+    );
 
     existingChains.push({
       id: guid(),
-      display: productionChainName,
+      display: nextDisplay,
       productions,
     });
 
@@ -159,5 +191,51 @@ function downloadJson(data: unknown, fileName: string): void {
   document.body.appendChild(element);
   element.click();
   document.body.removeChild(element);
+}
+
+function ensureUniqueDisplayName(
+  baseName: string,
+  existingNames: string[],
+): string {
+  if (!existingNames.includes(baseName)) {
+    return baseName;
+  }
+
+  let counter = 1;
+  let nextName = `${baseName} (imported)`;
+  while (existingNames.includes(nextName)) {
+    counter += 1;
+    nextName = `${baseName} (imported ${counter})`;
+  }
+  return nextName;
+}
+
+function mergeProductionChains(
+  existingChains: ProductionChain[],
+  incomingChains: ProductionChain[],
+): ProductionChain[] {
+  const nextChains: ProductionChain[] = [...existingChains];
+  const existingIds = new Set(existingChains.map((chain) => chain.id));
+  const existingNames = new Set(existingChains.map((chain) => chain.display));
+
+  for (const chain of incomingChains) {
+    const nextId = existingIds.has(chain.id) ? guid() : chain.id;
+    const nextDisplay = ensureUniqueDisplayName(
+      chain.display,
+      Array.from(existingNames),
+    );
+
+    nextChains.push({
+      ...chain,
+      id: nextId,
+      display: nextDisplay,
+      productions: Array.isArray(chain.productions) ? chain.productions : [],
+    });
+
+    existingIds.add(nextId);
+    existingNames.add(nextDisplay);
+  }
+
+  return nextChains;
 }
 // #endregion

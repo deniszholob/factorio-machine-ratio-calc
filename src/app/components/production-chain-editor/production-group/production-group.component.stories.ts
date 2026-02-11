@@ -1,16 +1,24 @@
 // @ref https://storybook.js.org/docs/writing-stories
 import { Meta, StoryObj } from '@storybook/angular';
 
-import { PromoFactoryTimeComponent } from './promo-factory-time.component';
+import { ProductionGroupComponent } from './production-group.component';
+import { ProductionTotals } from 'src/app/shared/production/production.service';
+import { MOCK_Machines } from '../production-chain-editor.mock';
 
-type ComponentWithCustomControls = PromoFactoryTimeComponent; // & {};
+type ComponentWithCustomControls = ProductionGroupComponent; // & {};
+
+const totals: ProductionTotals = {
+  deltas: [],
+  inputs: [],
+  outputs: [],
+};
 
 export default {
-  title: 'Components/Promo Factory Time',
-  component: PromoFactoryTimeComponent,
+  title: 'Components/Production Group',
+  component: ProductionGroupComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {
-    docs: { description: { component: `PromoFactoryTime` } },
+    docs: { description: { component: `ProductionGroup` } },
     // layout: 'fullscreen', // https://storybook.js.org/docs/configure/story-layout
   },
   argTypes: {
@@ -18,16 +26,22 @@ export default {
     // input: { options: ['---', ...Object.values(YourEnum)], mapping: YourEnum & { '---': undefined }, control: { type: 'select' }},
     // input: { options: Object.values(YourEnum), mapping: YourEnum, control: { type: 'select' }}
     /** === Output Actions === */
-    // inputChange: { action: 'inputChange', table: { disable: true } },
+    $editMachine: { action: 'editMachine', table: { disable: true } },
+    $deleteMachine: { action: 'deleteMachine', table: { disable: true } },
+    $updateMachineCount: { action: 'updateMachineCount', table: { disable: true } },
+    $drop: { action: 'drop', table: { disable: true } },
     /** === Control Hide === */
     // someControl: { table: { disable: true } },
     /** === Control Disable === */
     // someControl: { control: { disable: true } },
   },
-  args: {},
+  args: {
+    $machines: MOCK_Machines,
+    $machineTotals: totals,
+  },
 } satisfies Meta<ComponentWithCustomControls>;
 
-export const PromoFactoryTime: StoryObj<ComponentWithCustomControls> = {
+export const ProductionGroup: StoryObj<ComponentWithCustomControls> = {
   render: (args) => ({ props: args }),
   // play: async ({ canvasElement }) => { const canvasElement = within(canvasElement) },
 };

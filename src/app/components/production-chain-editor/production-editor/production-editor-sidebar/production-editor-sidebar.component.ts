@@ -1,7 +1,11 @@
-import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
-
-import { ProductionEditorComponent } from '../production-editor/production-editor.component';
-import { Production } from '../production-editor/production.model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  model,
+} from '@angular/core';
+import { Production } from '../production.model';
+import { ProductionEditorComponent } from '../production-editor.component';
 
 @Component({
   selector: 'app-production-editor-sidebar',

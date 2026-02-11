@@ -1,16 +1,17 @@
 // @ref https://storybook.js.org/docs/writing-stories
 import { Meta, StoryObj } from '@storybook/angular';
 
-import { PromoFactoryTimeComponent } from './promo-factory-time.component';
+import { ProductionEditorFullComponent } from './production-editor-full.component';
+import { MOCK_Machine } from '../production.model';
 
-type ComponentWithCustomControls = PromoFactoryTimeComponent; // & {};
+type ComponentWithCustomControls = ProductionEditorFullComponent; // & {};
 
 export default {
-  title: 'Components/Promo Factory Time',
-  component: PromoFactoryTimeComponent,
+  title: 'Components/Production Editor Full',
+  component: ProductionEditorFullComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {
-    docs: { description: { component: `PromoFactoryTime` } },
+    docs: { description: { component: `ProductionEditorFull` } },
     // layout: 'fullscreen', // https://storybook.js.org/docs/configure/story-layout
   },
   argTypes: {
@@ -24,10 +25,12 @@ export default {
     /** === Control Disable === */
     // someControl: { control: { disable: true } },
   },
-  args: {},
+  args: {
+    $machine: MOCK_Machine,
+  },
 } satisfies Meta<ComponentWithCustomControls>;
 
-export const PromoFactoryTime: StoryObj<ComponentWithCustomControls> = {
+export const ProductionEditorFull: StoryObj<ComponentWithCustomControls> = {
   render: (args) => ({ props: args }),
   // play: async ({ canvasElement }) => { const canvasElement = within(canvasElement) },
 };

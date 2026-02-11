@@ -5,7 +5,7 @@ import { ProductionChainEditorComponent } from './production-chain-editor.compon
 type ComponentWithCustomControls = ProductionChainEditorComponent;
 
 const meta: Meta<ComponentWithCustomControls> = {
-  title: 'Views/Production Chain Editor',
+  title: 'Components/Production Chain Editor',
   component: ProductionChainEditorComponent,
   // TODO: inject mock productionService
   // decorators: [moduleMetadata({imports: []})],

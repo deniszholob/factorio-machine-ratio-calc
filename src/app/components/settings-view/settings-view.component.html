@@ -1,0 +1,250 @@
+@let editorMode = $editorDisplayMode();
+@let importChainsMode = $importChainsMode();
+@let importProductionsMode = $importProductionsMode();
+
+<section class="flex min-h-0 flex-1 flex-col gap-6 overflow-auto text-slate-50">
+  <div
+    class="flex flex-wrap items-center gap-3 border-b border-stone-700 bg-stone-950/60 px-6 py-3"
+  >
+    <button
+      class="btn btn-secondary-outline flex items-center gap-2"
+      (click)="onClose()"
+      type="button"
+    >
+      <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="flex flex-col gap-1">
+      <span class="text-[11px] font-semibold tracking-[0.32em] text-stone-400 uppercase">
+        Settings
+      </span>
+      <span class="text-sm text-stone-200"></span>
+    </div>
+  </div>
+
+  <div class="grid w-full gap-6 p-6 lg:grid-cols-2">
+    <div class="flex flex-col gap-4 rounded-sm border border-stone-700 bg-stone-950/40 p-4">
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-semibold tracking-[0.3em] text-stone-400 uppercase">
+          Editor Display
+        </span>
+        <span class="text-sm text-stone-300">
+          Choose where the production editor appears when you edit a production.
+        </span>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label
+          class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+          [ngClass]="{
+            'border-amber-400 bg-stone-900/80 text-amber-100': editorMode === 'modal',
+          }"
+        >
+          <input
+            class="sr-only"
+            [checked]="editorMode === 'modal'"
+            (change)="setEditorDisplayMode('modal')"
+            type="radio"
+            name="editor-display"
+          />
+          <span
+            class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
+          >
+            <span
+              class="h-2 w-2 rounded-full bg-amber-400"
+              [style.opacity]="editorMode === 'modal' ? 1 : 0"
+            ></span>
+          </span>
+          <span class="flex flex-col gap-0.5">
+            <span class="font-semibold">Modal Popup</span>
+            <span class="text-xs text-stone-400">Keep focus in a dialog overlay.</span>
+          </span>
+        </label>
+
+        <label
+          class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+          [ngClass]="{
+            'border-amber-400 bg-stone-900/80 text-amber-100': editorMode === 'sidebar',
+          }"
+        >
+          <input
+            class="sr-only"
+            [checked]="editorMode === 'sidebar'"
+            (change)="setEditorDisplayMode('sidebar')"
+            type="radio"
+            name="editor-display"
+          />
+          <span
+            class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
+          >
+            <span
+              class="h-2 w-2 rounded-full bg-amber-400"
+              [style.opacity]="editorMode === 'sidebar' ? 1 : 0"
+            ></span>
+          </span>
+          <span class="flex flex-col gap-0.5">
+            <span class="font-semibold">Right Sidebar</span>
+            <span class="text-xs text-stone-400">Slide out editor beside the list.</span>
+          </span>
+        </label>
+
+        <label
+          class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+          [ngClass]="{
+            'border-amber-400 bg-stone-900/80 text-amber-100': editorMode === 'full',
+          }"
+        >
+          <input
+            class="sr-only"
+            [checked]="editorMode === 'full'"
+            (change)="setEditorDisplayMode('full')"
+            type="radio"
+            name="editor-display"
+          />
+          <span
+            class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
+          >
+            <span
+              class="h-2 w-2 rounded-full bg-amber-400"
+              [style.opacity]="editorMode === 'full' ? 1 : 0"
+            ></span>
+          </span>
+          <span class="flex flex-col gap-0.5">
+            <span class="font-semibold">Full Main Content</span>
+            <span class="text-xs text-stone-400">Replace the list with the editor.</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 rounded-sm border border-stone-700 bg-stone-950/40 p-4">
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-semibold tracking-[0.3em] text-stone-400 uppercase">
+          Import Behavior
+        </span>
+        <span class="text-sm text-stone-300"> Choose how imports merge with existing data. </span>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+          <div class="text-sm font-semibold text-stone-200">Production Chains</div>
+          <div class="flex flex-col gap-2">
+            <label
+              class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+              [ngClass]="{
+                'border-amber-400 bg-stone-900/80 text-amber-100': importChainsMode === 'add',
+              }"
+            >
+              <input
+                class="sr-only"
+                [checked]="importChainsMode === 'add'"
+                (change)="setImportChainsMode('add')"
+                type="radio"
+                name="import-chains-mode"
+              />
+              <span
+                class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
+              >
+                <span
+                  class="h-2 w-2 rounded-full bg-amber-400"
+                  [style.opacity]="importChainsMode === 'add' ? 1 : 0"
+                ></span>
+              </span>
+              <span class="flex flex-col gap-0.5">
+                <span class="font-semibold">Add (Default)</span>
+                <span class="text-xs text-stone-400">Merge uploads alongside existing chains.</span>
+              </span>
+            </label>
+
+            <label
+              class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+              [ngClass]="{
+                'border-amber-400 bg-stone-900/80 text-amber-100': importChainsMode === 'override',
+              }"
+            >
+              <input
+                class="sr-only"
+                [checked]="importChainsMode === 'override'"
+                (change)="setImportChainsMode('override')"
+                type="radio"
+                name="import-chains-mode"
+              />
+              <span
+                class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
+              >
+                <span
+                  class="h-2 w-2 rounded-full bg-amber-400"
+                  [style.opacity]="importChainsMode === 'override' ? 1 : 0"
+                ></span>
+              </span>
+              <span class="flex flex-col gap-0.5">
+                <span class="font-semibold">Override</span>
+                <span class="text-xs text-stone-400">Replace everything with the upload.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <div class="text-sm font-semibold text-stone-200">Productions</div>
+          <div class="flex flex-col gap-2">
+            <label
+              class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+              [ngClass]="{
+                'border-amber-400 bg-stone-900/80 text-amber-100': importProductionsMode === 'add',
+              }"
+            >
+              <input
+                class="sr-only"
+                [checked]="importProductionsMode === 'add'"
+                (change)="setImportProductionsMode('add')"
+                type="radio"
+                name="import-productions-mode"
+              />
+              <span
+                class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
+              >
+                <span
+                  class="h-2 w-2 rounded-full bg-amber-400"
+                  [style.opacity]="importProductionsMode === 'add' ? 1 : 0"
+                ></span>
+              </span>
+              <span class="flex flex-col gap-0.5">
+                <span class="font-semibold">Add (Default)</span>
+                <span class="text-xs text-stone-400">Create a new chain for this upload.</span>
+              </span>
+            </label>
+
+            <label
+              class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+              [ngClass]="{
+                'border-amber-400 bg-stone-900/80 text-amber-100':
+                  importProductionsMode === 'override',
+              }"
+            >
+              <input
+                class="sr-only"
+                [checked]="importProductionsMode === 'override'"
+                (change)="setImportProductionsMode('override')"
+                type="radio"
+                name="import-productions-mode"
+              />
+              <span
+                class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
+              >
+                <span
+                  class="h-2 w-2 rounded-full bg-amber-400"
+                  [style.opacity]="importProductionsMode === 'override' ? 1 : 0"
+                ></span>
+              </span>
+              <span class="flex flex-col gap-0.5">
+                <span class="font-semibold">Override</span>
+                <span class="text-xs text-stone-400">Replace a chain if names match.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

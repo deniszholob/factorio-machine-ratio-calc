@@ -39,7 +39,7 @@ export const FilePicker: StoryObj<ComponentWithCustomControls> = {
       [$multi]="$multi"
       [$filesTypesAccepted]="$filesTypesAccepted"
       [$btnClass]="$btnClass"
-      (fileChange)="fileChange()"
+      ($fileChange)="$fileChange($event)"
     >
       <i class="fas fa-upload"></i>
       {{title}}

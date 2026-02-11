@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { ProductionEditorComponent } from '../production-editor/production-editor.component';
-import { Production } from '../production-editor/production.model';
+import { ProductionEditorComponent } from '../production-editor.component';
+import { Production } from '../production.model';
 
 @Component({
   selector: 'app-production-editor-full',

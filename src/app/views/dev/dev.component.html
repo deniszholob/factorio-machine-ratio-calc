@@ -43,7 +43,9 @@
       <button class="btn btn-danger-outline">danger Outline</button>
     </div>
   </div> -->
-  @if ($hasProductionChains()) {
+  @if ($isSettingsOpen()) {
+    <app-settings-view ngProjectAs="main-content"></app-settings-view>
+  } @else if ($hasProductionChains()) {
     <app-production-chain-editor ngProjectAs="main-content"></app-production-chain-editor>
   } @else {
     <div

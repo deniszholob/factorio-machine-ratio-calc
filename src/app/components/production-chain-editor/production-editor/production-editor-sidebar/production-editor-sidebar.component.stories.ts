@@ -1,16 +1,17 @@
 // @ref https://storybook.js.org/docs/writing-stories
 import { Meta, StoryObj } from '@storybook/angular';
 
-import { PromoFactoryTimeComponent } from './promo-factory-time.component';
+import { ProductionEditorSidebarComponent } from './production-editor-sidebar.component';
+import { MOCK_Machine } from '../production.model';
 
-type ComponentWithCustomControls = PromoFactoryTimeComponent; // & {};
+type ComponentWithCustomControls = ProductionEditorSidebarComponent; // & {};
 
 export default {
-  title: 'Components/Promo Factory Time',
-  component: PromoFactoryTimeComponent,
+  title: 'Components/Production Editor Sidebar',
+  component: ProductionEditorSidebarComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {
-    docs: { description: { component: `PromoFactoryTime` } },
+    docs: { description: { component: `ProductionEditorSidebar` } },
     // layout: 'fullscreen', // https://storybook.js.org/docs/configure/story-layout
   },
   argTypes: {
@@ -18,16 +19,18 @@ export default {
     // input: { options: ['---', ...Object.values(YourEnum)], mapping: YourEnum & { '---': undefined }, control: { type: 'select' }},
     // input: { options: Object.values(YourEnum), mapping: YourEnum, control: { type: 'select' }}
     /** === Output Actions === */
-    // inputChange: { action: 'inputChange', table: { disable: true } },
     /** === Control Hide === */
     // someControl: { table: { disable: true } },
     /** === Control Disable === */
     // someControl: { control: { disable: true } },
   },
-  args: {},
+  args: {
+    $machine: MOCK_Machine,
+    $show: true,
+  },
 } satisfies Meta<ComponentWithCustomControls>;
 
-export const PromoFactoryTime: StoryObj<ComponentWithCustomControls> = {
+export const ProductionEditorSidebar: StoryObj<ComponentWithCustomControls> = {
   render: (args) => ({ props: args }),
   // play: async ({ canvasElement }) => { const canvasElement = within(canvasElement) },
 };

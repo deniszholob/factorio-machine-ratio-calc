@@ -6,17 +6,19 @@ import {
   effect,
   input,
   output,
+  signal,
   viewChild,
 } from '@angular/core';
 
 import { ProductionChain } from './production-chain.model';
+import { ModalComponent } from '../../modal/modal.component';
 
 @Component({
   selector: 'app-production-chain-item',
   templateUrl: './production-chain-item.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass],
+  imports: [NgClass, ModalComponent],
 })
 export class ProductionChainItemComponent {
   public readonly $productionChain = input.required<ProductionChain>();
@@ -34,6 +36,8 @@ export class ProductionChainItemComponent {
   public readonly $commitRename = output<void>();
   public readonly $editName = output<string>();
   public readonly $delete = output<string>();
+
+  protected readonly $confirmDeleteOpen = signal<boolean>(false);
 
   private readonly $editInput =
     viewChild<ElementRef<HTMLInputElement>>('editInput');
@@ -73,8 +77,13 @@ export class ProductionChainItemComponent {
 
   protected onDelete(event: Event): void {
     event.stopPropagation();
+    this.$confirmDeleteOpen.set(true);
+  }
+
+  protected onConfirmDelete(): void {
     const productionChain = this.$productionChain();
     this.$delete.emit(productionChain.id);
+    this.$confirmDeleteOpen.set(false);
   }
 
   protected onCommitRename(event: Event): void {

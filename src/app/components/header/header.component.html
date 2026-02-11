@@ -1,3 +1,5 @@
+@let isSettingsOpen = $isSettingsOpen();
+
 <div class="flex flex-col gap-3 border-b border-stone-700 pb-3">
   <div class="flex items-center justify-between gap-3">
     <a
@@ -36,15 +38,16 @@
         <i class="fas fa-database"></i>
       </button> -->
 
-      <!-- TODO: Add settings -->
-      <!-- <button
+      <button
         class="btn btn-secondary-outline h-8 w-8"
+        [ngClass]="{ 'ring-1 ring-amber-400': isSettingsOpen }"
         [title]="'Settings'"
         type="button"
         aria-label="Settings"
+        (click)="onToggleSettings()"
       >
         <i class="fas fa-gear"></i>
-      </button> -->
+      </button>
     </div>
   </div>
 

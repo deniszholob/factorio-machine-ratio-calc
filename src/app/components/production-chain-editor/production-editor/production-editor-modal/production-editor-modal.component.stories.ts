@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
 import { ProductionEditorModalComponent } from './production-editor-modal.component';
-import { MOCK_Machine } from '../production-editor/production.model';
+import { MOCK_Machine } from '../production.model';
 
 type ComponentWithCustomControls = ProductionEditorModalComponent;
 
@@ -14,9 +14,6 @@ const meta: Meta<ComponentWithCustomControls> = {
     // layout: 'fullscreen',
   },
   argTypes: {
-    // Output
-    // $showChange: { action: 'showChange', table: { disable: true } },
-    $show: { action: 'showModalChange' },
     // Hide
     // someControl: { table: { disable: true } }
   },

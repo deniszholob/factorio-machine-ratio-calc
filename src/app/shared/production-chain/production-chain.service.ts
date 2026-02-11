@@ -158,6 +158,15 @@ export class ProductionChainService {
     this.persist();
   }
 
+  public resetAllProductionChains(): void {
+    this.$productionChains.set([]);
+    this.$activeProductionChainId.set(undefined);
+    this.$editingProductionChainId.set(undefined);
+    this.$editingProductionChainDisplay.set('');
+    this.productionService.clearMachines();
+    this.importExportService.clearAllProductionChains();
+  }
+
   public setActiveChainProductions(machines: Production[]): void {
     const activeId = this.$activeProductionChainId();
     if (!activeId) {
@@ -176,8 +185,15 @@ export class ProductionChainService {
     const storedChains = this.importExportService.loadAllProductionChains();
     this.$productionChains.set(storedChains);
 
-    if (!this.$activeProductionChainId() && storedChains.length > 0) {
+    const activeId = this.$activeProductionChainId();
+    const hasActive =
+      !!activeId && storedChains.some((chain) => chain.id === activeId);
+
+    if (!hasActive) {
       this.$activeProductionChainId.set(storedChains[0]?.id);
+      if (storedChains.length === 0) {
+        this.productionService.clearMachines();
+      }
     }
   }
 

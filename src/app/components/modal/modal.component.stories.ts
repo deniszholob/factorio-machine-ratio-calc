@@ -1,6 +1,5 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
-import { action } from 'storybook/actions';
 import { ModalComponent } from './modal.component';
 
 type ComponentWithCustomControls = ModalComponent;
@@ -14,9 +13,6 @@ const meta: Meta<ComponentWithCustomControls> = {
     // layout: 'fullscreen',
   },
   argTypes: {
-    // Output
-    // $showChange: { action: 'showModalChange', table: { disable: true } },
-    $show: { action: 'showModalChange' },
     // Hide
     // someControl: { table: { disable: true } }
   },

@@ -6,8 +6,7 @@ import { TooltipComponent } from './tooltip.component';
 type ComponentWithCustomControls = TooltipComponent; // & {};
 
 export default {
-  // TODO: Make sure this title path is correct, uncomment tile, then remove this comment. OR remove both comment and title
-  // title: 'Components/Tooltip',
+  title: 'Components/Tooltip',
   component: TooltipComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {
@@ -22,13 +21,13 @@ export default {
     // inputChange: { action: 'inputChange', table: { disable: true } },
     /** === Control Hide === */
     // someControl: { table: { disable: true } },
-     /** === Control Disable === */
+    /** === Control Disable === */
     // someControl: { control: { disable: true } },
   },
   args: {},
-} satisfies Meta<ComponentWithCustomControls>
+} satisfies Meta<ComponentWithCustomControls>;
 
 export const Tooltip: StoryObj<ComponentWithCustomControls> = {
   render: (args) => ({ props: args }),
   // play: async ({ canvasElement }) => { const canvasElement = within(canvasElement) },
-}
+};
