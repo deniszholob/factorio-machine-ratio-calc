@@ -1,16 +1,16 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
-import { ProductionEntryComponent } from './production-entry.component';
-import { MOCK_Machine } from '../production-modal/production.model';
+import { ProductionItemComponent } from './production-item.component';
+import { MOCK_Machine } from '../production-editor/production.model';
 
-type ComponentWithCustomControls = ProductionEntryComponent;
+type ComponentWithCustomControls = ProductionItemComponent;
 
 const meta: Meta<ComponentWithCustomControls> = {
-  title: 'Components/Production Entry',
-  component: ProductionEntryComponent,
+  title: 'Components/Production Item',
+  component: ProductionItemComponent,
   // decorators: [moduleMetadata({imports: []})],
   parameters: {
-    docs: { description: { component: `ProductionEntry` } },
+    docs: { description: { component: `ProductionItem` } },
     // layout: 'fullscreen',
   },
   argTypes: {
@@ -26,6 +26,6 @@ const meta: Meta<ComponentWithCustomControls> = {
 };
 export default meta;
 
-export const ProductionEntry: StoryObj<ComponentWithCustomControls> = {
+export const ProductionItem: StoryObj<ComponentWithCustomControls> = {
   render: (args) => ({ props: args }),
 };

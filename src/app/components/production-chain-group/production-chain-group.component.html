@@ -20,7 +20,7 @@
 
   <div class="flex flex-1 flex-col gap-2 overflow-auto">
     @for (production of productions; track production.id) {
-      <app-production-chain
+      <app-production-chain-item
         [$productionChain]="production"
         [$activeProductionChainId]="activeId"
         [$editingProductionChainId]="editingId"
@@ -31,7 +31,7 @@
         ($commitRename)="onCommitProductionChainRename()"
         ($editName)="onEditProductionChainInput($event)"
         ($delete)="onDeleteProductionChain($event)"
-      ></app-production-chain>
+      ></app-production-chain-item>
     } @empty {
       <div
         class="rounded-sm border border-dashed border-stone-700 px-3 py-4 text-xs text-stone-400"

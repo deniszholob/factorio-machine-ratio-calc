@@ -5,7 +5,7 @@ import {
   Production as Production,
   MachineItem,
   newProduction,
-} from 'src/app/components/production-modal/production.model';
+} from 'src/app/components/production-chain-editor/production-editor/production.model';
 
 export interface ProductionTotals {
   deltas: TotalRate[];

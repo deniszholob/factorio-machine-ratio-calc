@@ -1,37 +1,36 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import {
-  CdkDragDrop,
-  CdkDropList,
-  DragDropModule,
-} from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
-import { Component, Signal, effect, inject, viewChild } from '@angular/core';
+  ChangeDetectionStrategy,
+  Component,
+  Signal,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 
 import { FilePickerComponent } from '../../components/file-picker/file-picker.component';
-import { ProductionEntryComponent } from '../../components/production-entry/production-entry.component';
-import { ProductionModalComponent } from '../../components/production-modal/production-modal.component';
-import { Production } from '../../components/production-modal/production.model';
+import { ProductionGroupComponent } from './production-group/production-group.component';
+import { Production } from './production-editor/production.model';
 import {
   ProductionTotals,
   ProductionService,
 } from 'src/app/shared/production/production.service';
 import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
 import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
+import { ProductionEditorModalComponent } from './production-editor/production-editor-modal/production-editor-modal.component';
 
 @Component({
-  selector: 'app-production-view',
-  templateUrl: './production-view.component.html',
+  selector: 'app-production-chain-editor',
+  templateUrl: './production-chain-editor.component.html',
   host: { class: 'contents' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
-    ProductionEntryComponent,
-    ProductionModalComponent,
+    ProductionGroupComponent,
+    ProductionEditorModalComponent,
     FilePickerComponent,
-    // CDK
-    DragDropModule,
-    CdkDropList,
   ],
 })
-export class ProductionViewComponent {
+export class ProductionChainEditorComponent {
   private readonly productionService = inject(ProductionService);
   private readonly importExportService = inject(ImportExportService);
   private readonly productionChainService = inject(ProductionChainService);
@@ -41,9 +40,9 @@ export class ProductionViewComponent {
   protected readonly $machineTotals: Signal<ProductionTotals> =
     this.productionService.$machineTotals;
 
-  public machineToEdit?: Production;
-  public modalOpen: boolean = false;
-  public errorMessage?: string;
+  protected readonly $machineToEdit = signal<Production | undefined>(undefined);
+  protected readonly $isEditorOpen = signal<boolean>(false);
+  protected readonly $errorMessage = signal<string | undefined>(undefined);
 
   public constructor() {
     effect(() => {
@@ -64,8 +63,8 @@ export class ProductionViewComponent {
   }
 
   protected onEditMachine(machine: Production): void {
-    this.machineToEdit = machine;
-    this.modalOpen = true;
+    this.$machineToEdit.set(machine);
+    this.$isEditorOpen.set(true);
   }
 
   protected onDeleteMachine(index: number): void {
@@ -76,23 +75,28 @@ export class ProductionViewComponent {
     this.productionService.clearMachines();
   }
 
-  protected openModal(): void {
-    this.modalOpen = true;
+  protected onDrop(event: CdkDragDrop<Production[]>): void {
+    this.productionService.moveMachine(event.previousIndex, event.currentIndex);
   }
 
-  protected drop(event: CdkDragDrop<Production[]>): void {
-    this.productionService.moveMachine(event.previousIndex, event.currentIndex);
+  protected onEditorVisibilityChange(isOpen: boolean): void {
+    this.$isEditorOpen.set(isOpen);
+    if (!isOpen) {
+      this.$machineToEdit.set(undefined);
+      this.onEditFinish();
+    }
   }
 
   protected uploadData(files: File[]): void {
     this.importExportService
       .uploadProductionChainById(files)
       .then(() => {
+        this.$errorMessage.set(undefined);
         this.productionChainService.reloadFromStorage();
       })
       .catch((error) => {
         console.log(error);
-        this.errorMessage = 'Error reading file, see console for details';
+        this.$errorMessage.set('Error reading file, see console for details');
       });
   }
 

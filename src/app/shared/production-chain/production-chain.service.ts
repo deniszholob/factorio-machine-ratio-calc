@@ -1,9 +1,9 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { ProductionChain } from '../../components/production-chain/production-chain.model';
 import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
 import { ProductionService } from '../production/production.service';
-import { Production } from '../../components/production-modal/production.model';
+import { Production } from '../../components/production-chain-editor/production-editor/production.model';
 import { guid } from 'src/app/shared/guid/guid.util';
+import { ProductionChain } from 'src/app/components/production-chain-group/production-chain-item/production-chain.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductionChainService {

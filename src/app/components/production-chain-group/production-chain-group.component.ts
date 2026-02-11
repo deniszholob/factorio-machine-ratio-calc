@@ -6,17 +6,17 @@ import {
 } from '@angular/core';
 
 import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
-import { ProductionChainComponent } from '../production-chain/production-chain.component';
-import { ProductionChain } from '../production-chain/production-chain.model';
+import { ProductionChainItemComponent } from './production-chain-item/production-chain-item.component';
+import { ProductionChain } from './production-chain-item/production-chain.model';
 
 @Component({
-  selector: 'app-production-chain-list',
-  templateUrl: './production-chain-list.component.html',
+  selector: 'app-production-chain-group',
+  templateUrl: './production-chain-group.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ProductionChainComponent],
+  imports: [ProductionChainItemComponent],
 })
-export class ProductionChainListComponent {
+export class ProductionChainGroupComponent {
   private readonly productionChainService = inject(ProductionChainService);
 
   protected readonly $productions: Signal<ProductionChain[]> =

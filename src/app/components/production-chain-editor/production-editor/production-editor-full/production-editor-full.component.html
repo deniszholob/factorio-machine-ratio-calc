@@ -1,0 +1,11 @@
+@let machine = $machine();
+
+<div class="flex min-h-0 flex-1 flex-col gap-4 overflow-auto p-4 text-slate-50">
+  @if (machine) {
+    <app-production-editor [$machine]="machine"></app-production-editor>
+  } @else {
+    <div class="text-sm text-stone-400">
+      Select a production to edit from the list to get started.
+    </div>
+  }
+</div>

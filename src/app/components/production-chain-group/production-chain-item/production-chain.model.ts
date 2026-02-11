@@ -1,4 +1,4 @@
-import { Production } from '../production-modal/production.model';
+import { Production } from '../../production-chain-editor/production-editor/production.model';
 
 export interface ProductionChain {
   /** guid */

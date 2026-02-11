@@ -1,19 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import {
   Production,
   reCalcProductionRates,
-} from '../production-modal/production.model';
-import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+} from '../../production-editor/production.model';
 
 @Component({
-  selector: 'app-production-entry',
-  templateUrl: './production-entry.component.html',
+  selector: 'app-production-item',
+  templateUrl: './production-item.component.html',
   host: { class: 'contents' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, FormsModule, CdkDragHandle, CdkDrag],
 })
-export class ProductionEntryComponent {
+export class ProductionItemComponent {
   public readonly $machine = input.required<Production>();
 
   public readonly $editMachine = output<Production>();

@@ -1,6 +1,6 @@
 <app-main-layout>
   <app-header ngProjectAs="side-header"></app-header>
-  <app-production-chain-list ngProjectAs="side-content"></app-production-chain-list>
+  <app-production-chain-group ngProjectAs="side-content"></app-production-chain-group>
   <app-links ngProjectAs="side-footer"></app-links>
 
   <!-- LEAVING THE HEADER COMMENT OUT ON PURPOSE -->
@@ -44,7 +44,7 @@
     </div>
   </div> -->
   @if ($hasProductionChains()) {
-    <app-production-view ngProjectAs="main-content"></app-production-view>
+    <app-production-chain-editor ngProjectAs="main-content"></app-production-chain-editor>
   } @else {
     <div
       class="flex min-h-0 flex-1 items-center justify-center px-6 py-10 text-center text-sm text-stone-300"

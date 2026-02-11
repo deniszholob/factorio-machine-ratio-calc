@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { ProductionChain } from 'src/app/components/production-chain/production-chain.model';
-import { Production } from 'src/app/components/production-modal/production.model';
+import { Production } from 'src/app/components/production-chain-editor/production-editor/production.model';
 import { guid } from '../guid/guid.util';
 import { LOCAL_STORAGE_KEY_STATE } from '../local-storage/local-storage.data';
+import { ProductionChain } from 'src/app/components/production-chain-group/production-chain-item/production-chain.model';
 
 // const DOWNLOAD_FILE_PREFIX = `PRC`;
 // const DOWNLOAD_FILE_SUFFIX = `data`;

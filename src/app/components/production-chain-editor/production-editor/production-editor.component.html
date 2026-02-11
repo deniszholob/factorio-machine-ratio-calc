@@ -1,0 +1,113 @@
+@let machine = $machine();
+@if (machine) {
+  <div class="flex flex-col gap-4">
+    <div>
+      <label for="machineName">Production Name:</label>
+      <input [(ngModel)]="machine.name" type="string" name="machineName" placeholder="Name" />
+    </div>
+    <hr />
+    <div class="flex max-w-160 flex-row flex-wrap items-center justify-between gap-2">
+      <div class="">
+        <label for="machineCraftSpeed">Craft Speed</label>
+        <input
+          class="max-w-28"
+          [(ngModel)]="machine.craftingSpeed"
+          (change)="reCalcProductionRates(machine)"
+          (keyup)="reCalcProductionRates(machine)"
+          type="number"
+          name="machineCraftSpeed"
+          min="0"
+          step="0.05"
+        />
+      </div>
+      <div class="">
+        <label for="machineCraftSpeed">Productivity (e.g. +50% = 1.5)</label>
+        <input
+          class="max-w-28"
+          [(ngModel)]="machine.productivity"
+          (change)="reCalcProductionRates(machine)"
+          (keyup)="reCalcProductionRates(machine)"
+          type="number"
+          name="machineCraftSpeed"
+          min="1"
+          step="0.05"
+        />
+      </div>
+      <div class="">
+        <label for="machineCraftTime">Time (s)</label>
+        <input
+          class="max-w-28"
+          [(ngModel)]="machine.timeToComplete"
+          (change)="reCalcProductionRates(machine)"
+          (keyup)="reCalcProductionRates(machine)"
+          type="number"
+          name="machineCraftTime"
+          min="0"
+          step="0.05"
+        />
+      </div>
+      <div class="">
+        <label class="mr-2">Effective Time</label>
+        <span>{{ machine.effectiveTime | number: '0.1-2' }} s</span>
+      </div>
+    </div>
+  </div>
+  <br />
+  <hr />
+  <div class="flex flex-wrap justify-between gap-8">
+    <ng-container
+      [ngTemplateOutlet]="ios"
+      [ngTemplateOutletContext]="{
+        $implicit: { name: 'Input', ioItems: machine.machineInputs, machine },
+      }"
+    ></ng-container>
+    <ng-container
+      [ngTemplateOutlet]="ios"
+      [ngTemplateOutletContext]="{
+        $implicit: { name: 'Output', ioItems: machine.machineOutputs, machine },
+      }"
+    ></ng-container>
+  </div>
+}
+
+<ng-template #ios let-data>
+  <div
+    class="flex flex-1 flex-col gap-2"
+    [id]="'list-' + data.name"
+    [cdkDropListConnectedTo]="['list-' + (data.name === 'Input' ? 'Output' : 'Input')]"
+    [cdkDropListData]="data.ioItems"
+    (cdkDropListDropped)="drop($event)"
+    cdkDropList
+  >
+    <div class="text-md flex flex-row items-center gap-2 p-2">
+      <button class="btn btn-icon btn-success" (click)="onAddItem(data.ioItems)">
+        <i class="fas fa-plus"></i>
+      </button>
+      <h5>{{ data.name }}</h5>
+    </div>
+
+    @for (item of data.ioItems; track item; let i = $index) {
+      <div
+        class="flex cursor-pointer items-center justify-center gap-2 rounded-sm border border-stone-700 bg-stone-950/40 p-2 text-stone-100 transition hover:border-stone-600 hover:bg-stone-900/70"
+        cdkDrag
+      >
+        <div class="flex flex-row flex-wrap items-center gap-2">
+          <button class="btn btn-icon btn-danger" (click)="onDeleteItem(data.ioItems, i)">
+            <i class="fas fa-trash"></i>
+          </button>
+          <input
+            class="max-w-28"
+            [(ngModel)]="item.count"
+            (change)="reCalcItemRate(item, data.machine)"
+            (keyup)="reCalcItemRate(item, data.machine)"
+            type="number"
+            name="machineItemCount"
+          />
+          <input [(ngModel)]="item.name" type="string" name="machineItemName" />
+          <span>{{ item.rate | number: '0.1-2' }} i/s</span>
+        </div>
+        <i class="fas fa-grip-vertical fa-lg"></i>
+      </div>
+    }
+  </div>
+</ng-template>

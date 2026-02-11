@@ -1,4 +1,4 @@
-import { Production } from '../../components/production-modal/production.model';
+import { Production } from './production-editor/production.model';
 
 export const MOCK_Machines: Production[] = [
   {

@@ -8,9 +8,9 @@ import {
 import { FooterComponent } from 'src/app/components/footer/footer.component';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { LinksComponent } from 'src/app/components/links/links.component';
-import { ProductionChainListComponent } from 'src/app/components/production-chain-list/production-chain-list.component';
+import { ProductionChainGroupComponent } from 'src/app/components/production-chain-group/production-chain-group.component';
 import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
-import { ProductionViewComponent } from '../../components/production-view/production-view.component';
+import { ProductionChainEditorComponent } from '../../components/production-chain-editor/production-chain-editor.component';
 import { MainLayoutComponent } from '../../layouts/main-layout/main-layout.component';
 
 @Component({
@@ -20,9 +20,9 @@ import { MainLayoutComponent } from '../../layouts/main-layout/main-layout.compo
   host: { class: 'contents' },
   imports: [
     MainLayoutComponent,
-    ProductionViewComponent,
+    ProductionChainEditorComponent,
     HeaderComponent,
-    ProductionChainListComponent,
+    ProductionChainGroupComponent,
     LinksComponent,
     FooterComponent,
   ],

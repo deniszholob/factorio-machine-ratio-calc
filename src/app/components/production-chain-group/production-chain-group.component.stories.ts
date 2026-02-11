@@ -1,17 +1,16 @@
 // @ref https://storybook.js.org/docs/writing-stories
 import { Meta, StoryObj } from '@storybook/angular';
 
-import { ProductionChainListComponent } from './production-chain-list.component';
+import { ProductionChainGroupComponent } from './production-chain-group.component';
 
-type ComponentWithCustomControls = ProductionChainListComponent; // & {};
+type ComponentWithCustomControls = ProductionChainGroupComponent; // & {};
 
 export default {
-  // TODO: Make sure this title path is correct, uncomment tile, then remove this comment. OR remove both comment and title
-  // title: 'Components/Production Chain List',
-  component: ProductionChainListComponent,
+  title: 'Components/Production Chain Group',
+  component: ProductionChainGroupComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {
-    docs: { description: { component: `ProductionChainList` } },
+    docs: { description: { component: `ProductionChainGroup` } },
     // layout: 'fullscreen', // https://storybook.js.org/docs/configure/story-layout
   },
   argTypes: {
@@ -22,13 +21,13 @@ export default {
     // inputChange: { action: 'inputChange', table: { disable: true } },
     /** === Control Hide === */
     // someControl: { table: { disable: true } },
-     /** === Control Disable === */
+    /** === Control Disable === */
     // someControl: { control: { disable: true } },
   },
   args: {},
-} satisfies Meta<ComponentWithCustomControls>
+} satisfies Meta<ComponentWithCustomControls>;
 
-export const ProductionChainList: StoryObj<ComponentWithCustomControls> = {
+export const ProductionChainGroup: StoryObj<ComponentWithCustomControls> = {
   render: (args) => ({ props: args }),
   // play: async ({ canvasElement }) => { const canvasElement = within(canvasElement) },
-}
+};

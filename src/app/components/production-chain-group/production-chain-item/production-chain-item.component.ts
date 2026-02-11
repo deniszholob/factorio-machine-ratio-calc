@@ -12,13 +12,13 @@ import {
 import { ProductionChain } from './production-chain.model';
 
 @Component({
-  selector: 'app-production-chain',
-  templateUrl: './production-chain.component.html',
+  selector: 'app-production-chain-item',
+  templateUrl: './production-chain-item.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgClass],
 })
-export class ProductionChainComponent {
+export class ProductionChainItemComponent {
   public readonly $productionChain = input.required<ProductionChain>();
   public readonly $activeProductionChainId = input.required<
     string | undefined

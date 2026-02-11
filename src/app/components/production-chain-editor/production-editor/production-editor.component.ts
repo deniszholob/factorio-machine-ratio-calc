@@ -7,10 +7,13 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, input, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { ModalComponent } from '../modal/modal.component';
 import {
   Production,
   MachineItem,
@@ -20,25 +23,17 @@ import {
 } from './production.model';
 
 @Component({
-  selector: 'app-production-modal',
-  templateUrl: './production-modal.component.html',
+  selector: 'app-production-editor',
+  templateUrl: './production-editor.component.html',
   host: { class: 'contents' },
-  imports: [
-    CommonModule,
-    FormsModule,
-    ModalComponent,
-    // CDK
-    DragDropModule,
-    CdkDropList,
-    CdkDrag,
-  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, FormsModule, DragDropModule, CdkDropList, CdkDrag],
 })
-export class ProductionModalComponent {
+export class ProductionEditorComponent {
   public readonly reCalcProductionRates = reCalcProductionRates;
   public readonly reCalcItemRate = reCalcItemRate;
 
   public readonly $machine = input.required<Production | undefined>();
-  public readonly $show = model<boolean>(false);
 
   protected onAddItem(itemList: MachineItem[]): void {
     itemList.push(newMachineItem());
