@@ -2,6 +2,7 @@ import { Production } from './production-editor/production.model';
 
 export const MOCK_Machines: Production[] = [
   {
+    id: 'mock-1',
     name: 'Green Circuits',
     productivity: 1,
     craftingSpeed: 0.75,
@@ -17,6 +18,7 @@ export const MOCK_Machines: Production[] = [
     ],
   },
   {
+    id: 'mock-2',
     name: 'Iron',
     craftingSpeed: 1,
     productivity: 1,
@@ -29,6 +31,7 @@ export const MOCK_Machines: Production[] = [
     ],
   },
   {
+    id: 'mock-3',
     name: 'Wire',
     craftingSpeed: 0.75,
     productivity: 1,
@@ -41,6 +44,7 @@ export const MOCK_Machines: Production[] = [
     machineOutputs: [{ name: 'Copper Cable', count: 2, rate: 3, totalRate: 9 }],
   },
   {
+    id: 'mock-4',
     name: 'Copper',
     craftingSpeed: 1,
     productivity: 1,

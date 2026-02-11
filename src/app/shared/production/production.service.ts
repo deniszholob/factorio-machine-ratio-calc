@@ -6,6 +6,7 @@ import {
   MachineItem,
   newProduction,
 } from 'src/app/components/production-chain-editor/production-editor/production.model';
+import { guid } from 'src/app/shared/guid/guid.util';
 
 export interface ProductionTotals {
   deltas: TotalRate[];
@@ -50,11 +51,19 @@ export class ProductionService {
   }
 
   public setMachines(machines: Production[]): void {
-    this._$productions.set(machines);
+    this._$productions.set(this.ensureProductionIds(machines));
   }
 
   public refreshMachines(): void {
     this._$productions.update((items) => [...items]);
+  }
+
+  public updateMachine(updated: Production): void {
+    this._$productions.update((items) =>
+      items.map((item) =>
+        item.id === updated.id ? { ...updated, id: item.id } : item,
+      ),
+    );
   }
 
   public deleteMachineAt(index: number): void {
@@ -80,6 +89,18 @@ export class ProductionService {
 
   public clearMachines(): void {
     this._$productions.set([]);
+  }
+
+  private ensureProductionIds(machines: Production[]): Production[] {
+    let hasChanges = false;
+    const next = machines.map((machine) => {
+      if (machine.id) {
+        return machine;
+      }
+      hasChanges = true;
+      return { ...machine, id: guid() };
+    });
+    return hasChanges ? next : machines;
   }
 }
 

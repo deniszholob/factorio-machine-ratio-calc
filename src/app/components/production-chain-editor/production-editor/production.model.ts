@@ -1,3 +1,5 @@
+import { guid } from 'src/app/shared/guid/guid.util';
+
 export interface MachineItem {
   name: string;
   count: number;
@@ -17,6 +19,7 @@ export function newMachineItem(): MachineItem {
 }
 
 export interface Production {
+  id: string;
   name: string;
   count: number;
   craftingSpeed: number;
@@ -29,6 +32,7 @@ export interface Production {
 
 export function newProduction(): Production {
   const machine: Production = {
+    id: guid(),
     name: 'Project Assembly',
     craftingSpeed: 1,
     productivity: 1,

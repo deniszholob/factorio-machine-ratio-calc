@@ -50,6 +50,7 @@ export class ProductionChainEditorComponent {
     this.productionService.$machineTotals;
 
   protected readonly $machineToEdit = signal<Production | undefined>(undefined);
+  protected readonly $machineDraft = signal<Production | undefined>(undefined);
   protected readonly $isEditorOpen = signal<boolean>(false);
   protected readonly $errorMessage = signal<string | undefined>(undefined);
   protected readonly $editorDisplayMode =
@@ -57,7 +58,7 @@ export class ProductionChainEditorComponent {
   protected readonly $activeChainName =
     this.productionChainService.$activeProductionName;
   protected readonly $editorSubtitle = computed(() => {
-    const machine = this.$machineToEdit();
+    const machine = this.$machineDraft();
     if (machine && this.$isEditorOpen()) {
       return `${machine.name || 'Untitled Production'}`;
     }
@@ -85,6 +86,7 @@ export class ProductionChainEditorComponent {
 
   protected onEditMachine(machine: Production): void {
     this.$machineToEdit.set(machine);
+    this.$machineDraft.set(this.cloneMachine(machine));
     this.$isEditorOpen.set(true);
   }
 
@@ -101,11 +103,28 @@ export class ProductionChainEditorComponent {
   }
 
   protected onEditorVisibilityChange(isOpen: boolean): void {
-    this.$isEditorOpen.set(isOpen);
     if (!isOpen) {
-      this.$machineToEdit.set(undefined);
-      this.onEditFinish();
+      this.onEditorClosed();
+      return;
     }
+    this.$isEditorOpen.set(true);
+  }
+
+  protected onEditorClosed(): void {
+    const draft = this.$machineDraft();
+    if (draft) {
+      this.productionService.updateMachine(draft);
+    }
+    this.$machineDraft.set(undefined);
+    this.$machineToEdit.set(undefined);
+    this.$isEditorOpen.set(false);
+  }
+
+  private cloneMachine(machine: Production): Production {
+    if (typeof structuredClone === 'function') {
+      return structuredClone(machine);
+    }
+    return JSON.parse(JSON.stringify(machine)) as Production;
   }
 
   protected uploadData(files: File[]): void {
