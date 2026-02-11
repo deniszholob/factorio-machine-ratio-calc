@@ -2,41 +2,22 @@ import {
   CdkDragDrop,
   CdkDropList,
   DragDropModule,
-  moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, Signal, effect, inject, viewChild } from '@angular/core';
 
 import { FilePickerComponent } from '../../components/file-picker/file-picker.component';
 import { ProductionEntryComponent } from '../../components/production-entry/production-entry.component';
 import { ProductionModalComponent } from '../../components/production-modal/production-modal.component';
+import { Machine } from '../../components/production-modal/production.model';
 import {
-  Machine,
-  newMachine,
-} from '../../components/production-modal/production.model';
-import { ProductionService } from 'src/app/shared/production/production.service';
+  MachineTotals,
+  ProductionService,
+} from 'src/app/shared/production/production.service';
 import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
 
-interface MachineTotals {
-  deltas: TotalRate[];
-  inputs: TotalRate[];
-  outputs: TotalRate[];
-}
-
-interface TotalRate {
-  name: string;
-  totalRate: number;
-}
-
-// function totalsSort(a: TotalRate, b: TotalRate): number {
-//   const alphabetical = a.name.localeCompare(b.name);
-//   const numeric = a.totalRate - b.totalRate;
-//   const sort = alphabetical;
-//   return sort;
-// }
 const DOWNLOAD_FILE_PREFIX = `PRC`;
 
-// TODO: Move logic to production service
 @Component({
   selector: 'app-production-view',
   templateUrl: './production-view.component.html',
@@ -54,71 +35,43 @@ const DOWNLOAD_FILE_PREFIX = `PRC`;
 export class ProductionViewComponent {
   protected readonly productionService = inject(ProductionService);
   protected readonly importExportService = inject(ImportExportService);
+  // protected readonly $importPicker =
+  //   viewChild<FilePickerComponent>('importPicker');
 
-  public machines: Machine[] = [];
+  protected readonly $machines: Signal<Machine[]> =
+    this.productionService.$machines;
+  protected readonly $machineTotals: Signal<MachineTotals> =
+    this.productionService.$machineTotals;
+
   public machineToEdit?: Machine;
   public modalOpen: boolean = false;
   public errorMessage?: string;
 
-  protected machinesTotals: MachineTotals = {
-    deltas: [],
-    inputs: [],
-    outputs: [],
-  };
+  // private readonly importRequestEffect = effect(() => {
+  //   const requestCount = this.importExportService.$importRequest();
+  //   const importPicker = this.$importPicker();
+
+  //   if (requestCount > 0 && importPicker) {
+  //     importPicker.open();
+  //   }
+  // });
+
+  // private readonly exportRequestEffect = effect(() => {
+  //   const requestCount = this.importExportService.$exportRequest();
+
+  //   if (requestCount > 0) {
+  //     this.downloadData();
+  //   }
+  // });
 
   protected onAddMachine(): void {
-    this.machines.push(newMachine());
-    this.onEditMachine(this.machines[this.machines.length - 1]);
-  }
-
-  private updateTotals(): void {
-    // console.log(`updateTotals`, this.machines);
-    this.machinesTotals.inputs = [];
-    this.machinesTotals.outputs = [];
-    this.machinesTotals.deltas = [];
-    // debugger;
-    for (const m of this.machines) {
-      this.addUpTotalItems(m.machineInputs, this.machinesTotals.inputs);
-      this.addUpTotalItems(m.machineOutputs, this.machinesTotals.outputs);
-    }
-
-    // this.machinesTotals.inputs.sort(totalsSort);
-    // this.machinesTotals.outputs.sort(totalsSort);
-
-    this.addUpTotalItems(
-      this.machinesTotals.outputs,
-      this.machinesTotals.deltas,
-      1,
-    );
-    this.addUpTotalItems(
-      this.machinesTotals.inputs,
-      this.machinesTotals.deltas,
-      -1,
-    );
-    // this.machinesTotals.deltas.sort(totalsSort);
-
-    // console.log(`machinesTotals`, this.machinesTotals);
-  }
-
-  private addUpTotalItems(
-    items: TotalRate[],
-    totals: TotalRate[],
-    sign: 1 | -1 = 1,
-  ): void {
-    for (const mI of items) {
-      const existingInputIdx = totals.findIndex((tI) => tI.name === mI.name);
-      existingInputIdx !== -1
-        ? (totals[existingInputIdx].totalRate += mI.totalRate * sign)
-        : totals.push({
-            name: mI.name,
-            totalRate: mI.totalRate * sign,
-          });
-    }
+    const machine = this.productionService.addMachine();
+    this.onEditMachine(machine);
   }
 
   protected onEditFinish(): void {
     setTimeout(() => {
-      this.updateTotals();
+      this.productionService.refreshMachines();
     }, 1);
   }
 
@@ -128,15 +81,11 @@ export class ProductionViewComponent {
   }
 
   protected onDeleteMachine(index: number): void {
-    if (index > -1) {
-      this.machines.splice(index, 1);
-    }
-    this.updateTotals();
+    this.productionService.deleteMachineAt(index);
   }
 
   protected onClearAll(): void {
-    this.machines = [];
-    this.updateTotals();
+    this.productionService.clearMachines();
   }
 
   protected openModal(): void {
@@ -144,7 +93,7 @@ export class ProductionViewComponent {
   }
 
   protected drop(event: CdkDragDrop<Machine[]>): void {
-    moveItemInArray(this.machines, event.previousIndex, event.currentIndex);
+    this.productionService.moveMachine(event.previousIndex, event.currentIndex);
   }
 
   protected uploadData(files: File[]): void {
@@ -152,6 +101,7 @@ export class ProductionViewComponent {
     this.readFile(selectedFile);
   }
 
+  /* TODO: Generalize and extract to the import/export service */
   private readFile(file: File): void {
     const fileReader = new FileReader();
     fileReader.readAsText(file, 'UTF-8');
@@ -159,7 +109,7 @@ export class ProductionViewComponent {
       const fileResult: string | undefined = fileReader.result?.toString();
       const stringified = fileResult ? JSON.parse(fileResult) : undefined;
       // console.log(stringified);
-      this.machines = stringified ?? [];
+      this.productionService.setMachines(stringified ?? []);
       this.onEditFinish();
     };
     fileReader.onerror = (error) => {
@@ -169,11 +119,12 @@ export class ProductionViewComponent {
   }
 
   protected downloadData(): void {
-    const data: string = JSON.stringify(this.machines);
+    const data: string = JSON.stringify(this.$machines());
     // this.downloadFile(data);
     this.downloadJson(data);
   }
 
+  /* TODO: Generalize and extract to the import/export service */
   private downloadJson(sJson: string): void {
     const element: HTMLAnchorElement = document.createElement('a');
     element.setAttribute(

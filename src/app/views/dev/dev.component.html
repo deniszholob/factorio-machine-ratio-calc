@@ -1,41 +1,49 @@
-<app-main-layout [$lastUpdate]="APP_BUILD_DATE">
-  <!-- TODO:
-    <app-header ngProjectAs="sidebar-header"></app-header>
-  -->
-
-  <!-- TODO :
-  <div class="flex flex-1 flex-col gap-2" ngProjectAs="side-content">
-    <div class="text-[11px] font-semibold tracking-[0.32em] text-slate-500 uppercase">
-      Production Chains
-    </div>
-
-    <app-production-chain-list ></app-production-chain-list>
-  </div>
-  -->
-
-  <!-- TODO:
-    <app-links ngProjectAs="sidebar-footer"></app-header>
-  -->
-  <!-- ================================== -->
+<app-main-layout>
+  <app-header ngProjectAs="side-header"></app-header>
+  <app-production-chain-list ngProjectAs="side-content"></app-production-chain-list>
+  <app-links ngProjectAs="side-footer"></app-links>
 
   <!-- LEAVING THE HEADER COMMENT OUT ON PURPOSE -->
   <!--
   <header
-    class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-slate-950/90 px-6 py-3"
+    class="flex flex-wrap items-center justify-between gap-3 border-b border-stone-700 bg-stone-950/90 px-6 py-3"
     ngProjectAs="main-header"
   >
     <div class="flex flex-col gap-1">
       <h1 class="text-lg font-semibold">Production Components</h1>
-      <span class="text-[11px] uppercase tracking-[0.28em] text-slate-500">
+      <span class="text-[11px] uppercase tracking-[0.28em] text-stone-500">
         Active Chain: {{ activeName }}
       </span>
     </div>
   </header>
   -->
 
+  <!-- For Testing -->
+  <!-- <div class="m-auto flex flex-1 flex-col" ngProjectAs="main-content">
+    <div class="flex flex-col gap-1">
+      <button class="btn">btn</button>
+      <button class="btn btn-primary">primary</button>
+      <button class="btn btn-primary-outline-fill">primary Outline Fill</button>
+      <button class="btn btn-primary-outline">primary Outline</button>
+
+      <button class="btn btn-secondary">secondary</button>
+      <button class="btn btn-secondary-outline-fill">secondary Outline Fill</button>
+      <button class="btn btn-secondary-outline">secondary Outline</button>
+
+      <button class="btn btn-success">success</button>
+      <button class="btn btn-success-outline-fill">success Outline Fill</button>
+      <button class="btn btn-success-outline">success Outline</button>
+
+      <button class="btn btn-warning">warning</button>
+      <button class="btn btn-warning-outline-fill">warning Outline Fill</button>
+      <button class="btn btn-warning-outline">warning Outline</button>
+
+      <button class="btn btn-danger">danger</button>
+      <button class="btn btn-danger-outline-fill">danger Outline Fill</button>
+      <button class="btn btn-danger-outline">danger Outline</button>
+    </div>
+  </div> -->
   <app-production-view ngProjectAs="main-content"></app-production-view>
 
-  <!-- TODO:
-    <app-footer ngProjectAs="main-footer"></app-header>
-  -->
+  <app-footer ngProjectAs="main-footer"></app-footer>
 </app-main-layout>

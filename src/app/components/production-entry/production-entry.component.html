@@ -1,5 +1,8 @@
 @let machine = $machine();
-<div class="my-1 flex flex-row items-center gap-3 px-3 py-2 text-slate-50" cdkDrag>
+<div
+  class="flex cursor-pointer items-center justify-center gap-3 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-2 text-stone-100 transition hover:border-stone-600 hover:bg-stone-900/70"
+  cdkDrag
+>
   <!-- <span>{{ machine.name }}</span> -->
   <div cdkDragHandle>
     <i class="fas fa-grip-vertical"></i>

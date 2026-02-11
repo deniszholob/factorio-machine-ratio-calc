@@ -1,3 +1,44 @@
-<pre>
-  app-production-chain-list
-</pre>
+@let productions = $productions();
+@let activeId = $activeProductionId();
+@let editingId = $editingProductionId();
+@let editingName = $editingName();
+
+<div class="flex flex-1 flex-col gap-2 overflow-auto">
+  <div class="flex flex-row items-center justify-between gap-1">
+    <div class="text-[11px] font-semibold tracking-[0.32em] text-stone-500 uppercase">
+      Production Chains
+    </div>
+
+    <button
+      class="btn btn-success flex items-center px-2 py-1 text-sm"
+      (click)="onAddProduction()"
+      type="button"
+    >
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+
+  <div class="flex flex-1 flex-col gap-2 overflow-auto">
+    @for (production of productions; track production.id) {
+      <app-production-chain
+        [$production]="production"
+        [$activeProductionId]="activeId"
+        [$editingProductionId]="editingId"
+        [$editingName]="editingName"
+        ($select)="onSelectProduction($event)"
+        ($startRename)="onStartRename($event)"
+        ($cancelRename)="onCancelRename()"
+        ($commitRename)="onCommitRename()"
+        ($editName)="onEditInput($event)"
+        ($delete)="onDeleteProduction($event)"
+      ></app-production-chain>
+    } @empty {
+      <div
+        class="rounded-sm border border-dashed border-stone-700 px-3 py-4 text-xs text-stone-400"
+      >
+        No production chains yet.
+        <br />Add one to start planning.
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="flex flex-col gap-3 border-b border-stone-700 pb-3">
+  <div class="flex items-center justify-between gap-3">
+    <a class="flex items-center gap-3" href="#">
+      <div class="flex h-9 w-9 items-center justify-center text-stone-300">
+        <!-- <i class="fas fa-industry"></i> -->
+        <img
+          ngSrc="https://wiki.factorio.com/images/Assembling_machine_1.png"
+          width="36"
+          height="36"
+          alt="Machine"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <span class="text-[11px] font-semibold tracking-[0.28em] text-stone-300 uppercase">
+          Production Ratio
+        </span>
+        <span class="text-base font-semibold">Calculator</span>
+      </div>
+    </a>
+
+    <div class="group relative">
+      <button
+        class="hover:stone-700 flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm border border-stone-700 text-stone-300 transition hover:text-stone-300 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:outline-hidden"
+        [title]="'Interactive ratio calculator for optimizing production setups in factory automation games.'"
+        type="button"
+        aria-label="About the Production Ratio Calculator"
+      >
+        <i class="fas fa-circle-info"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <!-- class="btn flex flex-1 cursor-pointer items-center justify-center gap-2 border border-amber-500 text-xs hover:bg-amber-600" -->
+    <button
+      class="btn btn-primary-outline-fill flex-1 gap-2 text-xs"
+      (click)="onImportProduction()"
+      type="button"
+    >
+      <i class="fas fa-cloud-arrow-up"></i>
+      Import
+    </button>
+
+    <!-- class="btn flex flex-1 cursor-pointer items-center justify-center gap-2 border border-amber-500 text-xs hover:bg-amber-600" -->
+    <button
+      class="btn btn-primary-outline-fill flex-1 gap-2 text-xs"
+      (click)="onExportProduction()"
+      type="button"
+    >
+      <i class="fas fa-download"></i>
+      Export
+    </button>
+  </div>
+</div>

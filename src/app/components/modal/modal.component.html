@@ -1,51 +1,55 @@
 <!-- Overlay -->
 @if ($show()) {
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-neutral-500/50 outline-hidden focus:outline-hidden"
+    class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-black/50 outline-hidden focus:outline-hidden"
   >
+    <!-- Centering -->
     <div class="relative mx-auto my-6 w-full max-w-5xl">
       <!--content-->
       <div
-        class="relative flex w-full flex-col rounded-lg border-0 bg-zinc-800 text-slate-50 shadow-lg outline-hidden focus:outline-hidden"
+        class="relative flex w-full flex-col rounded-lg border border-stone-800 bg-stone-900 text-slate-50 shadow-lg outline-hidden focus:outline-hidden"
       >
         <!--header-->
         <div
-          class="flex items-start justify-between rounded-t border-b border-solid border-zinc-600 p-5"
+          class="flex items-start justify-between rounded-t-lg border-b border-solid border-stone-700 bg-stone-950/50"
         >
-          <h3 class="text-2xl font-semibold">
+          <h3 class="p-4 text-2xl font-semibold">
             {{ $title() }}
           </h3>
+
           <button
-            class="float-right ml-auto border-0 bg-transparent p-1 text-3xl leading-none font-semibold text-red-500 outline-hidden focus:outline-hidden"
+            class="btn float-right ml-auto border-0 bg-transparent p-4 text-3xl leading-none font-semibold text-red-500 hover:text-red-400"
             (click)="closeModal()"
+            title="Close"
           >
             <span class="block h-6 w-6 bg-transparent outline-hidden focus:outline-hidden">
               ×
             </span>
           </button>
         </div>
+
         <!--body-->
         <div class="flex-auto overflow-auto p-6">
           <ng-content></ng-content>
         </div>
+
         <!--footer-->
-        @if ($secondaryButton()) {
+        @if ($primaryButton() || $secondaryButton()) {
           <div
-            class="flex items-center justify-end rounded-b border-t border-solid border-zinc-600 p-6"
+            class="flex items-center justify-end rounded-b border-t border-solid border-stone-800 bg-stone-950/50 p-6"
           >
-            <button
-              class="background-transparent mr-1 mb-1 px-6 py-2 text-sm font-bold text-slate-500 uppercase outline-hidden transition-all duration-150 ease-linear focus:outline-hidden"
-              (click)="onSecondaryButtonClick()"
-              type="button"
-            >
-              {{ $secondaryButton() }}
-            </button>
             @if ($primaryButton()) {
               <button
-                class="mr-1 mb-1 rounded-sm bg-emerald-500 px-6 py-3 text-sm font-bold text-white uppercase shadow-sm outline-hidden transition-all duration-150 ease-linear hover:shadow-lg focus:outline-hidden active:bg-emerald-600"
-                (click)="onPrimaryButtonClick()"
+                class="background-transparent mr-1 mb-1 px-6 py-2 text-sm font-bold text-slate-500 uppercase outline-hidden transition-all duration-150 ease-linear focus:outline-hidden"
+                (click)="onSecondaryButtonClick()"
                 type="button"
               >
+                {{ $secondaryButton() }}
+              </button>
+            }
+
+            @if ($primaryButton()) {
+              <button class="btn btn-primary" (click)="onPrimaryButtonClick()" type="button">
                 {{ $primaryButton() }}
               </button>
             }

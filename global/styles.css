@@ -33,6 +33,43 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
+
+  html {
+    @apply h-full scroll-smooth bg-neutral-700 text-neutral-300;
+  }
+
+  body {
+    @apply flex h-svh min-h-full flex-col;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: black; /* for nice letterboxing effect */
+    height: 100vh;
+    width: 100vw;
+  }
+
+  hr {
+    @apply w-full border-stone-700;
+  }
+
+  dt {
+    @apply float-left clear-left font-bold after:content-[':'];
+  }
+
+  em {
+    @apply font-bold not-italic;
+  }
+
+  /* a {
+    @apply text-orange-400 hover:text-orange-500;
+  } */
+  a {
+    @apply text-orange-400 transition hover:text-orange-300;
+  }
 }
 
 @utility ng-invalid {
@@ -42,23 +79,57 @@
 }
 
 @utility btn {
-  @apply rounded-xs px-4 py-2 font-semibold shadow-md focus:outline-hidden disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
+  @apply flex cursor-pointer items-center justify-center gap-2 rounded-xs border border-transparent px-4 py-2 font-semibold shadow-md transition focus:outline-hidden disabled:cursor-default disabled:bg-slate-300 hover:disabled:bg-slate-300;
 }
 
 @utility btn-primary {
-  @apply bg-sky-600 text-white hover:bg-sky-700 focus:ring-sky-400;
+  @apply bg-amber-700 text-white hover:bg-amber-600;
+}
+@utility btn-primary-outline-fill {
+  @apply border-stone-600 text-stone-300 hover:border-amber-600 hover:bg-amber-600 hover:text-white;
+}
+@utility btn-primary-outline {
+  @apply border-amber-700 text-stone-300 hover:border-amber-400 hover:text-amber-200;
+}
+
+@utility btn-secondary {
+  @apply bg-zinc-700 text-white hover:bg-zinc-600;
+}
+@utility btn-secondary-outline-fill {
+  @apply border-stone-600 text-stone-300 hover:border-zinc-600 hover:bg-zinc-600 hover:text-white;
+}
+@utility btn-secondary-outline {
+  @apply border-zinc-600 text-stone-300 hover:border-zinc-400 hover:text-stone-200;
 }
 
 @utility btn-success {
-  @apply bg-lime-600 text-white hover:bg-lime-700 focus:ring-lime-400;
+  @apply bg-lime-700 text-white hover:bg-lime-600;
+}
+@utility btn-success-outline-fill {
+  @apply border-stone-600 text-stone-300 hover:border-lime-600 hover:bg-lime-600 hover:text-white;
+}
+@utility btn-success-outline {
+  @apply border-lime-600 text-stone-300 hover:border-lime-400 hover:text-lime-200;
 }
 
 @utility btn-warning {
-  @apply bg-amber-500 text-white hover:bg-amber-600 focus:ring-yellow-400;
+  @apply bg-yellow-700 text-white hover:bg-yellow-600;
+}
+@utility btn-warning-outline-fill {
+  @apply border-stone-600 text-stone-300 hover:border-yellow-600 hover:bg-yellow-600 hover:text-white;
+}
+@utility btn-warning-outline {
+  @apply border-yellow-600 text-stone-300 hover:border-yellow-400 hover:text-yellow-200;
 }
 
 @utility btn-danger {
-  @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-400;
+  @apply bg-red-700 text-white hover:bg-red-600;
+}
+@utility btn-danger-outline-fill {
+  @apply border-stone-600 text-stone-300 hover:border-red-600 hover:bg-red-600 hover:text-white;
+}
+@utility btn-danger-outline {
+  @apply border-red-700 text-stone-300 hover:border-red-400 hover:text-red-200;
 }
 
 @utility row {
@@ -128,19 +199,14 @@
   input[type='checkbox']:disabled + label {
     @apply cursor-default;
   }
-
-  a {
-    @apply text-orange-400 hover:text-orange-500;
-  }
-
-  hr {
-    @apply border-neutral-600;
-  }
 }
 
 .cdk-drag-preview {
   box-sizing: border-box;
+  padding: 1rem;
+  overflow: hidden;
   border-radius: 4px;
+  background: #111;
   box-shadow:
     0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14),

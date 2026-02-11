@@ -1,5 +1,9 @@
 <div class="inline-block">
-  <button class="{{ $btnClass() }}" [disabled]="$disabled()" (click)="fileInput.click()">
+  <button
+    class="{{ $btnClass() }} cursor-pointer"
+    [disabled]="$disabled()"
+    (click)="fileInput.click()"
+  >
     <ng-content></ng-content>
   </button>
   <!-- https://stackoverflow.com/questions/42355858/input-file-onchange-event-not-firing -->
