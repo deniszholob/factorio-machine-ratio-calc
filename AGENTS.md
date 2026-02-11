@@ -19,7 +19,7 @@ Only write v4 tailwind code!
 
 - Prefer gap over margins
 - Prefer flex
-- Prefer existing theme over new designs
+- Prefer existing theme over new designs unless specified
 
 ## DRY
 
@@ -142,6 +142,7 @@ public readonly $myValue = model<boolean>(true);
 - Do NOT use `[ngClass]`, use `[class.*]` bindings instead, for any other reasons, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
 - Do NOT use `[ngStyle]`, use `[style.*]` bindings instead, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
 - DO NOT use functions in html templates for getting data (signals and events are ok)
+- Do create storybook files along side components
 
 ### State Management
 
