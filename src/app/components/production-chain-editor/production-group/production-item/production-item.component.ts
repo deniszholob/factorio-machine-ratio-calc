@@ -47,6 +47,8 @@ export class ProductionItemComponent {
   public readonly $isDragging = input<boolean>(false);
   public readonly $itemIconsByName =
     this.productionCatalogService.$itemIconsByName;
+  public readonly $recipeIconsByName =
+    this.productionCatalogService.$recipeIconsByName;
   public readonly $machineIconsByName =
     this.productionCatalogService.$machineIconsByName;
 

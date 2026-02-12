@@ -2,9 +2,12 @@
 @let recipe = production.recipe;
 @let machine = production.machine;
 @let itemIconsByName = $itemIconsByName();
+@let recipeIconsByName = $recipeIconsByName();
 @let machineIconsByName = $machineIconsByName();
 @let machineIconUrl = machineIconsByName[machine.name];
-@let recipeIconUrl = recipe.iconUrl;
+@let firstOutputName = recipe.outputs[0]?.name ?? '';
+@let recipeIconUrl =
+  recipe.iconUrl || recipeIconsByName[recipe.name] || itemIconsByName[firstOutputName];
 @let depth = $depth();
 @let hasChildren = $hasChildren();
 @let childCount = $childCount();
