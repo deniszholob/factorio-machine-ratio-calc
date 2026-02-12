@@ -1,4 +1,12 @@
-import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import {
+  Injectable,
+  PLATFORM_ID,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
 import { ProductionService } from '../production/production.service';
 import {
@@ -8,11 +16,19 @@ import {
 } from '../../components/production-chain-editor/production-editor/production.model';
 import { guid } from 'src/app/shared/guid/guid.util';
 import { ProductionChain } from 'src/app/components/production-chain-group/production-chain-item/production-chain.model';
+import {
+  decodeProductionChainHash,
+  encodeProductionChainHash,
+} from './production-chain-hash.util';
 
 @Injectable({ providedIn: 'root' })
 export class ProductionChainService {
   private readonly importExportService = inject(ImportExportService);
   private readonly productionService = inject(ProductionService);
+  private readonly document = inject(DOCUMENT);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private isHydratingFromHash = false;
 
   public readonly $productionChains = signal<ProductionChain[]>([]);
   public readonly $activeProductionChainId = signal<string | undefined>(
@@ -52,6 +68,14 @@ export class ProductionChainService {
 
   /** On service init, load any stored production chains from localstorage */
   public constructor() {
+    if (this.isBrowser) {
+      this.importProductionChainFromHash(this.document.location.hash);
+      this.document.defaultView?.addEventListener(
+        'hashchange',
+        this.onHashChange,
+      );
+    }
+
     // TODO: use storedChains are initial signal value
     // TODO: make activeProductionChainId a linked signal with storedChains[0]?.id as initial value
     effect(() => {
@@ -93,6 +117,27 @@ export class ProductionChainService {
       }
 
       this.productionService.setMachines(activeProductions);
+    });
+
+    effect(() => {
+      if (!this.isBrowser || this.isHydratingFromHash) {
+        return;
+      }
+
+      const activeId = this.$activeProductionChainId();
+      if (!activeId) {
+        this.replaceHash('');
+        return;
+      }
+
+      const activeChain = this.$productionChains().find(
+        (chain) => chain.id === activeId,
+      );
+      if (!activeChain) {
+        return;
+      }
+
+      this.replaceHash(encodeProductionChainHash(activeChain));
     });
   }
 
@@ -353,6 +398,63 @@ export class ProductionChainService {
   private persist(): void {
     this.importExportService.saveAllProductionChains(this.$productionChains());
   }
+
+  private readonly onHashChange = (): void => {
+    if (!this.isBrowser || this.isHydratingFromHash) {
+      return;
+    }
+    this.importProductionChainFromHash(this.document.location.hash);
+  };
+
+  private importProductionChainFromHash(hash: string): void {
+    const sharedChain = decodeProductionChainHash(hash);
+    if (!sharedChain) {
+      return;
+    }
+
+    if (this.$productionChains().length === 0) {
+      const storedChains = normalizeProductionChains(
+        this.importExportService.loadAllProductionChains(),
+      );
+      if (storedChains.length > 0) {
+        this.$productionChains.set(storedChains);
+      }
+    }
+
+    const importedChain: ProductionChain = {
+      id: guid(),
+      display: ensureSharedDisplayName(
+        sharedChain.display,
+        this.$productionChains().map((chain) => chain.display),
+      ),
+      iconUrl: sharedChain.iconUrl,
+      productions: sharedChain.productions,
+    };
+
+    this.isHydratingFromHash = true;
+    this.$productionChains.update((chains) => [...chains, importedChain]);
+    this.$activeProductionChainId.set(importedChain.id);
+    this.$editingProductionChainId.set(undefined);
+    this.$editingProductionChainDisplay.set('');
+    this.$editingProductionChainIconUrl.set('');
+    this.persist();
+    this.isHydratingFromHash = false;
+  }
+
+  private replaceHash(hash: string): void {
+    const view = this.document.defaultView;
+    if (!view) {
+      return;
+    }
+
+    const currentHash = view.location.hash;
+    if (currentHash === hash) {
+      return;
+    }
+
+    const nextUrl = `${view.location.pathname}${view.location.search}${hash}`;
+    view.history.replaceState(null, '', nextUrl);
+  }
 }
 
 function serializeProductions(productions: Production[]): string {
@@ -401,4 +503,21 @@ function normalizeProductionChains(
 function normalizeIconUrl(value: string): string | undefined {
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function ensureSharedDisplayName(
+  baseName: string,
+  existingNames: string[],
+): string {
+  if (!existingNames.includes(baseName)) {
+    return baseName;
+  }
+
+  let counter = 1;
+  let nextName = `${baseName} (shared)`;
+  while (existingNames.includes(nextName)) {
+    counter += 1;
+    nextName = `${baseName} (shared ${counter})`;
+  }
+  return nextName;
 }
