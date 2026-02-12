@@ -5,7 +5,7 @@
 @let editingProductionChainIconUrl = $editingProductionChainIconUrl();
 
 <div
-  class="flex cursor-pointer items-center justify-between gap-2 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-3 text-stone-100 transition hover:border-stone-600 hover:bg-stone-900/70"
+  class="flex cursor-pointer items-center justify-between gap-2 rounded-sm border border-stone-700 bg-stone-950/40 p-2 text-stone-100 transition hover:border-stone-600 hover:bg-stone-900/70"
   [ngClass]="{
     'border-b-orange-400 bg-stone-900 text-orange-200 hover:border-b-orange-300':
       productionChain.id === activeProductionChainId,
@@ -46,7 +46,7 @@
       />
     </div>
   } @else {
-    <div class="flex min-w-0 flex-1 items-center gap-2 px-2 py-1">
+    <div class="flex min-w-0 flex-1 items-center gap-2">
       @if (productionChain.iconUrl) {
         <img
           class="h-5 w-5 rounded-sm border border-stone-700 object-cover"
@@ -63,6 +63,11 @@
       }
       <span class="truncate text-sm font-semibold">
         {{ productionChain.display }}
+      </span>
+      <span
+        class="rounded border border-stone-700/70 bg-stone-900/70 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
+      >
+        {{ productionChain.productions.length }}
       </span>
     </div>
   }

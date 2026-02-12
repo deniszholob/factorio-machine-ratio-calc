@@ -15,11 +15,11 @@
   <div class="flex flex-col gap-8 rounded-lg bg-stone-900 p-4">
     <div class="flex flex-wrap items-end gap-3">
       <div class="relative h-8 w-10 shrink-0">
-        @if (recipeIconUrl) {
+        @if (machineIconUrl) {
           <img
             class="absolute top-0 left-0 h-8 w-8 rounded-sm border border-stone-700 object-cover"
-            [src]="recipeIconUrl"
-            [alt]="recipe.name + ' icon'"
+            [src]="machineIconUrl"
+            [alt]="machine.name + ' icon'"
           />
         } @else {
           <span
@@ -29,11 +29,11 @@
             <i class="fas fa-image"></i>
           </span>
         }
-        @if (machineIconUrl) {
+        @if (recipeIconUrl) {
           <img
             class="absolute right-0 bottom-0 h-5 w-5 rounded-sm border border-stone-700 object-cover"
-            [src]="machineIconUrl"
-            [alt]="machine.name + ' icon'"
+            [src]="recipeIconUrl"
+            [alt]="recipe.name + ' icon'"
           />
         } @else {
           <span

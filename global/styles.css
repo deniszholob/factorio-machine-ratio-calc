@@ -79,57 +79,57 @@
 }
 
 @utility btn {
-  @apply flex cursor-pointer items-center justify-center gap-2 rounded-sm border border-transparent px-4 py-2 text-base leading-6 font-semibold shadow-md transition focus:outline-hidden disabled:cursor-not-allowed disabled:border-stone-700 disabled:bg-stone-800/60 disabled:text-stone-500 disabled:shadow-none disabled:hover:bg-stone-800/60;
+  @apply flex cursor-pointer items-center justify-center gap-2 rounded-sm border border-transparent px-4 py-2 text-base leading-6 font-semibold shadow-md transition focus:outline-hidden disabled:cursor-not-allowed disabled:border-stone-700 disabled:bg-stone-800/60 disabled:text-stone-500 disabled:shadow-none disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
 }
 
 @utility btn-primary {
-  @apply bg-amber-700 text-white hover:bg-amber-600;
+  @apply bg-amber-700 text-white hover:bg-amber-600 disabled:hover:bg-stone-800/60;
 }
 @utility btn-primary-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-amber-600 hover:bg-amber-600 hover:text-white;
+  @apply border-stone-600 text-stone-300 hover:border-amber-600 hover:bg-amber-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
 }
 @utility btn-primary-outline {
-  @apply border-amber-700 text-stone-300 hover:border-amber-400 hover:text-amber-200;
+  @apply border-amber-700 text-stone-300 hover:border-amber-400 hover:text-amber-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
 }
 
 @utility btn-secondary {
-  @apply bg-zinc-700 text-white hover:bg-zinc-600;
+  @apply bg-zinc-700 text-white hover:bg-zinc-600 disabled:hover:bg-stone-800/60;
 }
 @utility btn-secondary-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-zinc-600 hover:bg-zinc-600 hover:text-white;
+  @apply border-stone-600 text-stone-300 hover:border-zinc-600 hover:bg-zinc-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
 }
 @utility btn-secondary-outline {
-  @apply border-zinc-600 text-stone-300 hover:border-zinc-400 hover:text-stone-200;
+  @apply border-zinc-600 text-stone-300 hover:border-zinc-400 hover:text-stone-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
 }
 
 @utility btn-success {
-  @apply bg-lime-700 text-white hover:bg-lime-600;
+  @apply bg-lime-700 text-white hover:bg-lime-600 disabled:hover:bg-stone-800/60;
 }
 @utility btn-success-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-lime-600 hover:bg-lime-600 hover:text-white;
+  @apply border-stone-600 text-stone-300 hover:border-lime-600 hover:bg-lime-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
 }
 @utility btn-success-outline {
-  @apply border-lime-600 text-stone-300 hover:border-lime-400 hover:text-lime-200;
+  @apply border-lime-600 text-stone-300 hover:border-lime-400 hover:text-lime-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
 }
 
 @utility btn-warning {
-  @apply bg-yellow-700 text-white hover:bg-yellow-600;
+  @apply bg-yellow-700 text-white hover:bg-yellow-600 disabled:hover:bg-stone-800/60;
 }
 @utility btn-warning-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-yellow-600 hover:bg-yellow-600 hover:text-white;
+  @apply border-stone-600 text-stone-300 hover:border-yellow-600 hover:bg-yellow-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
 }
 @utility btn-warning-outline {
-  @apply border-yellow-600 text-stone-300 hover:border-yellow-400 hover:text-yellow-200;
+  @apply border-yellow-600 text-stone-300 hover:border-yellow-400 hover:text-yellow-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
 }
 
 @utility btn-danger {
-  @apply bg-red-700 text-white hover:bg-red-600;
+  @apply bg-red-700 text-white hover:bg-red-600 disabled:hover:bg-stone-800/60;
 }
 @utility btn-danger-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-red-600 hover:bg-red-600 hover:text-white;
+  @apply border-stone-600 text-stone-300 hover:border-red-600 hover:bg-red-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
 }
 @utility btn-danger-outline {
-  @apply border-red-700 text-stone-300 hover:border-red-400 hover:text-red-200;
+  @apply border-red-700 text-stone-300 hover:border-red-400 hover:text-red-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
 }
 
 @utility row {

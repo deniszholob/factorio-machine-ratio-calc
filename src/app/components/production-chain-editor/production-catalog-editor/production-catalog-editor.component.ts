@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
+import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
 import {
   CatalogMachine,
   CatalogProduction,
@@ -35,6 +36,7 @@ import { FormFieldBlockComponent } from '../../form-field-block/form-field-block
 })
 export class ProductionCatalogEditorComponent {
   private readonly productionCatalogService = inject(ProductionCatalogService);
+  private readonly productionChainService = inject(ProductionChainService);
 
   public readonly $catalog = this.productionCatalogService.$catalog;
   public readonly $itemNames = this.productionCatalogService.$itemNames;
@@ -79,16 +81,81 @@ export class ProductionCatalogEditorComponent {
   protected readonly $visibleProductions = computed(() =>
     filterByName(this.$productions(), this.$productionFilter()),
   );
+  protected readonly $usageCounts = computed<CatalogUsageCounts>(() => {
+    const itemByName: Record<string, number> = {};
+    const machineByName: Record<string, number> = {};
+    const recipeByName: Record<string, number> = {};
+    const productionByName: Record<string, number> = {};
+    const catalog = this.$catalog();
+    const chainProductions = this.productionChainService
+      .$productionChains()
+      .flatMap((chain) => chain.productions);
+
+    for (const recipe of catalog.recipes) {
+      for (const item of recipe.inputs) {
+        incrementCountByName(itemByName, item.name);
+      }
+      for (const item of recipe.outputs) {
+        incrementCountByName(itemByName, item.name);
+      }
+    }
+
+    for (const template of catalog.productions) {
+      incrementCountByName(machineByName, template.production.machine.name);
+      incrementCountByName(recipeByName, template.production.recipe.name);
+      for (const item of template.production.recipe.inputs) {
+        incrementCountByName(itemByName, item.name);
+      }
+      for (const item of template.production.recipe.outputs) {
+        incrementCountByName(itemByName, item.name);
+      }
+    }
+
+    for (const production of chainProductions) {
+      incrementCountByName(machineByName, production.machine.name);
+      incrementCountByName(recipeByName, production.recipe.name);
+      incrementCountByName(productionByName, production.name);
+      for (const item of production.recipe.inputs) {
+        incrementCountByName(itemByName, item.name);
+      }
+      for (const item of production.recipe.outputs) {
+        incrementCountByName(itemByName, item.name);
+      }
+    }
+
+    return {
+      itemByName,
+      machineByName,
+      recipeByName,
+      productionByName,
+    };
+  });
+  protected readonly $itemUsageByName = computed<Record<string, number>>(
+    () => this.$usageCounts().itemByName,
+  );
+  protected readonly $machineUsageByName = computed<Record<string, number>>(
+    () => this.$usageCounts().machineByName,
+  );
+  protected readonly $recipeUsageByName = computed<Record<string, number>>(
+    () => this.$usageCounts().recipeByName,
+  );
+  protected readonly $productionUsageByName = computed<Record<string, number>>(
+    () => this.$usageCounts().productionByName,
+  );
   protected readonly $visibleProductionCards = computed(() => {
     const machineIconsByName = this.$machineIconsByName();
+    const productionUsageByName = this.$productionUsageByName();
+    const catalogProductions = this.$productions();
     return this.$visibleProductions().map((template) => {
       const machineName = template.production.machine.name;
       return {
+        index: catalogProductions.indexOf(template),
         name: template.name,
         machineName,
         recipeName: template.production.recipe.name,
         recipeIconUrl: template.production.recipe.iconUrl ?? template.iconUrl,
         machineIconUrl: findIconByName(machineIconsByName, machineName),
+        usageCount: getCountByName(productionUsageByName, template.name),
       };
     });
   });
@@ -221,6 +288,9 @@ export class ProductionCatalogEditorComponent {
   }
 
   protected onRemoveItem(item: { name: string }): void {
+    if (getCountByName(this.$itemUsageByName(), item.name) > 0) {
+      return;
+    }
     const catalogIndex = this.findCatalogItemIndex(item);
     if (catalogIndex === -1) {
       return;
@@ -264,6 +334,9 @@ export class ProductionCatalogEditorComponent {
   }
 
   protected onRemoveRecipe(recipe: CatalogRecipe): void {
+    if (getCountByName(this.$recipeUsageByName(), recipe.name) > 0) {
+      return;
+    }
     const index = this.findRecipeIndex(recipe.name);
     if (index === -1) {
       return;
@@ -306,11 +379,21 @@ export class ProductionCatalogEditorComponent {
   }
 
   protected onRemoveMachine(machine: CatalogMachine): void {
+    if (getCountByName(this.$machineUsageByName(), machine.name) > 0) {
+      return;
+    }
     const index = this.findMachineIndex(machine.name);
     if (index === -1) {
       return;
     }
     this.productionCatalogService.removeMachineAtIndex(index);
+  }
+
+  protected onRemoveProduction(index: number, name: string): void {
+    if (getCountByName(this.$productionUsageByName(), name) > 0) {
+      return;
+    }
+    this.productionCatalogService.removeProductionTemplateAtIndex(index);
   }
 
   private async runUpload(action: () => Promise<void>): Promise<void> {
@@ -379,4 +462,31 @@ function findIconByName(
     }
   }
   return undefined;
+}
+
+interface CatalogUsageCounts {
+  itemByName: Record<string, number>;
+  machineByName: Record<string, number>;
+  recipeByName: Record<string, number>;
+  productionByName: Record<string, number>;
+}
+
+function normalizeUsageKey(name: string): string {
+  return name.trim().toLowerCase();
+}
+
+function incrementCountByName(map: Record<string, number>, name: string): void {
+  const key = normalizeUsageKey(name);
+  if (!key) {
+    return;
+  }
+  map[key] = (map[key] ?? 0) + 1;
+}
+
+function getCountByName(map: Record<string, number>, name: string): number {
+  const key = normalizeUsageKey(name);
+  if (!key) {
+    return 0;
+  }
+  return map[key] ?? 0;
 }

@@ -26,6 +26,8 @@ export class CatalogRecipeFormComponent {
   public readonly $recipe = input.required<CatalogRecipe>();
   public readonly $itemNames = input.required<string[]>();
   public readonly $itemIconsByName = input<Record<string, string>>({});
+  public readonly $usageCount = input<number>(0);
+  public readonly $deleteDisabledReason = input<string | undefined>(undefined);
 
   public readonly $recipeChange = output<void>();
   public readonly $removeRecipe = output<void>();
@@ -40,6 +42,9 @@ export class CatalogRecipeFormComponent {
   }
 
   protected onRemoveRecipe(): void {
+    if (this.$usageCount() > 0) {
+      return;
+    }
     this.$removeRecipe.emit();
   }
 

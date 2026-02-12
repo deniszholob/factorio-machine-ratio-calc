@@ -13,6 +13,10 @@
 @let itemFilter = $itemFilter();
 @let machineFilter = $machineFilter();
 @let recipeFilter = $recipeFilter();
+@let visibleProductionCards = $visibleProductionCards();
+@let itemUsageByName = $itemUsageByName();
+@let machineUsageByName = $machineUsageByName();
+@let recipeUsageByName = $recipeUsageByName();
 
 <section class="flex flex-col gap-4 p-2">
   <div
@@ -234,6 +238,7 @@
 
         <div class="flex flex-col divide-y divide-stone-800/80">
           @for (item of visibleItems; track item) {
+            @let itemUsageCount = itemUsageByName[item.name.trim().toLowerCase()] ?? 0;
             <div class="flex flex-wrap items-end gap-3 py-3">
               @if (item.iconUrl) {
                 <img
@@ -281,9 +286,29 @@
                 />
               </div>
 
-              <button class="btn btn-icon btn-danger h-9" (click)="onRemoveItem(item)">
-                <i class="fas fa-trash"></i>
-              </button>
+              <span
+                class="rounded border border-stone-700/70 bg-stone-900/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
+              >
+                Used {{ itemUsageCount }}
+              </span>
+              <span
+                [title]="
+                  itemUsageCount > 0
+                    ? 'Cannot delete item: used by ' +
+                      itemUsageCount +
+                      ' references. Rename it in recipes/productions first.'
+                    : ''
+                "
+              >
+                <button
+                  class="btn btn-icon btn-danger h-9"
+                  [disabled]="itemUsageCount > 0"
+                  (click)="onRemoveItem(item)"
+                  type="button"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </span>
             </div>
           }
         </div>
@@ -308,6 +333,7 @@
 
         <div class="flex flex-col divide-y divide-stone-800/80">
           @for (machine of visibleMachines; track machine) {
+            @let machineUsageCount = machineUsageByName[machine.name.trim().toLowerCase()] ?? 0;
             <div class="flex flex-wrap items-end gap-3 py-3">
               @if (machine.iconUrl) {
                 <img
@@ -391,9 +417,29 @@
                 />
               </div>
 
-              <button class="btn btn-icon btn-danger h-9" (click)="onRemoveMachine(machine)">
-                <i class="fas fa-trash"></i>
-              </button>
+              <span
+                class="rounded border border-stone-700/70 bg-stone-900/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
+              >
+                Used {{ machineUsageCount }}
+              </span>
+              <span
+                [title]="
+                  machineUsageCount > 0
+                    ? 'Cannot delete machine: used by ' +
+                      machineUsageCount +
+                      ' productions. Update those productions first.'
+                    : ''
+                "
+              >
+                <button
+                  class="btn btn-icon btn-danger h-9"
+                  [disabled]="machineUsageCount > 0"
+                  (click)="onRemoveMachine(machine)"
+                  type="button"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </span>
             </div>
           }
         </div>
@@ -412,10 +458,19 @@
       ($filterValueChange)="onRecipeFilterChange($event)"
     >
       @for (recipe of visibleRecipes; track recipe) {
+        @let recipeUsageCount = recipeUsageByName[recipe.name.trim().toLowerCase()] ?? 0;
         <app-catalog-recipe-form
           [$recipe]="recipe"
           [$itemNames]="itemNames"
           [$itemIconsByName]="itemIconsByName"
+          [$usageCount]="recipeUsageCount"
+          [$deleteDisabledReason]="
+            recipeUsageCount > 0
+              ? 'Cannot delete recipe: used by ' +
+                recipeUsageCount +
+                ' productions. Update those productions first.'
+              : undefined
+          "
           ($recipeChange)="onRecipeChange(recipe)"
           ($removeRecipe)="onRemoveRecipe(recipe)"
           ($addRecipeItem)="onAddRecipeItem(recipe, $event)"
@@ -434,19 +489,19 @@
       [$showToolbar]="false"
     >
       <div class="flex flex-col gap-4 p-4">
-        @if ($visibleProductionCards().length === 0) {
+        @if (visibleProductionCards.length === 0) {
           <div class="text-stone-400">No productions available.</div>
         }
 
         <div class="flex flex-col divide-y divide-stone-800/80">
-          @for (template of $visibleProductionCards(); track template.name) {
+          @for (template of visibleProductionCards; track template.name) {
             <div class="flex flex-wrap items-center gap-3 py-3">
               <span class="relative h-8 w-10 shrink-0">
-                @if (template.recipeIconUrl) {
+                @if (template.machineIconUrl) {
                   <img
                     class="absolute top-0 left-0 h-8 w-8 rounded-sm border border-stone-700 object-cover"
-                    [src]="template.recipeIconUrl"
-                    [alt]="template.recipeName + ' icon'"
+                    [src]="template.machineIconUrl"
+                    [alt]="template.machineName + ' icon'"
                   />
                 } @else {
                   <span
@@ -456,11 +511,11 @@
                     <i class="fas fa-image"></i>
                   </span>
                 }
-                @if (template.machineIconUrl) {
+                @if (template.recipeIconUrl) {
                   <img
                     class="absolute right-0 bottom-0 h-5 w-5 rounded-sm border border-stone-700 object-cover"
-                    [src]="template.machineIconUrl"
-                    [alt]="template.machineName + ' icon'"
+                    [src]="template.recipeIconUrl"
+                    [alt]="template.recipeName + ' icon'"
                   />
                 } @else {
                   <span
@@ -488,6 +543,31 @@
                 </span>
                 <span class="text-stone-500">Read-only, inferred from production data</span>
               </div>
+
+              <span
+                class="rounded border border-stone-700/70 bg-stone-900/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
+              >
+                Used {{ template.usageCount }}
+              </span>
+
+              <span
+                [title]="
+                  template.usageCount > 0
+                    ? 'Cannot delete production template: used in ' +
+                      template.usageCount +
+                      ' productions across chains.'
+                    : ''
+                "
+              >
+              <button
+                class="btn btn-icon btn-danger h-9"
+                [disabled]="template.usageCount > 0"
+                (click)="onRemoveProduction(template.index, template.name)"
+                type="button"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+              </span>
             </div>
           }
         </div>

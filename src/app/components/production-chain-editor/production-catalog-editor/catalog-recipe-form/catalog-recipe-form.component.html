@@ -1,4 +1,6 @@
 @let recipe = $recipe();
+@let usageCount = $usageCount();
+@let deleteDisabledReason = $deleteDisabledReason();
 
 <div class="flex flex-col gap-4 rounded-lg border border-stone-800/70 bg-stone-950/30 p-4">
   <div class="flex items-center gap-3">
@@ -62,9 +64,21 @@
       />
     </app-form-field-block>
 
-    <button class="btn btn-icon btn-danger h-9" (click)="onRemoveRecipe()">
-      <i class="fas fa-trash"></i>
-    </button>
+    <span
+      class="rounded border border-stone-700/70 bg-stone-900/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
+    >
+      Used {{ usageCount }}
+    </span>
+    <span [title]="usageCount > 0 ? deleteDisabledReason : ''">
+      <button
+        class="btn btn-icon btn-danger h-9"
+        [disabled]="usageCount > 0"
+        (click)="onRemoveRecipe()"
+        type="button"
+      >
+        <i class="fas fa-trash"></i>
+      </button>
+    </span>
   </div>
 
   <div class="flex flex-wrap gap-8">
