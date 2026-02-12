@@ -1,6 +1,6 @@
 import { Injectable, effect, signal } from '@angular/core';
 
-import { LOCAL_STORAGE_KEY_SETTINGS } from '../local-storage/local-storage.data';
+import { LOCAL_STORAGE_KEY_SETTINGS } from '../import-export/local-storage.data';
 
 export type EditorDisplayMode = 'modal' | 'sidebar' | 'full';
 export type ImportMode = 'add' | 'override';

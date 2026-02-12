@@ -7,14 +7,14 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
-import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
+import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
+import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
 import {
   CatalogMachine,
   CatalogProduction,
   CatalogRecipe,
-} from 'src/app/shared/production-catalog/production-catalog.model';
-import { ImportMode } from 'src/app/shared/settings/settings.service';
+} from 'src/app/shared/services/production-catalog/production-catalog.model';
+import { ImportMode } from 'src/app/shared/services/settings/settings.service';
 import { FilePickerComponent } from 'src/app/components/file-picker/file-picker.component';
 import { SectionBlockComponent } from 'src/app/components/section-block/section-block.component';
 import { CatalogRecipeFormComponent } from './catalog-recipe-form/catalog-recipe-form.component';
@@ -268,7 +268,8 @@ export class ProductionCatalogEditorComponent {
       ...item,
       name: nextName,
     });
-    this.productionCatalogService.renameReferences(
+    this.productionCatalogService.renameReferences(previousName, nextName);
+    this.productionChainService.renameCatalogReferences(
       previousName,
       nextName,
       false,
@@ -370,7 +371,8 @@ export class ProductionCatalogEditorComponent {
       craftingSpeed: machine.craftingSpeed,
       productivity: machine.productivity,
     });
-    this.productionCatalogService.renameReferences(
+    this.productionCatalogService.renameReferences(previousName, nextName);
+    this.productionChainService.renameCatalogReferences(
       previousName,
       nextName,
       true,

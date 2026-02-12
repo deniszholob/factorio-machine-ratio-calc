@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 
-import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
+import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
 import { ProductionChainItemComponent } from './production-chain-item/production-chain-item.component';
 import { ProductionChain } from './production-chain-item/production-chain.model';
 import { ModalComponent } from '../modal/modal.component';

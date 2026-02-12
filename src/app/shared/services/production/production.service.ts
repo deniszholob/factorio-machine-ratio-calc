@@ -7,7 +7,7 @@ import {
   newProduction,
   normalizeProduction,
 } from 'src/app/components/production-chain-editor/production-editor/production.model';
-import { guid } from 'src/app/shared/guid/guid.util';
+import { guid } from 'src/app/shared/utils/guid/guid.util';
 import {
   collectSubtreeIds,
   collectSubtreeItemsInOrder,

@@ -10,18 +10,35 @@ export interface SharedProductionChainPayload {
   display: string;
   iconUrl?: string;
   productions: Production[];
+  icons?: SharedProductionIconsPayload;
 }
 
-export function encodeProductionChainHash(chain: ProductionChain): string {
+export interface SharedProductionIconsPayload {
+  itemByName: Record<string, string>;
+  recipeByName: Record<string, string>;
+  machineByName: Record<string, string>;
+}
+
+export function encodeProductionChainHash(
+  chain: ProductionChain,
+  icons?: SharedProductionIconsPayload,
+): string {
   const payload: SharedProductionChainPayload = {
-    display: chain.display.trim() || 'Shared Production Chain',
+    display: normalizeSharedDisplayBaseName(chain.display),
     iconUrl: chain.iconUrl,
     productions: chain.productions.map((production) =>
       normalizeProduction(production),
     ),
+    icons,
   };
   const json = JSON.stringify(payload);
   return `${SHARED_HASH_PREFIX}${encodeBase64Url(json)}`;
+}
+
+function normalizeSharedDisplayBaseName(displayName: string): string {
+  const trimmed = displayName.trim();
+  const normalized = trimmed.replace(/(\s+\(shared(?:\s+\d+)?\))+$/i, '');
+  return normalized.trim() || 'Shared Production Chain';
 }
 
 export function decodeProductionChainHash(
@@ -55,10 +72,51 @@ export function decodeProductionChainHash(
       productions: parsed.productions.map((production) =>
         normalizeProduction(production),
       ),
+      icons: normalizeSharedProductionIcons(parsed.icons),
     };
   } catch {
     return undefined;
   }
+}
+
+function normalizeSharedProductionIcons(
+  payload: unknown,
+): SharedProductionIconsPayload | undefined {
+  if (!payload || typeof payload !== 'object') {
+    return undefined;
+  }
+
+  const maybe = payload as {
+    itemByName?: unknown;
+    recipeByName?: unknown;
+    machineByName?: unknown;
+  };
+
+  return {
+    itemByName: normalizeIconRecord(maybe.itemByName),
+    recipeByName: normalizeIconRecord(maybe.recipeByName),
+    machineByName: normalizeIconRecord(maybe.machineByName),
+  };
+}
+
+function normalizeIconRecord(payload: unknown): Record<string, string> {
+  if (!payload || typeof payload !== 'object') {
+    return {};
+  }
+
+  const next: Record<string, string> = {};
+  for (const [name, iconUrl] of Object.entries(payload)) {
+    const normalizedName = name.trim();
+    if (!normalizedName || typeof iconUrl !== 'string') {
+      continue;
+    }
+    const normalizedIconUrl = iconUrl.trim();
+    if (!normalizedIconUrl) {
+      continue;
+    }
+    next[normalizedName] = normalizedIconUrl;
+  }
+  return next;
 }
 
 function encodeBase64Url(value: string): string {

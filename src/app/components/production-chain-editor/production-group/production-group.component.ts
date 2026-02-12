@@ -15,9 +15,9 @@ import {
 } from '@angular/core';
 
 import { Production } from '../production-editor/production.model';
-import { ProductionTotals } from 'src/app/shared/production/production.service';
+import { ProductionTotals } from 'src/app/shared/services/production/production.service';
 import { ProductionItemComponent } from './production-item/production-item.component';
-import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
+import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
 import {
   ProductionMoveEvent,
   ProductionMovePreview,
@@ -25,7 +25,7 @@ import {
   buildDragPreview,
   buildVisibleRows,
   collectSubtreeIds,
-} from 'src/app/shared/production/production-tree-dnd.util';
+} from 'src/app/shared/services/production/production-tree-dnd.util';
 
 @Component({
   selector: 'app-production-group',

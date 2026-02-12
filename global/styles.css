@@ -185,7 +185,7 @@
     @apply mb-2 text-sm font-bold text-slate-400;
   }
   input {
-    @apply form-input rounded-sm border-0 bg-neutral-700 px-3 py-2 text-sm text-slate-200 placeholder-stone-300 shadow-sm transition-all duration-150 ease-linear focus:outline-hidden disabled:cursor-not-allowed disabled:bg-stone-800/60 disabled:text-stone-500 disabled:placeholder-stone-600 disabled:ring-1 disabled:ring-stone-700/60;
+    @apply form-input rounded-sm border-0 bg-neutral-700 px-3 py-2 text-sm text-slate-200 placeholder-stone-500 shadow-sm transition-all duration-150 ease-linear focus:outline-hidden disabled:cursor-not-allowed disabled:bg-stone-800/60 disabled:text-stone-500 disabled:placeholder-stone-600 disabled:ring-1 disabled:ring-stone-700/60;
   }
   label + input {
     @apply m-0 ml-2;

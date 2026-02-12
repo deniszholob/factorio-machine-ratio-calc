@@ -22,7 +22,7 @@ import {
   toMachineItems,
   toRecipeItems,
 } from './production.model';
-import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
+import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
 import { IconAutocompleteInputComponent } from 'src/app/components/icon-autocomplete-input/icon-autocomplete-input.component';
 import { FormFieldBlockComponent } from 'src/app/components/form-field-block/form-field-block.component';
 import { RecipeIoListComponent } from 'src/app/components/recipe-io-list/recipe-io-list.component';
@@ -123,7 +123,7 @@ export class ProductionEditorComponent {
     } else {
       this.productionCatalogService.upsertMachine({
         name,
-        iconUrl: undefined,
+        iconUrl: this.findMachineIconUrl(name),
         craftingSpeed: production.machine.craftingSpeed,
         productivity: production.machine.productivity,
       });
@@ -153,7 +153,7 @@ export class ProductionEditorComponent {
     if (name) {
       this.productionCatalogService.upsertMachine({
         name,
-        iconUrl: undefined,
+        iconUrl: this.findMachineIconUrl(name),
         craftingSpeed: production.machine.craftingSpeed,
         productivity: production.machine.productivity,
       });
@@ -234,7 +234,9 @@ export class ProductionEditorComponent {
     }
     if (production.recipe.useAutoIcon !== false) {
       production.recipe.useAutoIcon = true;
-      production.recipe.iconUrl = this.findItemIconUrl(firstOutputName);
+      production.recipe.iconUrl =
+        this.findItemIconUrl(firstOutputName) ??
+        this.findRecipeIconUrl(production.recipe.name);
     }
   }
 
@@ -251,6 +253,44 @@ export class ProductionEditorComponent {
     const normalized = name.trim().toLowerCase();
     for (const [itemName, iconUrl] of Object.entries(iconsByName)) {
       if (itemName.trim().toLowerCase() === normalized) {
+        return iconUrl;
+      }
+    }
+    return undefined;
+  }
+
+  private findRecipeIconUrl(name: string): string | undefined {
+    if (!name) {
+      return undefined;
+    }
+    const iconsByName = this.$recipeIconsByName();
+    const exact = iconsByName[name];
+    if (exact) {
+      return exact;
+    }
+
+    const normalized = name.trim().toLowerCase();
+    for (const [recipeName, iconUrl] of Object.entries(iconsByName)) {
+      if (recipeName.trim().toLowerCase() === normalized) {
+        return iconUrl;
+      }
+    }
+    return undefined;
+  }
+
+  private findMachineIconUrl(name: string): string | undefined {
+    if (!name) {
+      return undefined;
+    }
+    const iconsByName = this.$machineIconsByName();
+    const exact = iconsByName[name];
+    if (exact) {
+      return exact;
+    }
+
+    const normalized = name.trim().toLowerCase();
+    for (const [machineName, iconUrl] of Object.entries(iconsByName)) {
+      if (machineName.trim().toLowerCase() === normalized) {
         return iconUrl;
       }
     }

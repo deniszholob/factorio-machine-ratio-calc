@@ -1,6 +1,5 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { ImportMode } from '../settings/settings.service';
-import { ProductionChainService } from '../production-chain/production-chain.service';
 import {
   CatalogItem,
   CatalogMachine,
@@ -9,11 +8,12 @@ import {
   ProductionCatalogState,
   createDefaultCatalogState,
 } from './production-catalog.model';
-import { LOCAL_STORAGE_KEY_CATALOG } from '../local-storage/local-storage.data';
+import { LOCAL_STORAGE_KEY_CATALOG } from '../import-export/local-storage.data';
 import {
   Production,
   normalizeProduction,
 } from 'src/app/components/production-chain-editor/production-editor/production.model';
+import { SharedProductionIconsPayload } from '../production-chain/production-chain-hash.util';
 
 const DOWNLOAD_FILE_EXTENSION = 'json';
 const DEFAULT_ITEM_NAME = 'Default-Item';
@@ -24,7 +24,6 @@ const DEFAULT_AUTONAME_PRODUCTION_NAME = `${DEFAULT_RECIPE_NAME} in ${DEFAULT_MA
 
 @Injectable({ providedIn: 'root' })
 export class ProductionCatalogService {
-  private readonly productionChainService = inject(ProductionChainService);
   private readonly _$catalog = signal<ProductionCatalogState>(loadCatalog());
   public readonly $catalog = this._$catalog.asReadonly();
 
@@ -105,6 +104,22 @@ export class ProductionCatalogService {
       return map;
     },
   );
+
+  public getSharedIconMaps(): SharedProductionIconsPayload {
+    return {
+      itemByName: { ...this.$itemIconsByName() },
+      recipeByName: { ...this.$recipeIconsByName() },
+      machineByName: { ...this.$machineIconsByName() },
+    };
+  }
+
+  public rebuildCatalogFromProductions(
+    productions: Production[],
+    icons?: SharedProductionIconsPayload,
+  ): void {
+    const nextState = buildCatalogStateFromProductions(productions, icons);
+    this.setCatalog(nextState);
+  }
 
   public getRecipeByName(name: string): CatalogRecipe | undefined {
     const index = this.findRecipeIndex(name);
@@ -411,11 +426,7 @@ export class ProductionCatalogService {
     });
   }
 
-  public renameReferences(
-    previousName: string,
-    nextName: string,
-    isMachine: boolean,
-  ): void {
+  public renameReferences(previousName: string, nextName: string): void {
     const from = previousName.trim();
     const to = nextName.trim();
     if (!from || !to || from.toLowerCase() === to.toLowerCase()) {
@@ -443,8 +454,6 @@ export class ProductionCatalogService {
       saveCatalog(nextState);
       return nextState;
     });
-
-    this.productionChainService.renameCatalogReferences(from, to, isMachine);
   }
 
   public removeItemAtIndex(index: number): void {
@@ -740,6 +749,202 @@ function loadCatalog(): ProductionCatalogState {
 function saveCatalog(state: ProductionCatalogState): void {
   const payload = JSON.stringify(state);
   localStorage.setItem(LOCAL_STORAGE_KEY_CATALOG, payload);
+}
+
+function buildCatalogStateFromProductions(
+  productions: Production[],
+  icons?: SharedProductionIconsPayload,
+): ProductionCatalogState {
+  const nextState = createDefaultCatalogState();
+  const recipeIconsByName = {
+    ...(icons?.recipeByName ?? {}),
+    ...collectRecipeIconsByName(productions),
+  };
+  const itemIconsByName = {
+    ...(icons?.itemByName ?? {}),
+    ...collectItemIconsByName(productions, recipeIconsByName),
+  };
+  const machineIconsByName = { ...(icons?.machineByName ?? {}) };
+
+  for (const source of productions) {
+    const production = normalizeProduction(source);
+
+    const machineName = production.machine.name.trim();
+    if (isAllowedCatalogName(machineName, 'machine')) {
+      upsertCatalogItemByName(nextState.items, {
+        name: machineName,
+        isMachine: true,
+        iconUrl: findIconByName(machineIconsByName, machineName),
+        craftingSpeed: production.machine.craftingSpeed,
+        productivity: production.machine.productivity,
+      });
+    }
+
+    const recipeName = production.recipe.name.trim();
+    const firstOutputName = production.recipe.outputs[0]?.name?.trim() ?? '';
+    if (isAllowedCatalogName(recipeName, 'recipe')) {
+      upsertRecipeByName(nextState.recipes, {
+        name: recipeName,
+        iconUrl:
+          normalizeIconUrl(production.recipe.iconUrl) ??
+          findIconByName(recipeIconsByName, recipeName) ??
+          findIconByName(itemIconsByName, firstOutputName),
+        timeToComplete: production.recipe.timeToComplete,
+        inputs: production.recipe.inputs.map((item) => ({
+          name: item.name,
+          count: item.count,
+        })),
+        outputs: production.recipe.outputs.map((item) => ({
+          name: item.name,
+          count: item.count,
+        })),
+      });
+    }
+
+    for (const item of production.recipe.inputs) {
+      const itemName = item.name.trim();
+      if (!isAllowedCatalogName(itemName, 'item')) {
+        continue;
+      }
+      upsertCatalogItemByName(nextState.items, {
+        name: itemName,
+        iconUrl: findIconByName(itemIconsByName, itemName),
+      });
+    }
+
+    for (const item of production.recipe.outputs) {
+      const itemName = item.name.trim();
+      if (!isAllowedCatalogName(itemName, 'item')) {
+        continue;
+      }
+      upsertCatalogItemByName(nextState.items, {
+        name: itemName,
+        iconUrl: findIconByName(itemIconsByName, itemName),
+      });
+    }
+
+    const productionName = production.name.trim();
+    if (!isAllowedCatalogName(productionName, 'production')) {
+      continue;
+    }
+
+    const template: CatalogProduction = {
+      name: productionName,
+      iconUrl: normalizeIconUrl(production.iconUrl),
+      production: cloneProduction(production),
+    };
+    upsertProductionTemplateByName(nextState.productions, template);
+  }
+
+  return withCatalogConsistency(nextState);
+}
+
+function upsertCatalogItemByName(
+  items: CatalogItem[],
+  item: CatalogItem,
+): void {
+  const index = findIndexByName(items, item.name);
+  const normalizedIconUrl = normalizeIconUrl(item.iconUrl);
+  if (index === -1) {
+    items.push({
+      ...item,
+      iconUrl: normalizedIconUrl,
+    });
+    return;
+  }
+
+  items[index] = {
+    ...items[index],
+    ...item,
+    iconUrl: normalizedIconUrl ?? items[index].iconUrl,
+  };
+}
+
+function upsertRecipeByName(
+  recipes: CatalogRecipe[],
+  recipe: CatalogRecipe,
+): void {
+  const index = findIndexByName(recipes, recipe.name);
+  if (index === -1) {
+    recipes.push(recipe);
+    return;
+  }
+  recipes[index] = recipe;
+}
+
+function upsertProductionTemplateByName(
+  templates: CatalogProduction[],
+  template: CatalogProduction,
+): void {
+  const index = findIndexByName(templates, template.name);
+  if (index === -1) {
+    templates.push(template);
+    return;
+  }
+  templates[index] = template;
+}
+
+function findIconByName(
+  iconsByName: Record<string, string>,
+  name: string,
+): string | undefined {
+  const exact = iconsByName[name];
+  if (exact) {
+    return exact;
+  }
+
+  const normalized = name.trim().toLowerCase();
+  for (const [itemName, iconUrl] of Object.entries(iconsByName)) {
+    if (itemName.trim().toLowerCase() === normalized) {
+      return iconUrl;
+    }
+  }
+
+  return undefined;
+}
+
+function collectRecipeIconsByName(
+  productions: Production[],
+): Record<string, string> {
+  const map: Record<string, string> = {};
+
+  for (const source of productions) {
+    const production = normalizeProduction(source);
+    const recipeName = production.recipe.name.trim();
+    const recipeIconUrl = normalizeIconUrl(production.recipe.iconUrl);
+    if (!recipeName || !recipeIconUrl) {
+      continue;
+    }
+    map[recipeName] = recipeIconUrl;
+  }
+
+  return map;
+}
+
+function collectItemIconsByName(
+  productions: Production[],
+  recipeIconsByName: Record<string, string>,
+): Record<string, string> {
+  const map: Record<string, string> = {};
+
+  for (const source of productions) {
+    const production = normalizeProduction(source);
+    const firstOutputName = production.recipe.outputs[0]?.name?.trim();
+    if (!firstOutputName) {
+      continue;
+    }
+
+    const recipeName = production.recipe.name.trim();
+    const iconUrl =
+      normalizeIconUrl(production.recipe.iconUrl) ??
+      findIconByName(recipeIconsByName, recipeName);
+    if (!iconUrl) {
+      continue;
+    }
+    map[firstOutputName] = iconUrl;
+  }
+
+  return map;
 }
 
 function cloneRecipe(recipe: CatalogRecipe): CatalogRecipe {

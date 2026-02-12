@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TooltipDirective } from 'src/app/components/tooltip/tooltip.directive';
-import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
+import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
 import {
   Production,
   reCalcProductionRates,

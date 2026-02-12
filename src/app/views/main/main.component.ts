@@ -10,12 +10,12 @@ import { LinksComponent } from 'src/app/components/links/links.component';
 import { ProductionChainGroupComponent } from 'src/app/components/production-chain-group/production-chain-group.component';
 import { SettingsViewComponent } from 'src/app/components/settings-view/settings-view.component';
 import { ProductionChainEditorComponent } from 'src/app/components/production-chain-editor/production-chain-editor.component';
-import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
-import { SettingsService } from 'src/app/shared/settings/settings.service';
+import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
+import { SettingsService } from 'src/app/shared/services/settings/settings.service';
 import { MainLayoutComponent } from 'src/app/layouts/main-layout/main-layout.component';
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
 import { ProductionCatalogEditorComponent } from 'src/app/components/production-chain-editor/production-catalog-editor/production-catalog-editor.component';
-import { ProductionCatalogUiService } from 'src/app/shared/production-catalog/production-catalog-ui.service';
+import { ProductionCatalogUiService } from 'src/app/shared/services/production-catalog/production-catalog-ui.service';
 
 @Component({
   selector: 'app-main',

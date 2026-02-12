@@ -4,6 +4,7 @@ export const MOCK_Machines: Production[] = [
   {
     id: 'mock-1',
     name: 'Green Circuits in Assembler 1',
+    isExpanded: true,
     count: 2,
     effectiveTime: 0.6666666666666666,
     recipe: {
@@ -26,6 +27,7 @@ export const MOCK_Machines: Production[] = [
   {
     id: 'mock-2',
     name: 'Iron in Furnace',
+    isExpanded: true,
     count: 9.6,
     effectiveTime: 3.2,
     recipe: {
@@ -43,6 +45,7 @@ export const MOCK_Machines: Production[] = [
   {
     id: 'mock-3',
     name: 'Wire in Assembler 1',
+    isExpanded: true,
     count: 3,
     effectiveTime: 0.6666666666666666,
     recipe: {
@@ -60,6 +63,7 @@ export const MOCK_Machines: Production[] = [
   {
     id: 'mock-4',
     name: 'Copper in Furnace',
+    isExpanded: true,
     count: 14.4,
     effectiveTime: 3.2,
     recipe: {

@@ -2,7 +2,7 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
 import { ProductionGroupComponent } from './production-group.component';
-import { ProductionTotals } from 'src/app/shared/production/production.service';
+import { ProductionTotals } from 'src/app/shared/services/production/production.service';
 import { MOCK_Machines } from '../production-chain-editor.mock';
 
 type ComponentWithCustomControls = ProductionGroupComponent; // & {};

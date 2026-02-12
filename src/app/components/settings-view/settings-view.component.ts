@@ -5,7 +5,7 @@ import {
   EditorDisplayMode,
   ImportMode,
   SettingsService,
-} from 'src/app/shared/settings/settings.service';
+} from 'src/app/shared/services/settings/settings.service';
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
 
 @Component({

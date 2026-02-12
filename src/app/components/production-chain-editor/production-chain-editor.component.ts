@@ -13,15 +13,15 @@ import { Production } from './production-editor/production.model';
 import {
   ProductionTotals,
   ProductionService,
-} from 'src/app/shared/production/production.service';
-import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
-import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
+} from 'src/app/shared/services/production/production.service';
+import { ImportExportService } from 'src/app/shared/services/import-export/import-export.service';
+import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
 import { ProductionEditorModalComponent } from './production-editor/production-editor-modal/production-editor-modal.component';
 import { ProductionEditorSidebarComponent } from './production-editor/production-editor-sidebar/production-editor-sidebar.component';
 import { ProductionEditorFullComponent } from './production-editor/production-editor-full/production-editor-full.component';
-import { SettingsService } from 'src/app/shared/settings/settings.service';
+import { SettingsService } from 'src/app/shared/services/settings/settings.service';
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
-import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
+import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
 import { IconAutocompleteInputComponent } from 'src/app/components/icon-autocomplete-input/icon-autocomplete-input.component';
 
 @Component({

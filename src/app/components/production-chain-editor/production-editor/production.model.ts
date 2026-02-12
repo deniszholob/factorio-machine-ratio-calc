@@ -1,4 +1,4 @@
-import { guid } from 'src/app/shared/guid/guid.util';
+import { guid } from 'src/app/shared/utils/guid/guid.util';
 
 export interface RecipeItem {
   name: string;

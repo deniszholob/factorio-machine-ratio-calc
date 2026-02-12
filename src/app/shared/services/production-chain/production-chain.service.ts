@@ -7,14 +7,15 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
+import { ImportExportService } from 'src/app/shared/services/import-export/import-export.service';
 import { ProductionService } from '../production/production.service';
+import { ProductionCatalogService } from '../production-catalog/production-catalog.service';
 import {
   Production,
   normalizeProduction,
   syncAutoProductionName,
-} from '../../components/production-chain-editor/production-editor/production.model';
-import { guid } from 'src/app/shared/guid/guid.util';
+} from '../../../components/production-chain-editor/production-editor/production.model';
+import { guid } from 'src/app/shared/utils/guid/guid.util';
 import { ProductionChain } from 'src/app/components/production-chain-group/production-chain-item/production-chain.model';
 import {
   decodeProductionChainHash,
@@ -25,6 +26,7 @@ import {
 export class ProductionChainService {
   private readonly importExportService = inject(ImportExportService);
   private readonly productionService = inject(ProductionService);
+  private readonly productionCatalogService = inject(ProductionCatalogService);
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
@@ -137,7 +139,12 @@ export class ProductionChainService {
         return;
       }
 
-      this.replaceHash(encodeProductionChainHash(activeChain));
+      this.replaceHash(
+        encodeProductionChainHash(
+          activeChain,
+          this.productionCatalogService.getSharedIconMaps(),
+        ),
+      );
     });
   }
 
@@ -421,6 +428,15 @@ export class ProductionChainService {
       }
     }
 
+    const existingChainId = findChainIdByProductionIds(
+      this.$productionChains(),
+      sharedChain.productions,
+    );
+    if (existingChainId) {
+      this.$activeProductionChainId.set(existingChainId);
+      return;
+    }
+
     const importedChain: ProductionChain = {
       id: guid(),
       display: ensureSharedDisplayName(
@@ -438,6 +454,10 @@ export class ProductionChainService {
     this.$editingProductionChainDisplay.set('');
     this.$editingProductionChainIconUrl.set('');
     this.persist();
+    this.productionCatalogService.rebuildCatalogFromProductions(
+      sharedChain.productions,
+      sharedChain.icons,
+    );
     this.isHydratingFromHash = false;
   }
 
@@ -509,15 +529,48 @@ function ensureSharedDisplayName(
   baseName: string,
   existingNames: string[],
 ): string {
-  if (!existingNames.includes(baseName)) {
-    return baseName;
+  const normalizedBaseName = normalizeSharedDisplayBaseName(baseName);
+
+  if (!existingNames.includes(normalizedBaseName)) {
+    return normalizedBaseName;
   }
 
-  let counter = 1;
-  let nextName = `${baseName} (shared)`;
+  if (!existingNames.includes(`${normalizedBaseName} (shared)`)) {
+    return `${normalizedBaseName} (shared)`;
+  }
+
+  let counter = 2;
+  let nextName = `${normalizedBaseName} (shared ${counter})`;
   while (existingNames.includes(nextName)) {
     counter += 1;
-    nextName = `${baseName} (shared ${counter})`;
+    nextName = `${normalizedBaseName} (shared ${counter})`;
   }
   return nextName;
+}
+
+function normalizeSharedDisplayBaseName(displayName: string): string {
+  const trimmed = displayName.trim();
+  const normalized = trimmed.replace(/(\s+\(shared(?:\s+\d+)?\))+$/i, '');
+  return normalized.trim() || 'Shared Production Chain';
+}
+
+function findChainIdByProductionIds(
+  chains: ProductionChain[],
+  incomingProductions: Production[],
+): string | undefined {
+  const incomingIds = toSortedProductionIds(incomingProductions);
+  return chains.find((chain) => {
+    const chainIds = toSortedProductionIds(chain.productions);
+    if (chainIds.length !== incomingIds.length) {
+      return false;
+    }
+    return chainIds.every((id, index) => id === incomingIds[index]);
+  })?.id;
+}
+
+function toSortedProductionIds(productions: Production[]): string[] {
+  return productions
+    .map((production) => production.id.trim())
+    .filter((id) => id.length > 0)
+    .sort((a, b) => a.localeCompare(b));
 }
