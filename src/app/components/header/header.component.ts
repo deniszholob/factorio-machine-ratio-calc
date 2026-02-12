@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ImportExportService } from 'src/app/shared/services/import-export/import-export.service';
 import { TooltipDirective } from '../tooltip/tooltip.directive';
-import { FilePickerComponent } from '../file-picker/file-picker.component';
+import { FilePickerComponent } from '../../forms/file-picker/file-picker.component';
 import { SettingsService } from 'src/app/shared/services/settings/settings.service';
 import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
 import { ProductionCatalogUiService } from 'src/app/shared/services/production-catalog/production-catalog-ui.service';

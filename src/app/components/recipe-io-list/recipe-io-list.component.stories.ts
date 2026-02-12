@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/angular';
-import { RecipeIoListComponent } from './recipe-io-list.component';
+import { RecipeIoListComponent } from './recipe-io-lis.component.';
 
 export default {
   component: RecipeIoListComponent,

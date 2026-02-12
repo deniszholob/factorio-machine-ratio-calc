@@ -12,8 +12,8 @@ import {
   output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FormFieldBlockComponent } from '../form-field-block/form-field-block.component';
-import { IconAutocompleteInputComponent } from '../icon-autocomplete-input/icon-autocomplete-input.component';
+import { FormFieldBlockComponent } from '../../forms/form-field-block/form-field-block.component';
+import { IconAutocompleteInputComponent } from '../../forms/icon-autocomplete-input/icon-autocomplete-input.component';
 
 interface EditableRecipeItem {
   name: string;

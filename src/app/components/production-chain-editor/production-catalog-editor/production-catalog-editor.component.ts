@@ -15,10 +15,10 @@ import {
   CatalogRecipe,
 } from 'src/app/shared/services/production-catalog/production-catalog.model';
 import { ImportMode } from 'src/app/shared/services/settings/settings.service';
-import { FilePickerComponent } from 'src/app/components/file-picker/file-picker.component';
+import { FilePickerComponent } from 'src/app/forms/file-picker/file-picker.component';
 import { SectionBlockComponent } from 'src/app/components/section-block/section-block.component';
 import { CatalogRecipeFormComponent } from './catalog-recipe-form/catalog-recipe-form.component';
-import { FormFieldBlockComponent } from '../../form-field-block/form-field-block.component';
+import { FormFieldBlockComponent } from '../../../forms/form-field-block/form-field-block.component';
 
 @Component({
   selector: 'app-production-catalog-editor',

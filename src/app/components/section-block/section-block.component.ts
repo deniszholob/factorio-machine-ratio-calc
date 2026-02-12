@@ -5,7 +5,7 @@ import {
   output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FormFieldBlockComponent } from '../form-field-block/form-field-block.component';
+import { FormFieldBlockComponent } from '../../forms/form-field-block/form-field-block.component';
 
 @Component({
   selector: 'app-section-block',

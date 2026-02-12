@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 
-import { FilePickerComponent } from '../../components/file-picker/file-picker.component';
+import { FilePickerComponent } from '../../forms/file-picker/file-picker.component';
 import { ProductionGroupComponent } from './production-group/production-group.component';
 import { Production } from './production-editor/production.model';
 import {
@@ -22,7 +22,7 @@ import { ProductionEditorFullComponent } from './production-editor/production-ed
 import { SettingsService } from 'src/app/shared/services/settings/settings.service';
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
-import { IconAutocompleteInputComponent } from 'src/app/components/icon-autocomplete-input/icon-autocomplete-input.component';
+import { IconAutocompleteInputComponent } from 'src/app/forms/icon-autocomplete-input/icon-autocomplete-input.component';
 
 @Component({
   selector: 'app-production-chain-editor',

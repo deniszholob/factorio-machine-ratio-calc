@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CatalogRecipe } from 'src/app/shared/services/production-catalog/production-catalog.model';
-import { FormFieldBlockComponent } from 'src/app/components/form-field-block/form-field-block.component';
-import { RecipeIoListComponent } from 'src/app/components/recipe-io-list/recipe-io-list.component';
+import { FormFieldBlockComponent } from 'src/app/forms/form-field-block/form-field-block.component';
+import { RecipeIoListComponent } from 'src/app/components/recipe-io-list/recipe-io-lis.component.';
 
 @Component({
   selector: 'app-catalog-recipe-form',

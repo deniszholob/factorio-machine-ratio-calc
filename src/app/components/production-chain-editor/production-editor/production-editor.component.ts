@@ -23,9 +23,9 @@ import {
   toRecipeItems,
 } from './production.model';
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
-import { IconAutocompleteInputComponent } from 'src/app/components/icon-autocomplete-input/icon-autocomplete-input.component';
-import { FormFieldBlockComponent } from 'src/app/components/form-field-block/form-field-block.component';
-import { RecipeIoListComponent } from 'src/app/components/recipe-io-list/recipe-io-list.component';
+import { IconAutocompleteInputComponent } from 'src/app/forms/icon-autocomplete-input/icon-autocomplete-input.component';
+import { FormFieldBlockComponent } from 'src/app/forms/form-field-block/form-field-block.component';
+import { RecipeIoListComponent } from 'src/app/components/recipe-io-list/recipe-io-lis.component.';
 
 @Component({
   selector: 'app-production-editor',
