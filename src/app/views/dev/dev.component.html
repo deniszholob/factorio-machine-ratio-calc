@@ -11,7 +11,7 @@
   >
     <div class="flex flex-col gap-1">
       <h1 class="text-lg font-semibold">Production Components</h1>
-      <span class="text-[11px] uppercase tracking-[0.28em] text-stone-500">
+      <span class="text-xs uppercase tracking-[0.28em] text-stone-500">
         Active Chain: {{ activeName }}
       </span>
     </div>
@@ -45,6 +45,10 @@
   </div> -->
   @if ($isSettingsOpen()) {
     <app-settings-view ngProjectAs="main-content"></app-settings-view>
+  } @else if ($isCatalogOpen()) {
+    <app-content-layout [$title]="'Catalog'" ($close)="closeCatalog()" ngProjectAs="main-content">
+      <app-production-catalog-editor></app-production-catalog-editor>
+    </app-content-layout>
   } @else if ($hasProductionChains()) {
     <app-production-chain-editor ngProjectAs="main-content"></app-production-chain-editor>
   } @else {
@@ -53,7 +57,9 @@
       [$showClose]="false"
       ngProjectAs="main-content"
     >
-      <div class="flex min-h-0 flex-1 items-center justify-center px-6 py-10 text-center text-sm text-stone-300">
+      <div
+        class="flex min-h-0 flex-1 items-center justify-center px-6 py-10 text-center text-stone-300"
+      >
         Add a production chain in the sidebar to begin building ratios.
       </div>
     </app-content-layout>

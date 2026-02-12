@@ -1,7 +1,10 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { ImportExportService } from 'src/app/shared/import-export/import-export.service';
 import { ProductionService } from '../production/production.service';
-import { Production } from '../../components/production-chain-editor/production-editor/production.model';
+import {
+  Production,
+  syncAutoProductionName,
+} from '../../components/production-chain-editor/production-editor/production.model';
 import { guid } from 'src/app/shared/guid/guid.util';
 import { ProductionChain } from 'src/app/components/production-chain-group/production-chain-item/production-chain.model';
 
@@ -18,6 +21,7 @@ export class ProductionChainService {
     undefined,
   );
   public readonly $editingProductionChainDisplay = signal<string>('');
+  public readonly $editingProductionChainIconUrl = signal<string>('');
 
   public readonly $activeProductionName = computed(() => {
     const activeId = this.$activeProductionChainId();
@@ -30,6 +34,20 @@ export class ProductionChainService {
   public readonly $hasProductionChains = computed(
     () => this.$productionChains().length > 0,
   );
+
+  public readonly $activeChainProductions = computed<Production[]>(() => {
+    const activeId = this.$activeProductionChainId();
+    if (!activeId) {
+      return [];
+    }
+    const activeChain = this.$productionChains().find(
+      (chain) => chain.id === activeId,
+    );
+    if (!activeChain || !Array.isArray(activeChain.productions)) {
+      return [];
+    }
+    return activeChain.productions;
+  });
 
   /** On service init, load any stored production chains from localstorage */
   public constructor() {
@@ -81,6 +99,7 @@ export class ProductionChainService {
     const newProduction: ProductionChain = {
       id,
       display: 'New Production Chain',
+      iconUrl: undefined,
       productions: [],
     };
 
@@ -88,6 +107,7 @@ export class ProductionChainService {
     this.$activeProductionChainId.set(id);
     this.$editingProductionChainId.set(id);
     this.$editingProductionChainDisplay.set(newProduction.display);
+    this.$editingProductionChainIconUrl.set('');
     this.persist();
   }
 
@@ -108,10 +128,12 @@ export class ProductionChainService {
     this.$activeProductionChainId.set(productionId);
     this.$editingProductionChainId.set(productionId);
     this.$editingProductionChainDisplay.set(production.display);
+    this.$editingProductionChainIconUrl.set(production.iconUrl ?? '');
   }
 
   public cancelRename(): void {
     this.$editingProductionChainId.set(undefined);
+    this.$editingProductionChainIconUrl.set('');
   }
 
   public commitRename(): void {
@@ -128,16 +150,27 @@ export class ProductionChainService {
 
     this.$productionChains.update((items) =>
       items.map((item) =>
-        item.id === editingId ? { ...item, display: nextName } : item,
+        item.id === editingId
+          ? {
+              ...item,
+              display: nextName,
+              iconUrl: normalizeIconUrl(this.$editingProductionChainIconUrl()),
+            }
+          : item,
       ),
     );
 
     this.$editingProductionChainId.set(undefined);
+    this.$editingProductionChainIconUrl.set('');
     this.persist();
   }
 
   public updateEditingName(value: string): void {
     this.$editingProductionChainDisplay.set(value);
+  }
+
+  public updateEditingIconUrl(value: string): void {
+    this.$editingProductionChainIconUrl.set(value);
   }
 
   public deleteProduction(productionId: string): void {
@@ -170,6 +203,7 @@ export class ProductionChainService {
     const duplicated: ProductionChain = {
       id: guid(),
       display: nextDisplay,
+      iconUrl: chain.iconUrl,
       productions: chain.productions.map((production) => ({
         ...production,
         id: guid(),
@@ -186,6 +220,7 @@ export class ProductionChainService {
     this.$activeProductionChainId.set(undefined);
     this.$editingProductionChainId.set(undefined);
     this.$editingProductionChainDisplay.set('');
+    this.$editingProductionChainIconUrl.set('');
     this.productionService.clearMachines();
     this.importExportService.clearAllProductionChains();
   }
@@ -196,12 +231,102 @@ export class ProductionChainService {
       return;
     }
 
+    const clonedMachines = cloneProductions(machines);
+
+    const activeChain = this.$productionChains().find(
+      (chain) => chain.id === activeId,
+    );
+    if (
+      activeChain &&
+      serializeProductions(activeChain.productions) ===
+        serializeProductions(clonedMachines)
+    ) {
+      return;
+    }
+
     this.$productionChains.update((items) =>
       items.map((item) =>
-        item.id === activeId ? { ...item, productions: machines } : item,
+        item.id === activeId ? { ...item, productions: clonedMachines } : item,
       ),
     );
     this.persist();
+  }
+
+  public renameCatalogReferences(
+    previousName: string,
+    nextName: string,
+    isMachine: boolean,
+  ): void {
+    const from = previousName.trim();
+    const to = nextName.trim();
+    if (!from || !to || from.toLowerCase() === to.toLowerCase()) {
+      return;
+    }
+
+    let hasChanges = false;
+    this.$productionChains.update((chains) =>
+      chains.map((chain) => {
+        const nextProductions = chain.productions.map((production) => {
+          let changed = false;
+          const nextRecipeInputs = production.recipe.inputs.map((item) => {
+            if (item.name.trim().toLowerCase() !== from.toLowerCase()) {
+              return item;
+            }
+            changed = true;
+            return { ...item, name: to };
+          });
+          const nextRecipeOutputs = production.recipe.outputs.map((item) => {
+            if (item.name.trim().toLowerCase() !== from.toLowerCase()) {
+              return item;
+            }
+            changed = true;
+            return { ...item, name: to };
+          });
+
+          let nextMachineName = production.machine.name;
+          if (
+            isMachine &&
+            production.machine.name.trim().toLowerCase() === from.toLowerCase()
+          ) {
+            changed = true;
+            nextMachineName = to;
+          }
+
+          if (!changed) {
+            return production;
+          }
+
+          hasChanges = true;
+          const nextProduction: Production = {
+            ...production,
+            recipe: {
+              ...production.recipe,
+              inputs: nextRecipeInputs,
+              outputs: nextRecipeOutputs,
+            },
+            machine: {
+              ...production.machine,
+              name: nextMachineName,
+            },
+          };
+          syncAutoProductionName(nextProduction);
+          return nextProduction;
+        });
+
+        if (!hasChanges) {
+          return chain;
+        }
+
+        return {
+          ...chain,
+          productions: nextProductions,
+        };
+      }),
+    );
+
+    if (hasChanges) {
+      this.persist();
+    }
   }
 
   public reloadFromStorage(): void {
@@ -227,4 +352,20 @@ export class ProductionChainService {
   private persist(): void {
     this.importExportService.saveAllProductionChains(this.$productionChains());
   }
+}
+
+function serializeProductions(productions: Production[]): string {
+  return JSON.stringify(productions);
+}
+
+function cloneProductions(productions: Production[]): Production[] {
+  if (typeof structuredClone === 'function') {
+    return structuredClone(productions);
+  }
+  return JSON.parse(JSON.stringify(productions)) as Production[];
+}
+
+function normalizeIconUrl(value: string): string | undefined {
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
 }

@@ -1,121 +1,171 @@
-@let machine = $machine();
-@if (machine) {
-  <div class="flex flex-col gap-4">
-    <div>
-      <label for="machineName">Production Name:</label>
-      <input [(ngModel)]="machine.name" type="string" name="machineName" placeholder="Name" />
+@let production = $machine();
+@let itemNameOptions = $itemNameOptions();
+@let recipeNameOptions = $recipeNameOptions();
+@let machineNameOptions = $machineNameOptions();
+@let itemIconsByName = $itemIconsByName();
+@let recipeIconsByName = $recipeIconsByName();
+@let machineIconsByName = $machineIconsByName();
+
+@if (production) {
+  @let recipe = production.recipe;
+  @let machine = production.machine;
+  @let machineIconUrl = machineIconsByName[machine.name];
+  @let recipeIconUrl = recipe.iconUrl;
+
+  <div class="flex flex-col gap-8 rounded-lg bg-stone-900 p-4">
+    <div class="flex flex-wrap items-end gap-3">
+      <div class="relative h-8 w-10 shrink-0">
+        @if (recipeIconUrl) {
+          <img
+            class="absolute top-0 left-0 h-8 w-8 rounded-sm border border-stone-700 object-cover"
+            [src]="recipeIconUrl"
+            [alt]="recipe.name + ' icon'"
+          />
+        } @else {
+          <span
+            class="absolute top-0 left-0 flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+            aria-hidden="true"
+          >
+            <i class="fas fa-image"></i>
+          </span>
+        }
+        @if (machineIconUrl) {
+          <img
+            class="absolute right-0 bottom-0 h-5 w-5 rounded-sm border border-stone-700 object-cover"
+            [src]="machineIconUrl"
+            [alt]="machine.name + ' icon'"
+          />
+        } @else {
+          <span
+            class="absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+            aria-hidden="true"
+          >
+            <i class="fas fa-image"></i>
+          </span>
+        }
+      </div>
+
+      <app-form-field-block [$label]="'Production Name'" [$className]="''">
+        <strong class="text-stone-100">{{ production.name }}</strong>
+      </app-form-field-block>
+
+      <span class="text-sm text-stone-500">(Inferred from recipe and machine)</span>
     </div>
-    <hr />
-    <div class="flex max-w-160 flex-row flex-wrap items-center justify-between gap-2">
-      <div class="">
-        <label for="machineCraftSpeed">Craft Speed</label>
-        <input
-          class="max-w-28"
-          [(ngModel)]="machine.craftingSpeed"
-          (change)="reCalcProductionRates(machine)"
-          (keyup)="reCalcProductionRates(machine)"
-          type="number"
-          name="machineCraftSpeed"
-          min="0"
-          step="0.05"
-        />
+
+    <section class="flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <h4 class="text-sm font-semibold tracking-wide text-stone-200 uppercase">Machine</h4>
+        <div class="h-px flex-1 bg-stone-700/70"></div>
       </div>
-      <div class="">
-        <label for="machineCraftSpeed">Productivity (e.g. +50% = 1.5)</label>
-        <input
-          class="max-w-28"
-          [(ngModel)]="machine.productivity"
-          (change)="reCalcProductionRates(machine)"
-          (keyup)="reCalcProductionRates(machine)"
-          type="number"
-          name="machineCraftSpeed"
-          min="1"
-          step="0.05"
-        />
+      <div class="flex flex-wrap items-center gap-4">
+        <app-form-field-block [$label]="'Machine Name'" [$className]="'min-w-56'">
+          <app-icon-autocomplete-input
+            [$value]="machine.name"
+            [$name]="'machineName'"
+            [$placeholder]="'Machine name'"
+            [$options]="machineNameOptions"
+            [$iconsByName]="machineIconsByName"
+            ($valueChange)="machine.name = $event"
+            ($commit)="onMachineNameChange(production)"
+          ></app-icon-autocomplete-input>
+        </app-form-field-block>
+        <app-form-field-block [$label]="'Craft Speed'">
+          <input
+            class="h-9 max-w-28"
+            [(ngModel)]="machine.craftingSpeed"
+            (change)="onMachineStatsChange(production)"
+            (keyup)="onMachineStatsChange(production)"
+            type="number"
+            name="machineCraftSpeed"
+            min="0"
+            step="0.05"
+          />
+        </app-form-field-block>
+        <app-form-field-block [$label]="'Productivity'">
+          <input
+            class="h-9 max-w-28"
+            [(ngModel)]="machine.productivity"
+            (change)="onMachineStatsChange(production)"
+            (keyup)="onMachineStatsChange(production)"
+            type="number"
+            name="machineProductivity"
+            min="0"
+            step="0.05"
+          />
+        </app-form-field-block>
       </div>
-      <div class="">
-        <label for="machineCraftTime">Time (s)</label>
-        <input
-          class="max-w-28"
-          [(ngModel)]="machine.timeToComplete"
-          (change)="reCalcProductionRates(machine)"
-          (keyup)="reCalcProductionRates(machine)"
-          type="number"
-          name="machineCraftTime"
-          min="0"
-          step="0.05"
-        />
+    </section>
+
+    <section class="flex flex-col gap-3">
+      <div class="flex items-center gap-3">
+        <h4 class="text-sm font-semibold tracking-wide text-stone-200 uppercase">Recipe</h4>
+        <div class="h-px flex-1 bg-stone-700/70"></div>
       </div>
-      <div class="">
-        <label class="mr-2">Effective Time</label>
-        <span>{{ machine.effectiveTime | number: '0.1-2' }} s</span>
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-wrap items-center gap-4">
+          <app-form-field-block [$label]="'Recipe Name'" [$className]="'min-w-56'">
+            <app-icon-autocomplete-input
+              [$value]="recipe.name"
+              [$name]="'recipeName'"
+              [$placeholder]="'Recipe name'"
+              [$options]="recipeNameOptions"
+              [$iconsByName]="recipeIconsByName"
+              ($valueChange)="onRecipeNameInput($event, production)"
+              ($commit)="onRecipeNameChange(production)"
+            ></app-icon-autocomplete-input>
+          </app-form-field-block>
+          <app-form-field-block [$label]="'Time (s)'">
+            <input
+              class="h-9 max-w-28"
+              [(ngModel)]="recipe.timeToComplete"
+              (change)="onRecipeTimeChange(production)"
+              (keyup)="onRecipeTimeChange(production)"
+              type="number"
+              name="recipeTime"
+              min="0"
+              step="0.05"
+            />
+          </app-form-field-block>
+          <div class="flex items-center gap-2 text-sm text-stone-300">
+            <span>Effective Time</span>
+            <span class="text-stone-100"> {{ production.effectiveTime | number: '0.1-2' }} s </span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-start gap-6">
+          <app-recipe-io-list
+            [$label]="'Input'"
+            [$items]="recipe.inputs"
+            [$itemNameOptions]="itemNameOptions"
+            [$itemIconsByName]="itemIconsByName"
+            [$showRates]="true"
+            [$dragEnabled]="true"
+            [$listId]="inputListId"
+            [$connectedTo]="[outputListId]"
+            ($add)="onAddItem(recipe.inputs, production)"
+            ($remove)="onDeleteItem(recipe.inputs, $event, production)"
+            ($itemCountChange)="onItemCountChange(recipe.inputs[$event], production)"
+            ($itemNameCommit)="onItemNameChange(recipe.inputs[$event], production)"
+            ($dropListDropped)="drop($event)"
+          ></app-recipe-io-list>
+
+          <app-recipe-io-list
+            [$label]="'Output'"
+            [$items]="recipe.outputs"
+            [$itemNameOptions]="itemNameOptions"
+            [$itemIconsByName]="itemIconsByName"
+            [$showRates]="true"
+            [$dragEnabled]="true"
+            [$listId]="outputListId"
+            [$connectedTo]="[inputListId]"
+            ($add)="onAddItem(recipe.outputs, production)"
+            ($remove)="onDeleteItem(recipe.outputs, $event, production)"
+            ($itemCountChange)="onItemCountChange(recipe.outputs[$event], production)"
+            ($itemNameCommit)="onItemNameChange(recipe.outputs[$event], production)"
+            ($dropListDropped)="drop($event)"
+          ></app-recipe-io-list>
+        </div>
       </div>
-    </div>
-  </div>
-  <br />
-  <hr />
-  <div class="flex flex-wrap justify-between gap-8">
-    <ng-container
-      [ngTemplateOutlet]="ios"
-      [ngTemplateOutletContext]="{
-        $implicit: { name: 'Input', ioItems: machine.machineInputs, machine },
-      }"
-    ></ng-container>
-    <ng-container
-      [ngTemplateOutlet]="ios"
-      [ngTemplateOutletContext]="{
-        $implicit: { name: 'Output', ioItems: machine.machineOutputs, machine },
-      }"
-    ></ng-container>
+    </section>
   </div>
 }
-
-<ng-template #ios let-data>
-  <div
-    class="flex flex-1 flex-col gap-2"
-    [id]="'list-' + data.name"
-    [cdkDropListConnectedTo]="['list-' + (data.name === 'Input' ? 'Output' : 'Input')]"
-    [cdkDropListData]="data.ioItems"
-    (cdkDropListDropped)="drop($event)"
-    cdkDropList
-  >
-    <div class="text-md flex flex-row items-center gap-2 p-2">
-      <button
-        class="btn btn-icon btn-success"
-        [title]="'Add item'"
-        (click)="onAddItem(data.ioItems)"
-      >
-        <i class="fas fa-plus"></i>
-      </button>
-      <h5>{{ data.name }}</h5>
-    </div>
-
-    @for (item of data.ioItems; track item; let i = $index) {
-      <div
-        class="transition-color flex cursor-pointer items-center justify-center gap-2 rounded-sm border border-stone-700 bg-stone-950/40 p-2 text-stone-100 hover:border-stone-600 hover:bg-stone-900/70"
-        cdkDrag
-      >
-        <div class="flex flex-row flex-wrap items-center gap-2">
-          <button
-            class="btn btn-icon btn-danger"
-            [title]="'Delete item'"
-            (click)="onDeleteItem(data.ioItems, i)"
-          >
-            <i class="fas fa-trash"></i>
-          </button>
-          <input
-            class="max-w-28"
-            [(ngModel)]="item.count"
-            (change)="reCalcItemRate(item, data.machine)"
-            (keyup)="reCalcItemRate(item, data.machine)"
-            type="number"
-            name="machineItemCount"
-          />
-          <input [(ngModel)]="item.name" type="string" name="machineItemName" />
-          <span>{{ item.rate | number: '0.1-2' }} i/s</span>
-        </div>
-        <i class="fas fa-grip-vertical fa-lg"></i>
-      </div>
-    }
-  </div>
-</ng-template>

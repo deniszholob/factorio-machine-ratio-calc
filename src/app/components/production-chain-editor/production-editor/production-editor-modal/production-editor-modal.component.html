@@ -3,6 +3,12 @@
   [$title]="'Production Details'"
   [$primaryButton]="undefined"
   [$secondaryButton]="undefined"
+  [$bodyClass]="'flex-auto overflow-visible p-6'"
 >
-  <app-production-editor [$machine]="$machine()"></app-production-editor>
+  <div class="-m-6 min-h-0 bg-stone-900">
+    <app-production-editor
+      [$machine]="$machine()"
+      ($machineChange)="$machineChange.emit($event)"
+    ></app-production-editor>
+  </div>
 </app-modal>

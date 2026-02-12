@@ -3,6 +3,7 @@ import {
   Component,
   input,
   model,
+  output,
 } from '@angular/core';
 import { Production } from '../production.model';
 import { ProductionEditorComponent } from '../production-editor.component';
@@ -18,6 +19,7 @@ import { TooltipDirective } from 'src/app/components/tooltip/tooltip.directive';
 export class ProductionEditorSidebarComponent {
   public readonly $machine = input.required<Production | undefined>();
   public readonly $show = model<boolean>(false);
+  public readonly $machineChange = output<Production>();
 
   protected onClose(): void {
     this.$show.set(false);

@@ -4,7 +4,6 @@ import {
   Component,
   Signal,
   computed,
-  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -23,6 +22,8 @@ import { ProductionEditorSidebarComponent } from './production-editor/production
 import { ProductionEditorFullComponent } from './production-editor/production-editor-full/production-editor-full.component';
 import { SettingsService } from 'src/app/shared/settings/settings.service';
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
+import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
+import { IconAutocompleteInputComponent } from 'src/app/components/icon-autocomplete-input/icon-autocomplete-input.component';
 
 @Component({
   selector: 'app-production-chain-editor',
@@ -36,6 +37,7 @@ import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-l
     ProductionEditorSidebarComponent,
     ProductionEditorFullComponent,
     FilePickerComponent,
+    IconAutocompleteInputComponent,
   ],
 })
 export class ProductionChainEditorComponent {
@@ -43,6 +45,7 @@ export class ProductionChainEditorComponent {
   private readonly importExportService = inject(ImportExportService);
   private readonly productionChainService = inject(ProductionChainService);
   private readonly settingsService = inject(SettingsService);
+  private readonly productionCatalogService = inject(ProductionCatalogService);
 
   protected readonly $machines: Signal<Production[]> =
     this.productionService.$productions;
@@ -55,6 +58,11 @@ export class ProductionChainEditorComponent {
   protected readonly $errorMessage = signal<string | undefined>(undefined);
   protected readonly $editorDisplayMode =
     this.settingsService.$editorDisplayMode;
+  protected readonly $productionTemplateNames =
+    this.productionCatalogService.$productionNames;
+  protected readonly $productionTemplateIconsByName =
+    this.productionCatalogService.$productionIconsByName;
+  protected readonly $selectedProductionTemplateName = signal<string>('');
   protected readonly $activeChainName =
     this.productionChainService.$activeProductionName;
   protected readonly $editorSubtitle = computed(() => {
@@ -66,21 +74,41 @@ export class ProductionChainEditorComponent {
     return chainName ? `${chainName}` : undefined;
   });
 
-  public constructor() {
-    effect(() => {
-      const machines = this.$machines();
-      this.productionChainService.setActiveChainProductions(machines);
-    });
-  }
-
   protected onAddMachine(): void {
     const machine = this.productionService.addMachine();
+    this.syncActiveChainProductions();
     this.onEditMachine(machine);
+  }
+
+  protected onProductionTemplateNameChange(value: string): void {
+    this.$selectedProductionTemplateName.set(value);
+  }
+
+  protected onAddMachineFromCatalog(): void {
+    const selectedName = this.$selectedProductionTemplateName().trim();
+    if (!selectedName) {
+      return;
+    }
+
+    const template =
+      this.productionCatalogService.getProductionTemplateByName(selectedName);
+    if (!template) {
+      return;
+    }
+
+    const machine = this.productionService.addMachine();
+    this.productionService.updateMachine({
+      ...template.production,
+      id: machine.id,
+    });
+    this.syncActiveChainProductions();
+    this.$selectedProductionTemplateName.set('');
   }
 
   protected onEditFinish(): void {
     setTimeout(() => {
       this.productionService.refreshMachines();
+      this.syncActiveChainProductions();
     }, 1);
   }
 
@@ -92,19 +120,23 @@ export class ProductionChainEditorComponent {
 
   protected onDeleteMachine(index: number): void {
     this.productionService.deleteMachineAt(index);
+    this.syncActiveChainProductions();
   }
 
   protected onDuplicateMachine(machine: Production): void {
     const duplicated = this.productionService.duplicateMachine(machine);
+    this.syncActiveChainProductions();
     this.onEditMachine(duplicated);
   }
 
   protected onClearAll(): void {
     this.productionService.clearMachines();
+    this.syncActiveChainProductions();
   }
 
   protected onDrop(event: CdkDragDrop<Production[]>): void {
     this.productionService.moveMachine(event.previousIndex, event.currentIndex);
+    this.syncActiveChainProductions();
   }
 
   protected onEditorVisibilityChange(isOpen: boolean): void {
@@ -119,10 +151,16 @@ export class ProductionChainEditorComponent {
     const draft = this.$machineDraft();
     if (draft) {
       this.productionService.updateMachine(draft);
+      this.syncActiveChainProductions();
     }
     this.$machineDraft.set(undefined);
     this.$machineToEdit.set(undefined);
     this.$isEditorOpen.set(false);
+  }
+
+  protected onDraftMachineChanged(machine: Production): void {
+    this.productionService.updateMachine(machine);
+    this.syncActiveChainProductions();
   }
 
   private cloneMachine(machine: Production): Production {
@@ -161,6 +199,10 @@ export class ProductionChainEditorComponent {
 
   protected closeEditor(): void {
     this.onEditorVisibilityChange(false);
+  }
+
+  private syncActiveChainProductions(): void {
+    this.productionChainService.setActiveChainProductions(this.$machines());
   }
 
   // private downloadFile(data: string): void {

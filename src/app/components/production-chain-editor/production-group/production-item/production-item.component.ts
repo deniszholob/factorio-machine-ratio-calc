@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  inject,
   input,
   output,
 } from '@angular/core';
@@ -12,6 +13,7 @@ import {
   reCalcProductionRates,
 } from '../../production-editor/production.model';
 import { TooltipDirective } from 'src/app/components/tooltip/tooltip.directive';
+import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
 
 @Component({
   selector: 'app-production-item',
@@ -27,7 +29,13 @@ import { TooltipDirective } from 'src/app/components/tooltip/tooltip.directive';
   ],
 })
 export class ProductionItemComponent {
+  private readonly productionCatalogService = inject(ProductionCatalogService);
+
   public readonly $machine = input.required<Production>();
+  public readonly $itemIconsByName =
+    this.productionCatalogService.$itemIconsByName;
+  public readonly $machineIconsByName =
+    this.productionCatalogService.$machineIconsByName;
 
   public readonly $editMachine = output<Production>();
   public readonly $duplicateMachine = output<Production>();

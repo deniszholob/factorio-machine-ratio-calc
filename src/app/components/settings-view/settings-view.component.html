@@ -19,21 +19,21 @@
 
   <section class="flex min-h-0 flex-1 flex-col gap-6 overflow-auto p-6 text-slate-50">
     <div class="grid w-full gap-6 lg:grid-cols-2">
-      <div class="flex flex-col gap-4 rounded-sm border border-stone-700 bg-stone-950/40 p-4">
+      <div class="flex flex-col gap-4 rounded-lg border border-stone-800 bg-stone-900/70 p-4">
         <div class="flex flex-col gap-1">
-          <span class="text-xs font-semibold tracking-[0.3em] text-stone-400 uppercase">
+          <span class="text-sm font-semibold tracking-[0.3em] text-stone-400 uppercase">
             Editor Display
           </span>
-          <span class="text-sm text-stone-300">
+          <span class="text-stone-300">
             Choose where the production editor appears when you edit a production.
           </span>
         </div>
 
         <div class="flex flex-col gap-2">
           <label
-            class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+            class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
             [ngClass]="{
-              'border-amber-400 bg-stone-900/80 text-amber-100': editorMode === 'modal',
+              'border-amber-400 bg-stone-900/70 text-amber-100': editorMode === 'modal',
             }"
           >
             <input
@@ -56,20 +56,20 @@
                 Modal Popup
                 @if (defaultEditorMode === 'modal') {
                   <span
-                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
                   >
                     Default
                   </span>
                 }
               </span>
-              <span class="text-xs text-stone-400">Keep focus in a dialog overlay.</span>
+              <span class="text-sm text-stone-400">Keep focus in a dialog overlay.</span>
             </span>
           </label>
 
           <label
-            class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+            class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
             [ngClass]="{
-              'border-amber-400 bg-stone-900/80 text-amber-100': editorMode === 'sidebar',
+              'border-amber-400 bg-stone-900/70 text-amber-100': editorMode === 'sidebar',
             }"
           >
             <input
@@ -92,20 +92,20 @@
                 Right Sidebar
                 @if (defaultEditorMode === 'sidebar') {
                   <span
-                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
                   >
                     Default
                   </span>
                 }
               </span>
-              <span class="text-xs text-stone-400">Slide out editor beside the list.</span>
+              <span class="text-sm text-stone-400">Slide out editor beside the list.</span>
             </span>
           </label>
 
           <label
-            class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+            class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
             [ngClass]="{
-              'border-amber-400 bg-stone-900/80 text-amber-100': editorMode === 'full',
+              'border-amber-400 bg-stone-900/70 text-amber-100': editorMode === 'full',
             }"
           >
             <input
@@ -128,34 +128,34 @@
                 Full Main Content
                 @if (defaultEditorMode === 'full') {
                   <span
-                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
                   >
                     Default
                   </span>
                 }
               </span>
-              <span class="text-xs text-stone-400">Replace the list with the editor.</span>
+              <span class="text-sm text-stone-400">Replace the list with the editor.</span>
             </span>
           </label>
         </div>
       </div>
 
-      <div class="flex flex-col gap-4 rounded-sm border border-stone-700 bg-stone-950/40 p-4">
+      <div class="flex flex-col gap-4 rounded-lg border border-stone-800 bg-stone-900/70 p-4">
         <div class="flex flex-col gap-1">
-          <span class="text-xs font-semibold tracking-[0.3em] text-stone-400 uppercase">
+          <span class="text-sm font-semibold tracking-[0.3em] text-stone-400 uppercase">
             Import Behavior
           </span>
-          <span class="text-sm text-stone-300"> Choose how imports merge with existing data. </span>
+          <span class="text-stone-300"> Choose how imports merge with existing data. </span>
         </div>
 
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
-            <div class="text-sm font-semibold text-stone-200">Production Chains</div>
+            <div class="font-semibold text-stone-200">Production Chains</div>
             <div class="flex flex-col gap-2">
               <label
-                class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+                class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
                 [ngClass]="{
-                  'border-amber-400 bg-stone-900/80 text-amber-100': importChainsMode === 'add',
+                  'border-amber-400 bg-stone-900/70 text-amber-100': importChainsMode === 'add',
                 }"
               >
                 <input
@@ -178,22 +178,22 @@
                     Add
                     @if (defaultImportChainsMode === 'add') {
                       <span
-                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
                       >
                         Default
                       </span>
                     }
                   </span>
-                  <span class="text-xs text-stone-400">
+                  <span class="text-sm text-stone-400">
                     Merge uploads alongside existing chains.
                   </span>
                 </span>
               </label>
 
               <label
-                class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+                class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
                 [ngClass]="{
-                  'border-amber-400 bg-stone-900/80 text-amber-100':
+                  'border-amber-400 bg-stone-900/70 text-amber-100':
                     importChainsMode === 'override',
                 }"
               >
@@ -217,25 +217,25 @@
                     Override
                     @if (defaultImportChainsMode === 'override') {
                       <span
-                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
                       >
                         Default
                       </span>
                     }
                   </span>
-                  <span class="text-xs text-stone-400">Replace everything with the upload.</span>
+                  <span class="text-sm text-stone-400">Replace everything with the upload.</span>
                 </span>
               </label>
             </div>
           </div>
 
           <div class="flex flex-col gap-2">
-            <div class="text-sm font-semibold text-stone-200">Productions</div>
+            <div class="font-semibold text-stone-200">Productions</div>
             <div class="flex flex-col gap-2">
               <label
-                class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+                class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
                 [ngClass]="{
-                  'border-amber-400 bg-stone-900/80 text-amber-100':
+                  'border-amber-400 bg-stone-900/70 text-amber-100':
                     importProductionsMode === 'add',
                 }"
               >
@@ -259,20 +259,20 @@
                     Add
                     @if (defaultImportProductionsMode === 'add') {
                       <span
-                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
                       >
                         Default
                       </span>
                     }
                   </span>
-                  <span class="text-xs text-stone-400">Create a new chain for this upload.</span>
+                  <span class="text-sm text-stone-400">Create a new chain for this upload.</span>
                 </span>
               </label>
 
               <label
-                class="flex cursor-pointer items-center gap-3 rounded-sm border border-stone-700 bg-stone-900/40 px-3 py-2 text-sm transition"
+                class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
                 [ngClass]="{
-                  'border-amber-400 bg-stone-900/80 text-amber-100':
+                  'border-amber-400 bg-stone-900/70 text-amber-100':
                     importProductionsMode === 'override',
                 }"
               >
@@ -296,13 +296,13 @@
                     Override
                     @if (defaultImportProductionsMode === 'override') {
                       <span
-                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200 uppercase"
+                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
                       >
                         Default
                       </span>
                     }
                   </span>
-                  <span class="text-xs text-stone-400">Replace a chain if names match.</span>
+                  <span class="text-sm text-stone-400">Replace a chain if names match.</span>
                 </span>
               </label>
             </div>

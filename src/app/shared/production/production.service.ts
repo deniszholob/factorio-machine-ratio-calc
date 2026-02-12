@@ -5,6 +5,7 @@ import {
   Production as Production,
   MachineItem,
   newProduction,
+  normalizeProduction,
 } from 'src/app/components/production-chain-editor/production-editor/production.model';
 import { guid } from 'src/app/shared/guid/guid.util';
 
@@ -34,8 +35,8 @@ export class ProductionService {
     };
 
     for (const machine of productions) {
-      addUpMachineItems(machine.machineInputs, totals.inputs);
-      addUpMachineItems(machine.machineOutputs, totals.outputs);
+      addUpMachineItems(machine.recipe.inputs, totals.inputs);
+      addUpMachineItems(machine.recipe.outputs, totals.outputs);
     }
 
     addUpTotals(totals.outputs, totals.deltas, 1);
@@ -51,7 +52,15 @@ export class ProductionService {
   }
 
   public setMachines(machines: Production[]): void {
-    this._$productions.set(this.ensureProductionIds(machines));
+    const nextMachines = this.ensureProductionIds(machines);
+    const currentMachines = this.$productions();
+    if (
+      serializeProductions(currentMachines) ===
+      serializeProductions(nextMachines)
+    ) {
+      return;
+    }
+    this._$productions.set(nextMachines);
   }
 
   public refreshMachines(): void {
@@ -59,20 +68,24 @@ export class ProductionService {
   }
 
   public updateMachine(updated: Production): void {
-    this._$productions.update((items) =>
-      items.map((item) =>
-        item.id === updated.id ? { ...updated, id: item.id } : item,
-      ),
-    );
+    this._$productions.update((items) => {
+      const normalized = normalizeProduction(updated);
+      return items.map((item) =>
+        item.id === updated.id ? { ...normalized, id: item.id } : item,
+      );
+    });
   }
 
   public duplicateMachine(source: Production): Production {
     const duplicated: Production = {
-      ...source,
+      ...normalizeProduction(source),
       id: guid(),
-      name: `${source.name} Copy`,
-      machineInputs: source.machineInputs.map((item) => ({ ...item })),
-      machineOutputs: source.machineOutputs.map((item) => ({ ...item })),
+      recipe: {
+        ...source.recipe,
+        inputs: source.recipe.inputs.map((item) => ({ ...item })),
+        outputs: source.recipe.outputs.map((item) => ({ ...item })),
+      },
+      machine: { ...source.machine },
     };
     this._$productions.update((items) => [...items, duplicated]);
     return duplicated;
@@ -104,16 +117,15 @@ export class ProductionService {
   }
 
   private ensureProductionIds(machines: Production[]): Production[] {
-    let hasChanges = false;
-    const next = machines.map((machine) => {
-      if (machine.id) {
-        return machine;
-      }
-      hasChanges = true;
-      return { ...machine, id: guid() };
+    return machines.map((machine) => {
+      const normalized = normalizeProduction(machine);
+      return normalized.id ? normalized : { ...normalized, id: guid() };
     });
-    return hasChanges ? next : machines;
   }
+}
+
+function serializeProductions(machines: Production[]): string {
+  return JSON.stringify(machines);
 }
 
 // #region Helpers

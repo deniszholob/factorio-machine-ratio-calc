@@ -2,6 +2,7 @@
 @let activeProductionChainId = $activeProductionChainId();
 @let editingProductionChainId = $editingProductionChainId();
 @let editingProductionChainName = $editingProductionChainName();
+@let editingProductionChainIconUrl = $editingProductionChainIconUrl();
 
 <div
   class="flex cursor-pointer items-center justify-between gap-2 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-3 text-stone-100 transition hover:border-stone-600 hover:bg-stone-900/70"
@@ -29,20 +30,47 @@
         (input)="$editName.emit(editInput.value)"
         (keydown.enter)="$commitRename.emit()"
         (keydown.escape)="$cancelRename.emit()"
-        (blur)="$commitRename.emit()"
         type="text"
+      />
+      <label class="sr-only" [attr.for]="'production-icon-' + productionChain.id">
+        Chain icon URL
+      </label>
+      <input
+        class="m-0 w-full px-2 py-1 text-sm"
+        #editIconInput
+        [attr.id]="'production-icon-' + productionChain.id"
+        [value]="editingProductionChainIconUrl"
+        (input)="$editIconUrl.emit(editIconInput.value)"
+        type="url"
+        placeholder="Icon URL (optional)"
       />
     </div>
   } @else {
-    <span class="truncate px-2 py-1 text-sm font-semibold">
-      {{ productionChain.display }}
-    </span>
+    <div class="flex min-w-0 flex-1 items-center gap-2 px-2 py-1">
+      @if (productionChain.iconUrl) {
+        <img
+          class="h-5 w-5 rounded-sm border border-stone-700 object-cover"
+          [src]="productionChain.iconUrl"
+          [alt]="productionChain.display + ' icon'"
+        />
+      } @else {
+        <span
+          class="flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+          aria-hidden="true"
+        >
+          <i class="fas fa-image"></i>
+        </span>
+      }
+      <span class="truncate text-sm font-semibold">
+        {{ productionChain.display }}
+      </span>
+    </div>
   }
 
   <div class="flex items-center gap-1">
-    <!-- class="cursor-pointer rounded-sm border border-stone-700 px-2 py-1 text-xs text-stone-300 transition hover:border-stone-500 hover:text-stone-100 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:outline-hidden" -->
+    <!-- class="cursor-pointer rounded-sm border border-stone-700 px-2 py-1  text-stone-300 transition hover:border-stone-500 hover:text-stone-100 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:outline-hidden" -->
     <button
-      class="btn px-2 py-1 text-xs"
+      class="btn px-2 py-1"
       [ngClass]="{
         'btn-warning-outline-fill': productionChain.id !== editingProductionChainId,
         'btn-success-outline-fill': productionChain.id === editingProductionChainId,
@@ -68,7 +96,7 @@
     </button>
 
     <button
-      class="btn btn-secondary-outline-fill px-2 py-1 text-xs"
+      class="btn btn-secondary-outline-fill px-2 py-1"
       [title]="'Duplicate production chain'"
       (click)="onDuplicate($event)"
       type="button"
@@ -77,9 +105,9 @@
       <i class="fas fa-copy"></i>
     </button>
 
-    <!-- class="cursor-pointer rounded-sm border border-stone-700 px-2 py-1 text-xs text-stone-300 transition hover:border-red-400 hover:text-red-200 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-hidden" -->
+    <!-- class="cursor-pointer rounded-sm border border-stone-700 px-2 py-1  text-stone-300 transition hover:border-red-400 hover:text-red-200 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-hidden" -->
     <button
-      class="btn btn-danger-outline-fill px-2 py-1 text-xs"
+      class="btn btn-danger-outline-fill px-2 py-1"
       [title]="'Delete production chain'"
       (click)="onDelete($event)"
       type="button"
@@ -97,7 +125,7 @@
   [$secondaryButton]="'Cancel'"
   ($primaryButtonClick)="onConfirmDelete()"
 >
-  <div class="flex flex-col gap-2 text-sm text-stone-200">
+  <div class="flex flex-col gap-2 text-stone-200">
     <p>Delete “{{ productionChain.display }}” and all its productions?</p>
     <p class="text-stone-400">This cannot be undone.</p>
   </div>

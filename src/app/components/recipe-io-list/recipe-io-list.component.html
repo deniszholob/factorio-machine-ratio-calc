@@ -1,0 +1,71 @@
+<div
+  class="flex min-w-[22rem] flex-1 flex-col gap-2"
+  [id]="$listId()"
+  [cdkDropListData]="$items()"
+  [cdkDropListConnectedTo]="$connectedTo()"
+  [cdkDropListDisabled]="!$dragEnabled()"
+  (cdkDropListDropped)="onDrop($event)"
+  cdkDropList
+>
+  <div class="text-md flex flex-row items-center gap-2 p-2">
+    <button class="btn btn-icon btn-success" [title]="'Add item'" (click)="onAdd()">
+      <i class="fas fa-plus"></i>
+    </button>
+    <h5>{{ $label() }}</h5>
+  </div>
+
+  @for (item of $items(); track item; let i = $index) {
+    <div
+      class="transition-color flex cursor-pointer items-center gap-2 rounded-lg bg-stone-950/45 p-2 text-stone-100 ring-1 ring-stone-800/70 hover:bg-stone-900/70 hover:ring-stone-700"
+      [cdkDragDisabled]="!$dragEnabled()"
+      cdkDrag
+    >
+      <div class="flex flex-row flex-wrap items-end gap-2">
+        @if ($dragEnabled()) {
+          <button
+            class="flex h-9 w-9 items-center justify-center rounded-md text-stone-300 transition-colors hover:bg-stone-800/80 hover:text-stone-100 focus-visible:ring-2 focus-visible:ring-blue-400/80 focus-visible:outline-none"
+            [title]="'Drag item'"
+            aria-label="Drag item"
+            type="button"
+            cdkDragHandle
+          >
+            <i class="fas fa-grip-vertical"></i>
+          </button>
+        }
+
+        <button class="btn btn-icon btn-danger" [title]="'Delete item'" (click)="onRemove(i)">
+          <i class="fas fa-trash"></i>
+        </button>
+
+        <app-form-field-block [$label]="'Qty'">
+          <input
+            class="h-9 max-w-28"
+            [(ngModel)]="item.count"
+            (change)="onItemCountChange(i)"
+            (keyup)="onItemCountChange(i)"
+            type="number"
+            name="recipeItemCount"
+            min="0"
+            step="0.05"
+          />
+        </app-form-field-block>
+
+        <app-icon-autocomplete-input
+          [$value]="item.name"
+          [$name]="'recipeItemName'"
+          [$placeholder]="'Item name'"
+          [$options]="$itemNameOptions()"
+          [$iconsByName]="$itemIconsByName()"
+          ($valueChange)="item.name = $event"
+          ($commit)="onItemNameCommit(i)"
+        ></app-icon-autocomplete-input>
+
+        @if ($showRates()) {
+          <span class="whitespace-nowrap"
+            >{{ item.rate ?? 0 | number: '0.1-2' }} {{ $rateUnit() }}</span
+          >
+        }
+      </div>
+    </div>
+  }
+</div>

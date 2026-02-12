@@ -10,7 +10,10 @@
     [$subTitle]="$editorSubtitle()"
     ($close)="closeEditor()"
   >
-    <app-production-editor-full [$machine]="$machineDraft()"></app-production-editor-full>
+    <app-production-editor-full
+      [$machine]="$machineDraft()"
+      ($machineChange)="onDraftMachineChanged($event)"
+    ></app-production-editor-full>
   </app-content-layout>
 } @else {
   <app-content-layout
@@ -26,6 +29,25 @@
         <button class="btn btn-icon btn-success cursor-pointer" (click)="onAddMachine()">
           <i class="fas fa-plus"></i> Production
         </button>
+        <app-icon-autocomplete-input
+          [$value]="$selectedProductionTemplateName()"
+          [$name]="'catalogProductionQuickAdd'"
+          [$placeholder]="'Production from catalog'"
+          [$options]="$productionTemplateNames()"
+          [$iconsByName]="$productionTemplateIconsByName()"
+          ($valueChange)="onProductionTemplateNameChange($event)"
+          ($commit)="onProductionTemplateNameChange($event)"
+        ></app-icon-autocomplete-input>
+
+        <button
+          class="btn btn-icon btn-primary-outline cursor-pointer"
+          [disabled]="!$selectedProductionTemplateName()"
+          (click)="onAddMachineFromCatalog()"
+          type="button"
+        >
+          <i class="fas fa-plus"></i> Add From Catalog
+        </button>
+
         <button class="btn btn-icon btn-danger-outline cursor-pointer" (click)="onClearAll()">
           <i class="fas fa-trash"></i> Clear All
         </button>
@@ -51,15 +73,15 @@
 
     <div class="mx-auto flex w-full max-w-[1920px] flex-1 overflow-hidden text-slate-50">
       <div class="flex min-h-0 flex-1 flex-col gap-2 overflow-auto p-4">
-          <app-production-group
-            [$machines]="machines"
-            [$machineTotals]="machinesTotals"
-            ($editMachine)="onEditMachine($event)"
-            ($duplicateMachine)="onDuplicateMachine($event)"
-            ($deleteMachine)="onDeleteMachine($event)"
-            ($updateMachineCount)="onEditFinish()"
-            ($drop)="onDrop($event)"
-          ></app-production-group>
+        <app-production-group
+          [$machines]="machines"
+          [$machineTotals]="machinesTotals"
+          ($editMachine)="onEditMachine($event)"
+          ($duplicateMachine)="onDuplicateMachine($event)"
+          ($deleteMachine)="onDeleteMachine($event)"
+          ($updateMachineCount)="onEditFinish()"
+          ($drop)="onDrop($event)"
+        ></app-production-group>
 
         @if (errorMessage) {
           <div class="text-red-500">{{ errorMessage }}</div>
@@ -72,6 +94,7 @@
             [$machine]="$machineDraft()"
             [$show]="isEditorOpen"
             ($showChange)="onEditorVisibilityChange($event)"
+            ($machineChange)="onDraftMachineChanged($event)"
             ($close)="onEditorClosed()"
           ></app-production-editor-sidebar>
         </div>
@@ -85,5 +108,6 @@
     [$machine]="$machineDraft()"
     [$show]="isEditorOpen"
     ($showChange)="onEditorVisibilityChange($event)"
+    ($machineChange)="onDraftMachineChanged($event)"
   ></app-production-editor-modal>
 }

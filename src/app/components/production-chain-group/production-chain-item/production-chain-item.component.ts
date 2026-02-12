@@ -30,12 +30,14 @@ export class ProductionChainItemComponent {
     string | undefined
   >();
   public readonly $editingProductionChainName = input.required<string>();
+  public readonly $editingProductionChainIconUrl = input.required<string>();
 
   public readonly $selectId = output<string>();
   public readonly $startRename = output<string>();
   public readonly $cancelRename = output<void>();
   public readonly $commitRename = output<void>();
   public readonly $editName = output<string>();
+  public readonly $editIconUrl = output<string>();
   public readonly $delete = output<string>();
   public readonly $duplicate = output<string>();
 

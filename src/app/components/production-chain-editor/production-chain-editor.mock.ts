@@ -3,59 +3,77 @@ import { Production } from './production-editor/production.model';
 export const MOCK_Machines: Production[] = [
   {
     id: 'mock-1',
-    name: 'Green Circuits',
-    productivity: 1,
-    craftingSpeed: 0.75,
+    name: 'Green Circuits in Assembler 1',
     count: 2,
-    timeToComplete: 0.5,
     effectiveTime: 0.6666666666666666,
-    machineInputs: [
-      { name: 'Iron Plate', count: 1, rate: 1.5, totalRate: 3 },
-      { name: 'Copper Cable', count: 3, rate: 4.5, totalRate: 9 },
-    ],
-    machineOutputs: [
-      { name: 'Electronic circuit', count: 1, rate: 1.5, totalRate: 3 },
-    ],
+    recipe: {
+      name: 'Green Circuits',
+      timeToComplete: 0.5,
+      inputs: [
+        { name: 'Iron Plate', count: 1, rate: 1.5, totalRate: 3 },
+        { name: 'Copper Cable', count: 3, rate: 4.5, totalRate: 9 },
+      ],
+      outputs: [
+        { name: 'Electronic circuit', count: 1, rate: 1.5, totalRate: 3 },
+      ],
+    },
+    machine: {
+      name: 'Assembler 1',
+      craftingSpeed: 0.75,
+      productivity: 1,
+    },
   },
   {
     id: 'mock-2',
-    name: 'Iron',
-    craftingSpeed: 1,
-    productivity: 1,
+    name: 'Iron in Furnace',
     count: 9.6,
-    timeToComplete: 3.2,
     effectiveTime: 3.2,
-    machineInputs: [{ name: 'Iron Ore', count: 1, rate: 0.3125, totalRate: 3 }],
-    machineOutputs: [
-      { name: 'Iron Plate', count: 1, rate: 0.3125, totalRate: 3 },
-    ],
+    recipe: {
+      name: 'Iron',
+      timeToComplete: 3.2,
+      inputs: [{ name: 'Iron Ore', count: 1, rate: 0.3125, totalRate: 3 }],
+      outputs: [{ name: 'Iron Plate', count: 1, rate: 0.3125, totalRate: 3 }],
+    },
+    machine: {
+      name: 'Furnace',
+      craftingSpeed: 1,
+      productivity: 1,
+    },
   },
   {
     id: 'mock-3',
-    name: 'Wire',
-    craftingSpeed: 0.75,
-    productivity: 1,
+    name: 'Wire in Assembler 1',
     count: 3,
-    timeToComplete: 0.5,
     effectiveTime: 0.6666666666666666,
-    machineInputs: [
-      { name: 'Copper Plate', count: 1, rate: 1.5, totalRate: 4.5 },
-    ],
-    machineOutputs: [{ name: 'Copper Cable', count: 2, rate: 3, totalRate: 9 }],
+    recipe: {
+      name: 'Wire',
+      timeToComplete: 0.5,
+      inputs: [{ name: 'Copper Plate', count: 1, rate: 1.5, totalRate: 4.5 }],
+      outputs: [{ name: 'Copper Cable', count: 2, rate: 3, totalRate: 9 }],
+    },
+    machine: {
+      name: 'Assembler 1',
+      craftingSpeed: 0.75,
+      productivity: 1,
+    },
   },
   {
     id: 'mock-4',
-    name: 'Copper',
-    craftingSpeed: 1,
-    productivity: 1,
+    name: 'Copper in Furnace',
     count: 14.4,
-    timeToComplete: 3.2,
     effectiveTime: 3.2,
-    machineInputs: [
-      { name: 'Copper Ore', count: 1, rate: 0.3125, totalRate: 4.5 },
-    ],
-    machineOutputs: [
-      { name: 'Copper Plate', count: 1, rate: 0.3125, totalRate: 4.5 },
-    ],
+    recipe: {
+      name: 'Copper',
+      timeToComplete: 3.2,
+      inputs: [{ name: 'Copper Ore', count: 1, rate: 0.3125, totalRate: 4.5 }],
+      outputs: [
+        { name: 'Copper Plate', count: 1, rate: 0.3125, totalRate: 4.5 },
+      ],
+    },
+    machine: {
+      name: 'Furnace',
+      craftingSpeed: 1,
+      productivity: 1,
+    },
   },
 ];

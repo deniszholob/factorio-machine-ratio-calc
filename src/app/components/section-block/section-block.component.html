@@ -1,0 +1,36 @@
+<section class="flex flex-col gap-3">
+  <div class="flex items-center gap-3">
+    <h4
+      class="flex items-center gap-2 text-sm font-semibold tracking-wide text-stone-200 uppercase"
+    >
+      <i [class]="$iconClass()"></i>
+      <span>{{ $title() }}</span>
+    </h4>
+    <div class="h-px flex-1 bg-stone-700/70"></div>
+  </div>
+
+  @if ($showToolbar()) {
+    <div class="flex flex-wrap items-end gap-3">
+      <button class="btn btn-icon btn-success" (click)="onAdd()">
+        <i class="fas fa-plus"></i>
+        <span>Add {{ $addLabel() }}</span>
+      </button>
+
+      <app-form-field-block [$label]="'Filter'" [$className]="'min-w-56'">
+        <input
+          class="h-9"
+          [ngModel]="$filterValue()"
+          [placeholder]="'Filter'"
+          [attr.aria-label]="'Filter'"
+          (ngModelChange)="onFilterChange($event)"
+          type="text"
+        />
+      </app-form-field-block>
+    </div>
+    <hr />
+  }
+
+  <div class="flex flex-col gap-4">
+    <ng-content></ng-content>
+  </div>
+</section>

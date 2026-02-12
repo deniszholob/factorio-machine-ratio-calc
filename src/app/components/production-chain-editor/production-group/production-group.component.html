@@ -1,8 +1,9 @@
 @let machines = $machines();
 @let machinesTotals = $machineTotals();
+@let itemIconsByName = $itemIconsByName();
 
 @if (machines && machines.length > 0) {
-  <div class="text-md mt-4 ml-10 grid grid-cols-12 font-bold">
+  <div class="text-md ml-10 grid grid-cols-12 font-bold">
     <div class="col-span-6">Delta Totals</div>
     <div class="col-span-3">Total Input Rate</div>
     <div class="col-span-3">Total Output Rate</div>
@@ -11,22 +12,39 @@
   <hr />
 
   <div
-    class="text-md mt-4 grid grid-cols-12 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-2 pl-6 text-stone-100"
+    class="text-md grid grid-cols-12 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-2 pl-6 text-stone-100"
     style="max-height: 150px; overflow-y: auto"
   >
     <div class="col-span-6">
       <!-- TODO: track productionEntry.id -->
       @for (productionEntry of machinesTotals.deltas; track productionEntry) {
         @if (productionEntry.totalRate !== 0) {
+          @let itemIconUrl = itemIconsByName[productionEntry.name];
           <div
+            class="flex items-center gap-1"
             [ngClass]="{
               'text-green-500': productionEntry.totalRate > 0,
               'text-red-500': productionEntry.totalRate < 0,
             }"
           >
-            <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
+            <strong class="w-24 text-right font-mono tabular-nums">
+              {{ productionEntry.totalRate | number: '1.2-2' }}/sec
+            </strong>
+            @if (itemIconUrl) {
+              <img
+                class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
+                [src]="itemIconUrl"
+                [alt]="productionEntry.name + ' icon'"
+              />
+            } @else {
+              <span
+                class="flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+                aria-hidden="true"
+              >
+                <i class="fas fa-image"></i>
+              </span>
+            }
             <span>{{ productionEntry.name }}</span>
-            <strong>/sec</strong>
           </div>
         }
       }
@@ -35,10 +53,26 @@
     <div class="col-span-3">
       <!-- TODO: track productionEntry.id -->
       @for (productionEntry of machinesTotals.inputs; track productionEntry) {
-        <div>
-          <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
+        @let itemIconUrl = itemIconsByName[productionEntry.name];
+        <div class="flex items-center gap-1">
+          <strong class="w-24 text-right font-mono tabular-nums">
+            {{ productionEntry.totalRate | number: '1.2-2' }}/sec
+          </strong>
+          @if (itemIconUrl) {
+            <img
+              class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
+              [src]="itemIconUrl"
+              [alt]="productionEntry.name + ' icon'"
+            />
+          } @else {
+            <span
+              class="flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+              aria-hidden="true"
+            >
+              <i class="fas fa-image"></i>
+            </span>
+          }
           <span>{{ productionEntry.name }}</span>
-          <strong>/sec</strong>
         </div>
       }
     </div>
@@ -46,10 +80,26 @@
     <div class="col-span-3">
       <!-- TODO: track productionEntry.id -->
       @for (productionEntry of machinesTotals.outputs; track productionEntry) {
-        <div>
-          <strong>{{ productionEntry.totalRate | number: '1.1-2' }} </strong>
+        @let itemIconUrl = itemIconsByName[productionEntry.name];
+        <div class="flex items-center gap-1">
+          <strong class="w-24 text-right font-mono tabular-nums">
+            {{ productionEntry.totalRate | number: '1.2-2' }}/sec
+          </strong>
+          @if (itemIconUrl) {
+            <img
+              class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
+              [src]="itemIconUrl"
+              [alt]="productionEntry.name + ' icon'"
+            />
+          } @else {
+            <span
+              class="flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+              aria-hidden="true"
+            >
+              <i class="fas fa-image"></i>
+            </span>
+          }
           <span>{{ productionEntry.name }}</span>
-          <strong>/sec</strong>
         </div>
       }
     </div>
@@ -57,7 +107,7 @@
 
   <br />
 
-  <div class="text-md mt-4 ml-10 grid grid-cols-12 font-bold">
+  <div class="text-md ml-10 grid grid-cols-12 font-bold">
     <div class="col-span-6">Productions</div>
     <div class="col-span-3">Input Rate</div>
     <div class="col-span-3">Output Rate</div>

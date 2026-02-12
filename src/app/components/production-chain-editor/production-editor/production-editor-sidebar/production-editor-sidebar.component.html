@@ -2,11 +2,11 @@
 
 @if ($show()) {
   <aside
-    class="flex h-full w-full flex-col gap-4 bg-stone-900 p-4 text-slate-50"
+    class="flex h-full min-h-0 w-full flex-col gap-4 overflow-hidden bg-stone-900 p-4 text-slate-50"
     aria-label="Production editor sidebar"
   >
     <div class="flex items-center justify-between gap-2">
-      <div class="text-[11px] font-semibold tracking-[0.32em] text-stone-400 uppercase">
+      <div class="text-xs font-semibold tracking-[0.32em] text-stone-400 uppercase">
         Production Editor
       </div>
 
@@ -21,6 +21,11 @@
       </button>
     </div>
 
-    <app-production-editor [$machine]="machine"></app-production-editor>
+    <div class="min-h-0 flex-1 overflow-auto pr-1">
+      <app-production-editor
+        [$machine]="machine"
+        ($machineChange)="$machineChange.emit($event)"
+      ></app-production-editor>
+    </div>
   </aside>
 }

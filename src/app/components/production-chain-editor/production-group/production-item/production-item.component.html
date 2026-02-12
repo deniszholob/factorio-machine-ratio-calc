@@ -1,59 +1,125 @@
-@let machine = $machine();
+@let production = $machine();
+@let recipe = production.recipe;
+@let machine = production.machine;
+@let itemIconsByName = $itemIconsByName();
+@let machineIconsByName = $machineIconsByName();
+@let machineIconUrl = machineIconsByName[machine.name];
+@let recipeIconUrl = recipe.iconUrl;
 <div
-  class="flex cursor-pointer items-center justify-center gap-3 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-2 text-stone-100 transition-colors hover:border-stone-600 hover:bg-stone-900/70"
+  class="flex cursor-pointer flex-row items-center gap-3 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-2 text-stone-100 transition-colors hover:border-stone-600 hover:bg-stone-900/70"
   cdkDrag
 >
-  <!-- <span>{{ machine.name }}</span> -->
-  <div cdkDragHandle>
+  <button
+    class="flex h-9 w-9 items-center justify-center rounded-md text-stone-300 transition-colors hover:bg-stone-800/80 hover:text-stone-100 focus-visible:ring-2 focus-visible:ring-blue-400/80 focus-visible:outline-none"
+    [title]="'Drag production'"
+    aria-label="Drag production"
+    type="button"
+    cdkDragHandle
+  >
     <i class="fas fa-grip-vertical"></i>
-  </div>
-  <div class="grid flex-1 grid-cols-12">
-    <div class="col-span-6 flex flex-row flex-wrap items-center gap-2">
-      <button
-        class="btn btn-icon btn-warning"
-        [title]="'Edit production'"
-        (click)="onEditMachine(machine)"
-      >
-        <i class="fas fa-pencil-alt"></i>
-      </button>
-      <button
-        class="btn btn-icon btn-secondary"
-        [title]="'Duplicate production'"
-        (click)="onDuplicateMachine(machine)"
-      >
-        <i class="fas fa-copy"></i>
-      </button>
-      <button
-        class="btn btn-icon btn-danger"
-        [title]="'Delete production'"
-        (click)="onDeleteMachine(machine)"
-      >
-        <i class="fas fa-trash"></i>
-      </button>
-      <div class="flex flex-wrap items-center">
-        <input
-          class="max-w-28"
-          [(ngModel)]="machine.count"
-          (change)="onUpdateMachineCount(machine)"
-          (keyup)="onUpdateMachineCount(machine)"
-          type="number"
-          name="machineCount"
-          step="0.1"
-        />
-        <label class="ml-2" for="machineCount">
-          {{ machine.name }}
-          <span class="text-sm font-light">Machine(s)</span>
-        </label>
-      </div>
+  </button>
+
+  <div class="flex flex-1 flex-col gap-1">
+    <div class="flex flex-col">
+      <span class="flex items-center justify-start gap-2 text-center text-base font-semibold">
+        <span class="relative h-8 w-10 shrink-0">
+          @if (recipeIconUrl) {
+            <img
+              class="absolute top-0 left-0 h-8 w-8 rounded-sm border border-stone-700 object-cover"
+              [src]="recipeIconUrl"
+              [alt]="recipe.name + ' icon'"
+            />
+          } @else {
+            <span
+              class="absolute top-0 left-0 flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+              aria-hidden="true"
+            >
+              <i class="fas fa-image"></i>
+            </span>
+          }
+          @if (machineIconUrl) {
+            <img
+              class="absolute right-0 bottom-0 h-5 w-5 rounded-sm border border-stone-700 object-cover"
+              [src]="machineIconUrl"
+              [alt]="machine.name + ' icon'"
+            />
+          } @else {
+            <span
+              class="absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+              aria-hidden="true"
+            >
+              <i class="fas fa-image"></i>
+            </span>
+          }
+        </span>
+        {{ production.name }}
+      </span>
     </div>
-    <ng-container
-      [ngTemplateOutlet]="ios"
-      [ngTemplateOutletContext]="{ $implicit: machine.machineInputs }"
-    ></ng-container>
-    <ng-container
-      [ngTemplateOutlet]="ios"
-      [ngTemplateOutletContext]="{ $implicit: machine.machineOutputs }"
-    ></ng-container>
+
+    <div class="grid w-full flex-1 grid-cols-12">
+      <div class="col-span-6 flex flex-row flex-wrap items-center gap-2">
+        <button
+          class="btn btn-icon btn-warning"
+          [title]="'Edit production'"
+          (click)="onEditMachine(production)"
+        >
+          <i class="fas fa-pencil-alt"></i>
+        </button>
+
+        <button
+          class="btn btn-icon btn-secondary"
+          [title]="'Duplicate production'"
+          (click)="onDuplicateMachine(production)"
+        >
+          <i class="fas fa-copy"></i>
+        </button>
+
+        <button
+          class="btn btn-icon btn-danger"
+          [title]="'Delete production'"
+          (click)="onDeleteMachine(production)"
+        >
+          <i class="fas fa-trash"></i>
+        </button>
+
+        <div class="flex flex-wrap items-center gap-1">
+          <input
+            class="h-9 max-w-28"
+            [(ngModel)]="production.count"
+            (change)="onUpdateMachineCount(production)"
+            (keyup)="onUpdateMachineCount(production)"
+            type="number"
+            name="machineCount"
+            step="0.1"
+          />
+          @if (machineIconUrl) {
+            <img
+              class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
+              [src]="machineIconUrl"
+              [alt]="machine.name + ' icon'"
+            />
+          } @else {
+            <span
+              class="flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+              aria-hidden="true"
+            >
+              <i class="fas fa-image"></i>
+            </span>
+          }
+          <span>{{ machine.name }}</span>
+        </div>
+      </div>
+
+      <ng-container
+        [ngTemplateOutlet]="ios"
+        [ngTemplateOutletContext]="{ $implicit: recipe.inputs }"
+      ></ng-container>
+
+      <ng-container
+        [ngTemplateOutlet]="ios"
+        [ngTemplateOutletContext]="{ $implicit: recipe.outputs }"
+      ></ng-container>
+    </div>
   </div>
 </div>
 
@@ -62,10 +128,27 @@
 <ng-template #ios let-data>
   <div class="col-span-3">
     @for (item of data; track item) {
-      <div>
-        <span>
-          <strong>{{ item.totalRate | number: '0.1-2' }}</strong>
-          {{ item.name }}/sec
+      @let itemIconUrl = itemIconsByName[item.name];
+      <div class="flex items-center gap-1">
+        <span class="inline-flex items-center gap-1">
+          <strong class="w-24 text-right font-mono tabular-nums">
+            {{ item.totalRate | number: '1.2-2' }}/sec
+          </strong>
+          @if (itemIconUrl) {
+            <img
+              class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
+              [src]="itemIconUrl"
+              [alt]="item.name + ' icon'"
+            />
+          } @else {
+            <span
+              class="flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+              aria-hidden="true"
+            >
+              <i class="fas fa-image"></i>
+            </span>
+          }
+          {{ item.name }}
         </span>
       </div>
     }

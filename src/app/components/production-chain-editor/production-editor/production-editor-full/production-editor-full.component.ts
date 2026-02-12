@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
 
 import { ProductionEditorComponent } from '../production-editor.component';
 import { Production } from '../production.model';
@@ -12,4 +17,5 @@ import { Production } from '../production.model';
 })
 export class ProductionEditorFullComponent {
   public readonly $machine = input.required<Production | undefined>();
+  public readonly $machineChange = output<Production>();
 }

@@ -2,16 +2,17 @@
 @let activeId = $activeProductionId();
 @let editingId = $editingProductionId();
 @let editingName = $editingName();
+@let editingIconUrl = $editingIconUrl();
 
 <div class="flex flex-1 flex-col gap-2 overflow-auto">
   <div class="flex flex-row items-center justify-between gap-1">
-    <div class="text-[11px] font-semibold tracking-[0.32em] text-stone-500 uppercase">
+    <div class="text-xs font-semibold tracking-[0.32em] text-stone-500 uppercase">
       Production Chains
     </div>
 
     <div class="flex items-center gap-1">
       <button
-        class="btn btn-success flex items-center px-2 py-1 text-sm"
+        class="btn btn-success flex items-center px-2 py-1"
         [title]="'Add production chain'"
         (click)="onAddProductionChain()"
         type="button"
@@ -19,7 +20,7 @@
         <i class="fas fa-plus"></i>
       </button>
       <button
-        class="btn btn-danger-outline-fill flex items-center px-2 py-1 text-sm"
+        class="btn btn-danger-outline-fill flex items-center px-2 py-1"
         [title]="'Reset all saved production chains'"
         (click)="onResetProductionChains()"
         type="button"
@@ -37,18 +38,18 @@
         [$activeProductionChainId]="activeId"
         [$editingProductionChainId]="editingId"
         [$editingProductionChainName]="editingName"
+        [$editingProductionChainIconUrl]="editingIconUrl"
         ($selectId)="onSelectProductionChain($event)"
         ($startRename)="onStartProductionChainRename($event)"
         ($cancelRename)="onCancelProductionChainRename()"
         ($commitRename)="onCommitProductionChainRename()"
         ($editName)="onEditProductionChainInput($event)"
+        ($editIconUrl)="onEditProductionChainIconInput($event)"
         ($duplicate)="onDuplicateProductionChain($event)"
         ($delete)="onDeleteProductionChain($event)"
       ></app-production-chain-item>
     } @empty {
-      <div
-        class="rounded-sm border border-dashed border-stone-700 px-3 py-4 text-xs text-stone-400"
-      >
+      <div class="rounded-sm border border-dashed border-stone-700 px-3 py-4 text-stone-400">
         No production chains yet.
         <br />Add one to start planning.
       </div>
@@ -63,7 +64,7 @@
   [$secondaryButton]="'Cancel'"
   ($primaryButtonClick)="onConfirmReset()"
 >
-  <div class="flex flex-col gap-2 text-sm text-stone-200">
+  <div class="flex flex-col gap-2 text-stone-200">
     <p>This deletes every saved production chain and clears local storage.</p>
     <p class="text-stone-400">This cannot be undone.</p>
   </div>

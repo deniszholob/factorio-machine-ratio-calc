@@ -4,10 +4,10 @@
     class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-black/50 outline-hidden focus:outline-hidden"
   >
     <!-- Centering -->
-    <div class="relative mx-auto my-6 w-full max-w-5xl">
+    <div class="relative mx-auto my-6 w-full max-w-6xl">
       <!--content-->
       <div
-        class="relative flex w-full flex-col rounded-lg border border-stone-800 bg-stone-900 text-slate-50 shadow-lg outline-hidden focus:outline-hidden"
+        class="relative flex w-full flex-col rounded-lg border border-stone-700 bg-stone-900 text-slate-50 shadow-lg outline-hidden focus:outline-hidden"
       >
         <!--header-->
         <div
@@ -29,18 +29,18 @@
         </div>
 
         <!--body-->
-        <div class="flex-auto overflow-auto p-6">
+        <div [class]="$bodyClass()">
           <ng-content></ng-content>
         </div>
 
         <!--footer-->
         @if ($primaryButton() || $secondaryButton()) {
           <div
-            class="flex items-center justify-end rounded-b border-t border-solid border-stone-800 bg-stone-950/50 p-6"
+            class="flex items-center justify-end gap-2 rounded-b border-t border-solid border-stone-800 bg-stone-950/50 p-6"
           >
             @if ($primaryButton()) {
               <button
-                class="background-transparent mr-1 mb-1 px-6 py-2 text-sm font-bold text-slate-500 uppercase outline-hidden transition-all duration-150 ease-linear focus:outline-hidden"
+                class="btn btn-secondary-outline"
                 (click)="onSecondaryButtonClick()"
                 type="button"
               >

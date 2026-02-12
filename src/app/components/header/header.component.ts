@@ -6,6 +6,7 @@ import { TooltipDirective } from '../tooltip/tooltip.directive';
 import { FilePickerComponent } from '../file-picker/file-picker.component';
 import { SettingsService } from 'src/app/shared/settings/settings.service';
 import { ProductionChainService } from 'src/app/shared/production-chain/production-chain.service';
+import { ProductionCatalogUiService } from 'src/app/shared/production-catalog/production-catalog-ui.service';
 
 @Component({
   selector: 'app-header',
@@ -19,7 +20,12 @@ export class HeaderComponent {
     inject(ImportExportService);
   private readonly settingsService = inject(SettingsService);
   private readonly productionChainService = inject(ProductionChainService);
+  private readonly productionCatalogUiService = inject(
+    ProductionCatalogUiService,
+  );
   protected readonly $isSettingsOpen = this.settingsService.$isSettingsOpen;
+  protected readonly $isCatalogOpen =
+    this.productionCatalogUiService.$isCatalogOpen;
 
   protected onImportProductionChains(files: File[]): void {
     const mode = this.settingsService.$importChainsMode();
@@ -38,6 +44,16 @@ export class HeaderComponent {
   }
 
   protected onToggleSettings(): void {
+    if (this.productionCatalogUiService.$isCatalogOpen()) {
+      this.productionCatalogUiService.closeCatalog();
+    }
     this.settingsService.toggleSettings();
+  }
+
+  protected onToggleCatalog(): void {
+    if (this.settingsService.$isSettingsOpen()) {
+      this.settingsService.closeSettings();
+    }
+    this.productionCatalogUiService.toggleCatalog();
   }
 }

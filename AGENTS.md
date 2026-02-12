@@ -8,6 +8,9 @@ IGNORE `.dev/` folder thats scrap code
 # Pre-prepared scripts
 
 You MUST use the package.json scripts/commands first before trying any other commands! This included but not limited to building the apps, generating custom files, etc...
+IF the scritps do not work (when Nx has environment issues) here are backups
+`pnpm exec tsc -p tsconfig.app.json --noEmit`
+`pnpm exec ngc -p tsconfig.app.json`
 
 ## Tailwind availability
 

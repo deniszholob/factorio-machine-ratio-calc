@@ -1,0 +1,497 @@
+@let catalog = $catalog();
+@let plainItems = $plainItems();
+@let machines = $machines();
+@let productions = $productions();
+@let visibleItems = $visibleItems();
+@let visibleMachines = $visibleMachines();
+@let visibleRecipes = $visibleRecipes();
+@let itemNames = $itemNames();
+@let itemIconsByName = $itemIconsByName();
+@let uploadError = $uploadError();
+@let importMode = $importMode();
+@let activeTab = $activeTab();
+@let itemFilter = $itemFilter();
+@let machineFilter = $machineFilter();
+@let recipeFilter = $recipeFilter();
+
+<section class="flex flex-col gap-4 p-2">
+  <div
+    class="flex flex-wrap items-center gap-2 rounded-lg border border-stone-800 bg-stone-900/70 p-2"
+  >
+    <button
+      class="btn h-8 px-3 py-0"
+      [ngClass]="activeTab === 'import' ? 'btn-primary' : 'btn-secondary-outline'"
+      (click)="setActiveTab('import')"
+      type="button"
+    >
+      <i class="fas fa-right-left"></i>
+      Import (5)
+    </button>
+    <button
+      class="btn h-8 px-3 py-0"
+      [ngClass]="activeTab === 'items' ? 'btn-primary' : 'btn-secondary-outline'"
+      (click)="setActiveTab('items')"
+      type="button"
+    >
+      <i class="fas fa-box"></i>
+      Items ({{ plainItems.length }})
+    </button>
+    <button
+      class="btn h-8 px-3 py-0"
+      [ngClass]="activeTab === 'machines' ? 'btn-primary' : 'btn-secondary-outline'"
+      (click)="setActiveTab('machines')"
+      type="button"
+    >
+      <i class="fas fa-industry"></i>
+      Machines ({{ machines.length }})
+    </button>
+    <button
+      class="btn h-8 px-3 py-0"
+      [ngClass]="activeTab === 'recipes' ? 'btn-primary' : 'btn-secondary-outline'"
+      (click)="setActiveTab('recipes')"
+      type="button"
+    >
+      <i class="fas fa-vial"></i>
+      Recipes ({{ catalog.recipes.length }})
+    </button>
+    <button
+      class="btn h-8 px-3 py-0"
+      [ngClass]="activeTab === 'productions' ? 'btn-primary' : 'btn-secondary-outline'"
+      (click)="setActiveTab('productions')"
+      type="button"
+    >
+      <i class="fas fa-diagram-project"></i>
+      Productions ({{ productions.length }})
+    </button>
+  </div>
+
+  @if (activeTab === 'import') {
+    <app-section-block
+      [$title]="'Import / Export'"
+      [$iconClass]="'fas fa-right-left text-stone-400'"
+    >
+      <div class="flex flex-col gap-4 p-4">
+        <app-form-field-block [$label]="'Import Mode'" [$className]="''">
+          <div class="inline-flex rounded-md bg-stone-950/50 p-1">
+            <button
+              class="btn h-8 px-3 py-0"
+              [ngClass]="importMode === 'add' ? 'btn-primary' : 'btn-secondary-outline'"
+              (click)="onSetImportMode('add')"
+              type="button"
+            >
+              Add / Merge
+            </button>
+            <button
+              class="btn h-8 px-3 py-0"
+              [ngClass]="importMode === 'override' ? 'btn-warning' : 'btn-secondary-outline'"
+              (click)="onSetImportMode('override')"
+              type="button"
+            >
+              Full Replace
+            </button>
+          </div>
+        </app-form-field-block>
+
+        <div class="flex flex-col divide-y divide-stone-800/80 rounded-md bg-stone-950/20 px-2">
+          <div class="flex flex-wrap items-center gap-2 py-2">
+            <span class="inline-flex min-w-44 items-center gap-2 text-stone-200">
+              <i class="fas fa-database text-stone-500"></i>
+              Entire Catalog
+            </span>
+            <button
+              class="btn btn-icon btn-primary-outline h-9 gap-2"
+              (click)="onDownloadCatalog()"
+            >
+              <i class="fas fa-download"></i>
+              <span>Download</span>
+            </button>
+            <app-file-picker
+              [$filesTypesAccepted]="'.json'"
+              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              ($fileChange)="onUploadCatalog($event)"
+            >
+              <i class="fas fa-cloud-arrow-up"></i>
+              <span>Upload</span>
+            </app-file-picker>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 py-2">
+            <span class="inline-flex min-w-44 items-center gap-2 text-stone-200">
+              <i class="fas fa-box text-stone-500"></i>
+              Items
+            </span>
+            <button class="btn btn-icon btn-primary-outline h-9 gap-2" (click)="onDownloadItems()">
+              <i class="fas fa-download"></i>
+              <span>Download</span>
+            </button>
+            <app-file-picker
+              [$filesTypesAccepted]="'.json'"
+              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              ($fileChange)="onUploadItems($event)"
+            >
+              <i class="fas fa-cloud-arrow-up"></i>
+              <span>Upload</span>
+            </app-file-picker>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 py-2">
+            <span class="inline-flex min-w-44 items-center gap-2 text-stone-200">
+              <i class="fas fa-industry text-stone-500"></i>
+              Machines
+            </span>
+            <button
+              class="btn btn-icon btn-primary-outline h-9 gap-2"
+              (click)="onDownloadMachines()"
+            >
+              <i class="fas fa-download"></i>
+              <span>Download</span>
+            </button>
+            <app-file-picker
+              [$filesTypesAccepted]="'.json'"
+              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              ($fileChange)="onUploadMachines($event)"
+            >
+              <i class="fas fa-cloud-arrow-up"></i>
+              <span>Upload</span>
+            </app-file-picker>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 py-2">
+            <span class="inline-flex min-w-44 items-center gap-2 text-stone-200">
+              <i class="fas fa-vial text-stone-500"></i>
+              Recipes
+            </span>
+            <button
+              class="btn btn-icon btn-primary-outline h-9 gap-2"
+              (click)="onDownloadRecipes()"
+            >
+              <i class="fas fa-download"></i>
+              <span>Download</span>
+            </button>
+            <app-file-picker
+              [$filesTypesAccepted]="'.json'"
+              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              ($fileChange)="onUploadRecipes($event)"
+            >
+              <i class="fas fa-cloud-arrow-up"></i>
+              <span>Upload</span>
+            </app-file-picker>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 py-2">
+            <span class="inline-flex min-w-44 items-center gap-2 text-stone-200">
+              <i class="fas fa-diagram-project text-stone-500"></i>
+              Productions
+            </span>
+            <button
+              class="btn btn-icon btn-primary-outline h-9 gap-2"
+              (click)="onDownloadProductions()"
+            >
+              <i class="fas fa-download"></i>
+              <span>Download</span>
+            </button>
+            <app-file-picker
+              [$filesTypesAccepted]="'.json'"
+              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              ($fileChange)="onUploadProductions($event)"
+            >
+              <i class="fas fa-cloud-arrow-up"></i>
+              <span>Upload</span>
+            </app-file-picker>
+          </div>
+        </div>
+
+        @if (uploadError) {
+          <div class="rounded-md bg-red-950/30 px-3 py-2 text-red-300">
+            {{ uploadError }}
+          </div>
+        }
+
+        <div class="border-t border-stone-800 pt-3">
+          <button class="btn btn-icon btn-danger-outline gap-2" (click)="onDeleteCatalog()">
+            <i class="fas fa-trash"></i>
+            <span>Delete Whole Catalog</span>
+          </button>
+        </div>
+      </div>
+    </app-section-block>
+  }
+
+  @if (activeTab === 'items') {
+    <app-section-block
+      [$title]="'Items'"
+      [$iconClass]="'fas fa-box text-stone-400'"
+      [$showToolbar]="true"
+      [$addLabel]="'item'"
+      [$filterValue]="itemFilter"
+      ($add)="onAddItem()"
+      ($filterValueChange)="onItemFilterChange($event)"
+    >
+      <div class="flex flex-col gap-3 p-4">
+        @if (visibleItems.length === 0) {
+          <div class="text-stone-400">No items match.</div>
+        }
+
+        <div class="flex flex-col divide-y divide-stone-800/80">
+          @for (item of visibleItems; track item) {
+            <div class="flex flex-wrap items-end gap-3 py-3">
+              @if (item.iconUrl) {
+                <img
+                  class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
+                  [src]="item.iconUrl"
+                  [alt]="item.name + ' icon'"
+                />
+              } @else {
+                <span
+                  class="flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+                  aria-hidden="true"
+                >
+                  <i class="fas fa-image"></i>
+                </span>
+              }
+
+              <div class="flex min-w-44 flex-col gap-1">
+                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                  >Name</span
+                >
+                <input
+                  class="h-9"
+                  [(ngModel)]="item.name"
+                  (focus)="onItemNameFocus(item)"
+                  (change)="onItemNameChange(item, item.name)"
+                  type="text"
+                  name="catalogItemName"
+                  placeholder="Item name"
+                  aria-label="Item name"
+                />
+              </div>
+
+              <div class="flex min-w-56 flex-col gap-1">
+                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                  >Icon</span
+                >
+                <input
+                  class="h-9"
+                  [(ngModel)]="item.iconUrl"
+                  (change)="onItemIconChange(item, item.iconUrl ?? '')"
+                  type="url"
+                  name="catalogItemIconUrl"
+                  placeholder="Icon URL"
+                  aria-label="Item icon URL"
+                />
+              </div>
+
+              <button class="btn btn-icon btn-danger h-9" (click)="onRemoveItem(item)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </app-section-block>
+  }
+
+  @if (activeTab === 'machines') {
+    <app-section-block
+      [$title]="'Machines'"
+      [$iconClass]="'fas fa-industry text-stone-400'"
+      [$showToolbar]="true"
+      [$addLabel]="'machine'"
+      [$filterValue]="machineFilter"
+      ($add)="onAddMachine()"
+      ($filterValueChange)="onMachineFilterChange($event)"
+    >
+      <div class="flex flex-col gap-4 rounded-lg border border-stone-800 bg-stone-900/70 p-4">
+        @if (visibleMachines.length === 0) {
+          <div class="text-stone-400">No machines match.</div>
+        }
+
+        <div class="flex flex-col divide-y divide-stone-800/80">
+          @for (machine of visibleMachines; track machine) {
+            <div class="flex flex-wrap items-end gap-3 py-3">
+              @if (machine.iconUrl) {
+                <img
+                  class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
+                  [src]="machine.iconUrl"
+                  [alt]="machine.name + ' icon'"
+                />
+              } @else {
+                <span
+                  class="flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+                  aria-hidden="true"
+                >
+                  <i class="fas fa-image"></i>
+                </span>
+              }
+
+              <div class="flex min-w-44 flex-col gap-1">
+                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                  >Name</span
+                >
+                <input
+                  class="h-9"
+                  [(ngModel)]="machine.name"
+                  (focus)="onMachineNameFocus(machine)"
+                  (change)="onMachineChange(machine)"
+                  type="text"
+                  name="catalogMachineName"
+                  placeholder="Machine name"
+                  aria-label="Machine name"
+                />
+              </div>
+
+              <div class="flex min-w-56 flex-col gap-1">
+                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                  >Icon</span
+                >
+                <input
+                  class="h-9"
+                  [(ngModel)]="machine.iconUrl"
+                  (change)="onMachineChange(machine)"
+                  type="url"
+                  name="catalogMachineIcon"
+                  placeholder="Icon URL"
+                  aria-label="Machine icon URL"
+                />
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                  >Speed</span
+                >
+                <input
+                  class="h-9 max-w-28"
+                  [(ngModel)]="machine.craftingSpeed"
+                  (change)="onMachineChange(machine)"
+                  (keyup)="onMachineChange(machine)"
+                  type="number"
+                  name="catalogMachineSpeed"
+                  min="0"
+                  step="0.05"
+                  placeholder="Speed"
+                  aria-label="Machine craft speed"
+                />
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                  >Prod</span
+                >
+                <input
+                  class="h-9 max-w-28"
+                  [(ngModel)]="machine.productivity"
+                  (change)="onMachineChange(machine)"
+                  (keyup)="onMachineChange(machine)"
+                  type="number"
+                  name="catalogMachineProductivity"
+                  min="0"
+                  step="0.05"
+                  placeholder="Productivity"
+                  aria-label="Machine productivity"
+                />
+              </div>
+
+              <button class="btn btn-icon btn-danger h-9" (click)="onRemoveMachine(machine)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </app-section-block>
+  }
+
+  @if (activeTab === 'recipes') {
+    <app-section-block
+      [$title]="'Recipes'"
+      [$iconClass]="'fas fa-vial text-stone-400'"
+      [$showToolbar]="true"
+      [$addLabel]="'recipe'"
+      [$filterValue]="recipeFilter"
+      ($add)="onAddRecipe()"
+      ($filterValueChange)="onRecipeFilterChange($event)"
+    >
+      @for (recipe of visibleRecipes; track recipe) {
+        <app-catalog-recipe-form
+          [$recipe]="recipe"
+          [$itemNames]="itemNames"
+          [$itemIconsByName]="itemIconsByName"
+          ($recipeChange)="onRecipeChange(recipe)"
+          ($removeRecipe)="onRemoveRecipe(recipe)"
+          ($addRecipeItem)="onAddRecipeItem(recipe, $event)"
+          ($removeRecipeItem)="onRemoveRecipeItem(recipe, $event.index, $event.collection)"
+        ></app-catalog-recipe-form>
+      } @empty {
+        <div class="text-stone-400">No recipes match.</div>
+      }
+    </app-section-block>
+  }
+
+  @if (activeTab === 'productions') {
+    <app-section-block
+      [$title]="'Productions'"
+      [$iconClass]="'fas fa-diagram-project text-stone-400'"
+      [$showToolbar]="false"
+    >
+      <div class="flex flex-col gap-4 p-4">
+        @if ($visibleProductionCards().length === 0) {
+          <div class="text-stone-400">No productions available.</div>
+        }
+
+        <div class="flex flex-col divide-y divide-stone-800/80">
+          @for (template of $visibleProductionCards(); track template.name) {
+            <div class="flex flex-wrap items-center gap-3 py-3">
+              <span class="relative h-8 w-10 shrink-0">
+                @if (template.recipeIconUrl) {
+                  <img
+                    class="absolute top-0 left-0 h-8 w-8 rounded-sm border border-stone-700 object-cover"
+                    [src]="template.recipeIconUrl"
+                    [alt]="template.recipeName + ' icon'"
+                  />
+                } @else {
+                  <span
+                    class="absolute top-0 left-0 flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+                    aria-hidden="true"
+                  >
+                    <i class="fas fa-image"></i>
+                  </span>
+                }
+                @if (template.machineIconUrl) {
+                  <img
+                    class="absolute right-0 bottom-0 h-5 w-5 rounded-sm border border-stone-700 object-cover"
+                    [src]="template.machineIconUrl"
+                    [alt]="template.machineName + ' icon'"
+                  />
+                } @else {
+                  <span
+                    class="absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+                    aria-hidden="true"
+                  >
+                    <i class="fas fa-image"></i>
+                  </span>
+                }
+              </span>
+
+              <div class="flex min-w-56 flex-col gap-1">
+                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                  >Name</span
+                >
+                <span class="text-stone-100">{{ template.name }}</span>
+              </div>
+
+              <div class="flex min-w-56 flex-col gap-1">
+                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                  >Details</span
+                >
+                <span class="text-stone-300">
+                  {{ template.recipeName }} in {{ template.machineName }}
+                </span>
+                <span class="text-stone-500">Read-only, inferred from production data</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </app-section-block>
+  }
+</section>

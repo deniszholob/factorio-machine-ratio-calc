@@ -1,0 +1,93 @@
+@let recipe = $recipe();
+
+<div class="flex flex-col gap-4 rounded-lg border border-stone-800/70 bg-stone-950/30 p-4">
+  <div class="flex items-center gap-3">
+    @if (recipe.iconUrl) {
+      <img
+        class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
+        [src]="recipe.iconUrl"
+        [alt]="recipe.name + ' icon'"
+      />
+    } @else {
+      <span
+        class="flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+        aria-hidden="true"
+      >
+        <i class="fas fa-image"></i>
+      </span>
+    }
+    <h4 class="text-base font-semibold text-stone-200">
+      {{ recipe.name || 'Untitled Recipe' }}
+    </h4>
+    <div class="h-px flex-1 bg-stone-700/70"></div>
+  </div>
+
+  <div class="flex flex-wrap items-end gap-3">
+    <app-form-field-block [$label]="'Name'" [$className]="'min-w-44'">
+      <input
+        class="h-9"
+        [(ngModel)]="recipe.name"
+        (change)="onRecipeChange()"
+        type="text"
+        name="catalogRecipeName"
+        placeholder="Recipe name"
+        aria-label="Recipe name"
+      />
+    </app-form-field-block>
+
+    <app-form-field-block [$label]="'Icon'" [$className]="'min-w-56'">
+      <input
+        class="h-9"
+        [(ngModel)]="recipe.iconUrl"
+        (change)="onRecipeChange()"
+        type="url"
+        name="catalogRecipeIcon"
+        placeholder="Icon URL"
+        aria-label="Recipe icon URL"
+      />
+    </app-form-field-block>
+
+    <app-form-field-block [$label]="'Time'" [$className]="'max-w-28'">
+      <input
+        class="h-9 max-w-28"
+        [(ngModel)]="recipe.timeToComplete"
+        (change)="onRecipeChange()"
+        (keyup)="onRecipeChange()"
+        type="number"
+        name="catalogRecipeTime"
+        min="0"
+        step="0.05"
+        placeholder="Time (s)"
+        aria-label="Recipe time in seconds"
+      />
+    </app-form-field-block>
+
+    <button class="btn btn-icon btn-danger h-9" (click)="onRemoveRecipe()">
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
+
+  <div class="flex flex-wrap gap-8">
+    <app-recipe-io-list
+      [$label]="'Inputs'"
+      [$items]="recipe.inputs"
+      [$itemNameOptions]="$itemNames()"
+      [$itemIconsByName]="$itemIconsByName()"
+      ($add)="onAddRecipeItem('inputs')"
+      ($remove)="onRemoveRecipeItem('inputs', $event)"
+      ($itemCountChange)="onRecipeChange()"
+      ($itemNameCommit)="onRecipeChange()"
+    ></app-recipe-io-list>
+
+    <app-recipe-io-list
+      [$label]="'Outputs'"
+      [$items]="recipe.outputs"
+      [$itemNameOptions]="$itemNames()"
+      [$itemIconsByName]="$itemIconsByName()"
+      ($add)="onAddRecipeItem('outputs')"
+      ($remove)="onRemoveRecipeItem('outputs', $event)"
+      ($itemCountChange)="onRecipeChange()"
+      ($itemNameCommit)="onRecipeChange()"
+    ></app-recipe-io-list>
+  </div>
+</div>

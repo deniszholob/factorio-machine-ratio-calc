@@ -32,6 +32,8 @@ export class ProductionChainGroupComponent {
     this.productionChainService.$editingProductionChainId;
   protected readonly $editingName: Signal<string> =
     this.productionChainService.$editingProductionChainDisplay;
+  protected readonly $editingIconUrl: Signal<string> =
+    this.productionChainService.$editingProductionChainIconUrl;
 
   protected onAddProductionChain(): void {
     this.productionChainService.addProduction();
@@ -76,5 +78,9 @@ export class ProductionChainGroupComponent {
 
   protected onEditProductionChainInput(value: string): void {
     this.productionChainService.updateEditingName(value);
+  }
+
+  protected onEditProductionChainIconInput(value: string): void {
+    this.productionChainService.updateEditingIconUrl(value);
   }
 }

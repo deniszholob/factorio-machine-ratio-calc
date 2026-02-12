@@ -5,6 +5,8 @@ export interface ProductionChain {
   id: string;
   /** Editable Display Name */
   display: string;
+  /** Optional icon URL */
+  iconUrl?: string;
   /** Productions to display in the main screen */
   productions: Production[];
 }
