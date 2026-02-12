@@ -3,6 +3,7 @@ import { ImportExportService } from 'src/app/shared/import-export/import-export.
 import { ProductionService } from '../production/production.service';
 import {
   Production,
+  normalizeProduction,
   syncAutoProductionName,
 } from '../../components/production-chain-editor/production-editor/production.model';
 import { guid } from 'src/app/shared/guid/guid.util';
@@ -54,8 +55,9 @@ export class ProductionChainService {
     // TODO: use storedChains are initial signal value
     // TODO: make activeProductionChainId a linked signal with storedChains[0]?.id as initial value
     effect(() => {
-      const storedChains: ProductionChain[] =
-        this.importExportService.loadAllProductionChains();
+      const storedChains = normalizeProductionChains(
+        this.importExportService.loadAllProductionChains(),
+      );
       if (storedChains.length === 0 || this.$productionChains().length > 0) {
         return;
       }
@@ -204,10 +206,7 @@ export class ProductionChainService {
       id: guid(),
       display: nextDisplay,
       iconUrl: chain.iconUrl,
-      productions: chain.productions.map((production) => ({
-        ...production,
-        id: guid(),
-      })),
+      productions: duplicateChainProductions(chain.productions),
     };
 
     this.$productionChains.update((items) => [...items, duplicated]);
@@ -330,7 +329,9 @@ export class ProductionChainService {
   }
 
   public reloadFromStorage(): void {
-    const storedChains = this.importExportService.loadAllProductionChains();
+    const storedChains = normalizeProductionChains(
+      this.importExportService.loadAllProductionChains(),
+    );
     this.$productionChains.set(storedChains);
 
     const activeId = this.$activeProductionChainId();
@@ -363,6 +364,38 @@ function cloneProductions(productions: Production[]): Production[] {
     return structuredClone(productions);
   }
   return JSON.parse(JSON.stringify(productions)) as Production[];
+}
+
+function duplicateChainProductions(productions: Production[]): Production[] {
+  const idMap = new Map<string, string>();
+  for (const production of productions) {
+    idMap.set(production.id, guid());
+  }
+
+  return productions.map((production) => {
+    const normalized = normalizeProduction(production);
+    const nextId = idMap.get(production.id) ?? guid();
+    const nextParentId = production.parentProductionId
+      ? idMap.get(production.parentProductionId)
+      : undefined;
+
+    return {
+      ...normalized,
+      id: nextId,
+      parentProductionId: nextParentId,
+    };
+  });
+}
+
+function normalizeProductionChains(
+  chains: ProductionChain[],
+): ProductionChain[] {
+  return chains.map((chain) => ({
+    ...chain,
+    productions: Array.isArray(chain.productions)
+      ? chain.productions.map((production) => normalizeProduction(production))
+      : [],
+  }));
 }
 
 function normalizeIconUrl(value: string): string | undefined {

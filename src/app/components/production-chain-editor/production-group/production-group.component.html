@@ -1,6 +1,12 @@
 @let machines = $machines();
 @let machinesTotals = $machineTotals();
 @let itemIconsByName = $itemIconsByName();
+@let renderRows = $renderRows();
+@let dropHint = $dropHint();
+@let draggedMachineId = $draggedMachineId();
+@let dropBeforeById = $dropBeforeById();
+@let dropParentById = $dropParentById();
+@let dragSubtreeCountById = $dragSubtreeCountById();
 
 @if (machines && machines.length > 0) {
   <div class="text-md ml-10 grid grid-cols-12 font-bold">
@@ -115,18 +121,37 @@
 
   <hr />
 
+  @if (dropHint) {
+    <div class="rounded-md border border-blue-500/60 bg-blue-900/20 px-3 py-2 text-sm text-blue-200">
+      {{ dropHint }}
+    </div>
+  }
+
   <div
     class="flex flex-col gap-1 overflow-auto"
-    [cdkDropListData]="machines"
+    [cdkDropListData]="renderRows"
     (cdkDropListDropped)="onDrop($event)"
+    (cdkDropListSorted)="onDragSorted($event)"
     cdkDropList
   >
-    @for (machine of machines; track machine; let i = $index) {
+    @for (row of renderRows; track row.production.id) {
       <app-production-item
-        [$machine]="machine"
+        [$machine]="row.production"
+        [$depth]="row.depth"
+        [$hasChildren]="row.hasChildren"
+        [$childCount]="row.childCount"
+        [$dragSubtreeCount]="dragSubtreeCountById[row.production.id] ?? 0"
+        [$isDropBefore]="dropBeforeById[row.production.id] === true"
+        [$isDropParent]="dropParentById[row.production.id] === true"
+        [$isDragging]="draggedMachineId === row.production.id"
         ($editMachine)="onEditMachine($event)"
         ($duplicateMachine)="onDuplicateMachine($event)"
-        ($deleteMachine)="onDeleteMachine(i)"
+        ($deleteMachine)="onDeleteMachine($event)"
+        ($toggleExpanded)="onToggleMachineExpanded($event)"
+        ($addChild)="onAddChildMachine($event)"
+        ($dragStarted)="onDragStarted($event)"
+        ($dragMoved)="onDragMoved($event)"
+        ($dragEnded)="onDragEnded()"
         ($updateMachineCount)="onUpdateMachineCount($event)"
       ></app-production-item>
     }

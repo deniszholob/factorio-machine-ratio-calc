@@ -1,4 +1,3 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -118,8 +117,8 @@ export class ProductionChainEditorComponent {
     this.$isEditorOpen.set(true);
   }
 
-  protected onDeleteMachine(index: number): void {
-    this.productionService.deleteMachineAt(index);
+  protected onDeleteMachineById(machineId: string): void {
+    this.productionService.deleteMachineById(machineId);
     this.syncActiveChainProductions();
   }
 
@@ -134,9 +133,29 @@ export class ProductionChainEditorComponent {
     this.syncActiveChainProductions();
   }
 
-  protected onDrop(event: CdkDragDrop<Production[]>): void {
-    this.productionService.moveMachine(event.previousIndex, event.currentIndex);
+  protected onMoveMachine(event: {
+    machineId: string;
+    beforeMachineId?: string;
+    parentProductionId?: string;
+  }): void {
+    this.productionService.moveMachineById(
+      event.machineId,
+      event.beforeMachineId,
+      event.parentProductionId,
+    );
     this.syncActiveChainProductions();
+  }
+
+  protected onToggleMachineExpanded(machineId: string): void {
+    this.productionService.toggleMachineExpanded(machineId);
+    this.syncActiveChainProductions();
+  }
+
+  protected onAddChildMachine(parentMachineId: string): void {
+    const machine = this.productionService.addMachine();
+    this.productionService.updateMachineParent(machine.id, parentMachineId);
+    this.syncActiveChainProductions();
+    this.onEditMachine(machine);
   }
 
   protected onEditorVisibilityChange(isOpen: boolean): void {

@@ -30,6 +30,8 @@ export interface Production {
   id: string;
   name: string;
   iconUrl?: string;
+  parentProductionId?: string;
+  isExpanded: boolean;
   count: number;
   effectiveTime: number;
   recipe: ProductionRecipe;
@@ -40,6 +42,8 @@ interface ProductionNormalizationInput {
   id?: string;
   name?: string;
   iconUrl?: string;
+  parentProductionId?: string;
+  isExpanded?: boolean;
   count?: number;
   craftingSpeed?: number;
   productivity?: number;
@@ -66,6 +70,7 @@ export function newProduction(): Production {
   const production: Production = {
     id: guid(),
     name: 'Project Assembly',
+    isExpanded: true,
     count: 1,
     effectiveTime: 1,
     recipe: {
@@ -151,6 +156,13 @@ export function normalizeProduction(
       typeof legacy.iconUrl === 'string' && legacy.iconUrl.trim().length > 0
         ? legacy.iconUrl.trim()
         : undefined,
+    parentProductionId:
+      typeof legacy.parentProductionId === 'string' &&
+      legacy.parentProductionId.trim().length > 0
+        ? legacy.parentProductionId.trim()
+        : undefined,
+    isExpanded:
+      typeof legacy.isExpanded === 'boolean' ? legacy.isExpanded : true,
     count: legacy.count ?? 1,
     effectiveTime: legacy.effectiveTime ?? 1,
     recipe,

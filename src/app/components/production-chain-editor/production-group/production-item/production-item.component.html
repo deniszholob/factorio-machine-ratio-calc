@@ -5,8 +5,23 @@
 @let machineIconsByName = $machineIconsByName();
 @let machineIconUrl = machineIconsByName[machine.name];
 @let recipeIconUrl = recipe.iconUrl;
+@let depth = $depth();
+@let hasChildren = $hasChildren();
+@let childCount = $childCount();
+@let dragSubtreeCount = $dragSubtreeCount();
+@let isDropBefore = $isDropBefore();
+@let isDropParent = $isDropParent();
+@let isDragging = $isDragging();
 <div
   class="flex cursor-pointer flex-row items-center gap-3 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-2 text-stone-100 transition-colors hover:border-stone-600 hover:bg-stone-900/70"
+  [class.border-blue-400]="isDropBefore"
+  [class.border-teal-400]="isDropParent"
+  [class.opacity-60]="isDragging"
+  [style.paddingLeft.px]="depth * 24 + 12"
+  [cdkDragData]="production.id"
+  (cdkDragStarted)="onDragStarted(production.id, $event)"
+  (cdkDragMoved)="onDragMoved(production.id, $event)"
+  (cdkDragEnded)="onDragEnded($event)"
   cdkDrag
 >
   <button
@@ -18,6 +33,38 @@
   >
     <i class="fas fa-grip-vertical"></i>
   </button>
+
+  <button
+    class="flex h-9 w-9 items-center justify-center rounded-md text-stone-300 transition-colors hover:bg-stone-800/80 hover:text-stone-100 focus-visible:ring-2 focus-visible:ring-blue-400/80 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+    [disabled]="!hasChildren"
+    [title]="
+      hasChildren
+        ? production.isExpanded
+          ? 'Collapse sub-productions'
+          : 'Expand sub-productions'
+        : 'No sub-productions'
+    "
+    [attr.aria-label]="
+      production.isExpanded ? 'Collapse sub-productions' : 'Expand sub-productions'
+    "
+    (click)="onToggleExpanded(production.id)"
+    type="button"
+  >
+    <i [class]="production.isExpanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+  </button>
+
+  @if (depth > 0) {
+    <div class="flex h-full items-stretch gap-1 self-stretch pr-1" aria-hidden="true">
+      <span class="flex items-center text-xs text-teal-400">
+        <i class="fas fa-turn-up"></i>
+      </span>
+      <span
+        class="inline-flex h-5 min-w-5 items-center justify-center rounded border border-teal-700/70 bg-teal-950/30 px-1 text-[10px] font-semibold text-teal-300"
+      >
+        {{ depth }}
+      </span>
+    </div>
+  }
 
   <div class="flex flex-1 flex-col gap-1">
     <div class="flex flex-col">
@@ -53,6 +100,27 @@
           }
         </span>
         {{ production.name }}
+        @if (depth > 0) {
+          <span
+            class="rounded border border-teal-700/70 bg-teal-950/30 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-teal-300 uppercase"
+          >
+            Sub-production
+          </span>
+        }
+        @if (hasChildren && !production.isExpanded) {
+          <span
+            class="rounded border border-amber-700/70 bg-amber-950/30 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-amber-300 uppercase"
+          >
+            {{ childCount }} collapsed
+          </span>
+        }
+        @if (isDragging && dragSubtreeCount > 0) {
+          <span
+            class="rounded border border-blue-700/70 bg-blue-950/30 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-blue-300 uppercase"
+          >
+            Moving {{ dragSubtreeCount }} child rows
+          </span>
+        }
       </span>
     </div>
 

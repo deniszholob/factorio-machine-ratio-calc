@@ -17,6 +17,8 @@ const meta: Meta<ComponentWithCustomControls> = {
     // Output
     $editMachine: { action: 'editMachine', table: { disable: true } },
     $deleteMachine: { action: 'deleteMachine', table: { disable: true } },
+    $toggleExpanded: { action: 'toggleExpanded', table: { disable: true } },
+    $addChild: { action: 'addChild', table: { disable: true } },
     // Hide
     // someControl: { table: { disable: true } }
   },

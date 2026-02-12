@@ -78,9 +78,11 @@
           [$machineTotals]="machinesTotals"
           ($editMachine)="onEditMachine($event)"
           ($duplicateMachine)="onDuplicateMachine($event)"
-          ($deleteMachine)="onDeleteMachine($event)"
+          ($deleteMachine)="onDeleteMachineById($event)"
+          ($moveMachine)="onMoveMachine($event)"
+          ($toggleMachineExpanded)="onToggleMachineExpanded($event)"
+          ($addChildMachine)="onAddChildMachine($event)"
           ($updateMachineCount)="onEditFinish()"
-          ($drop)="onDrop($event)"
         ></app-production-group>
 
         @if (errorMessage) {

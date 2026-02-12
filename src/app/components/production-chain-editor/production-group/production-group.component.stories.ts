@@ -28,8 +28,16 @@ export default {
     /** === Output Actions === */
     $editMachine: { action: 'editMachine', table: { disable: true } },
     $deleteMachine: { action: 'deleteMachine', table: { disable: true } },
-    $updateMachineCount: { action: 'updateMachineCount', table: { disable: true } },
-    $drop: { action: 'drop', table: { disable: true } },
+    $updateMachineCount: {
+      action: 'updateMachineCount',
+      table: { disable: true },
+    },
+    $moveMachine: { action: 'moveMachine', table: { disable: true } },
+    $toggleMachineExpanded: {
+      action: 'toggleMachineExpanded',
+      table: { disable: true },
+    },
+    $addChildMachine: { action: 'addChildMachine', table: { disable: true } },
     /** === Control Hide === */
     // someControl: { table: { disable: true } },
     /** === Control Disable === */

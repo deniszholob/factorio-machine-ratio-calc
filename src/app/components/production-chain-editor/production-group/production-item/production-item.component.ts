@@ -7,7 +7,13 @@ import {
   output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import {
+  CdkDrag,
+  CdkDragHandle,
+  CdkDragMove,
+  CdkDragStart,
+  CdkDragEnd,
+} from '@angular/cdk/drag-drop';
 import {
   Production,
   reCalcProductionRates,
@@ -20,18 +26,19 @@ import { ProductionCatalogService } from 'src/app/shared/production-catalog/prod
   templateUrl: './production-item.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    FormsModule,
-    CdkDragHandle,
-    CdkDrag,
-    TooltipDirective,
-  ],
+  imports: [CommonModule, FormsModule, TooltipDirective, CdkDrag, CdkDragHandle],
 })
 export class ProductionItemComponent {
   private readonly productionCatalogService = inject(ProductionCatalogService);
 
   public readonly $machine = input.required<Production>();
+  public readonly $depth = input<number>(0);
+  public readonly $hasChildren = input<boolean>(false);
+  public readonly $childCount = input<number>(0);
+  public readonly $dragSubtreeCount = input<number>(0);
+  public readonly $isDropBefore = input<boolean>(false);
+  public readonly $isDropParent = input<boolean>(false);
+  public readonly $isDragging = input<boolean>(false);
   public readonly $itemIconsByName =
     this.productionCatalogService.$itemIconsByName;
   public readonly $machineIconsByName =
@@ -39,15 +46,20 @@ export class ProductionItemComponent {
 
   public readonly $editMachine = output<Production>();
   public readonly $duplicateMachine = output<Production>();
-  public readonly $deleteMachine = output<Production>();
+  public readonly $deleteMachine = output<string>();
   public readonly $updateMachineCount = output<Production>();
+  public readonly $toggleExpanded = output<string>();
+  public readonly $addChild = output<string>();
+  public readonly $dragStarted = output<string>();
+  public readonly $dragEnded = output<void>();
+  public readonly $dragMoved = output<{ machineId: string; distanceX: number }>();
 
   protected onEditMachine(machine: Production): void {
     this.$editMachine.emit(machine);
   }
 
   protected onDeleteMachine(machine: Production): void {
-    this.$deleteMachine.emit(machine);
+    this.$deleteMachine.emit(machine.id);
   }
 
   protected onDuplicateMachine(machine: Production): void {
@@ -57,5 +69,25 @@ export class ProductionItemComponent {
   protected onUpdateMachineCount(machine: Production): void {
     this.$updateMachineCount.emit(machine);
     reCalcProductionRates(machine);
+  }
+
+  protected onToggleExpanded(machineId: string): void {
+    this.$toggleExpanded.emit(machineId);
+  }
+
+  protected onAddChild(machineId: string): void {
+    this.$addChild.emit(machineId);
+  }
+
+  protected onDragStarted(machineId: string, _event: CdkDragStart): void {
+    this.$dragStarted.emit(machineId);
+  }
+
+  protected onDragMoved(machineId: string, event: CdkDragMove): void {
+    this.$dragMoved.emit({ machineId, distanceX: event.distance.x });
+  }
+
+  protected onDragEnded(_event: CdkDragEnd): void {
+    this.$dragEnded.emit();
   }
 }
