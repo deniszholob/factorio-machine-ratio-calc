@@ -1,5 +1,29 @@
-<app-layout [$lastUpdate]="APP_BUILD_DATE">
-  <app-production-chain-editor
-    class="mx-auto flex w-full max-w-6xl overflow-auto px-8"
-  ></app-production-chain-editor>
-</app-layout>
+<app-main-layout>
+  <app-header ngProjectAs="side-header"></app-header>
+  <app-production-chain-group ngProjectAs="side-content"></app-production-chain-group>
+  <app-links ngProjectAs="side-footer"></app-links>
+
+  @if ($isSettingsOpen()) {
+    <app-settings-view ngProjectAs="main-content"></app-settings-view>
+  } @else if ($isCatalogOpen()) {
+    <app-content-layout [$title]="'Catalog'" ($close)="closeCatalog()" ngProjectAs="main-content">
+      <app-production-catalog-editor></app-production-catalog-editor>
+    </app-content-layout>
+  } @else if ($hasProductionChains()) {
+    <app-production-chain-editor ngProjectAs="main-content"></app-production-chain-editor>
+  } @else {
+    <app-content-layout
+      [$title]="'Production Chains'"
+      [$showClose]="false"
+      ngProjectAs="main-content"
+    >
+      <div
+        class="flex min-h-0 flex-1 items-center justify-center px-6 py-10 text-center text-stone-300"
+      >
+        Add a production chain in the sidebar to begin building ratios.
+      </div>
+    </app-content-layout>
+  }
+
+  <app-footer ngProjectAs="main-footer"></app-footer>
+</app-main-layout>
