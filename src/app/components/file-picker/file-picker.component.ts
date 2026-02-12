@@ -1,4 +1,4 @@
-import { Component, ElementRef, input, output, viewChild } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-file-picker',

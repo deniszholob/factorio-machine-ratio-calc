@@ -238,7 +238,7 @@
 
         <div class="flex flex-col divide-y divide-stone-800/80">
           @for (item of visibleItems; track item) {
-            @let itemUsageCount = itemUsageByName[item.name.trim().toLowerCase()] ?? 0;
+            @let itemUsageCount = itemUsageByName[item.name.trim().toLowerCase()];
             <div class="flex flex-wrap items-end gap-3 py-3">
               @if (item.iconUrl) {
                 <img
@@ -333,7 +333,7 @@
 
         <div class="flex flex-col divide-y divide-stone-800/80">
           @for (machine of visibleMachines; track machine) {
-            @let machineUsageCount = machineUsageByName[machine.name.trim().toLowerCase()] ?? 0;
+            @let machineUsageCount = machineUsageByName[machine.name.trim().toLowerCase()];
             <div class="flex flex-wrap items-end gap-3 py-3">
               @if (machine.iconUrl) {
                 <img
@@ -458,7 +458,7 @@
       ($filterValueChange)="onRecipeFilterChange($event)"
     >
       @for (recipe of visibleRecipes; track recipe) {
-        @let recipeUsageCount = recipeUsageByName[recipe.name.trim().toLowerCase()] ?? 0;
+        @let recipeUsageCount = recipeUsageByName[recipe.name.trim().toLowerCase()];
         <app-catalog-recipe-form
           [$recipe]="recipe"
           [$itemNames]="itemNames"
@@ -559,14 +559,14 @@
                     : ''
                 "
               >
-              <button
-                class="btn btn-icon btn-danger h-9"
-                [disabled]="template.usageCount > 0"
-                (click)="onRemoveProduction(template.index, template.name)"
-                type="button"
-              >
-                <i class="fas fa-trash"></i>
-              </button>
+                <button
+                  class="btn btn-icon btn-danger h-9"
+                  [disabled]="template.usageCount > 0"
+                  (click)="onRemoveProduction(template.index, template.name)"
+                  type="button"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
               </span>
             </div>
           }

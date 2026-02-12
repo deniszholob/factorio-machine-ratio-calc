@@ -68,7 +68,10 @@ function encodeBase64Url(value: string): string {
     binary += String.fromCharCode(byte);
   }
 
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return btoa(binary)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
 }
 
 function decodeBase64Url(value: string): string {

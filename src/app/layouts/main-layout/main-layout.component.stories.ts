@@ -22,13 +22,13 @@ export default {
     // inputChange: { action: 'inputChange', table: { disable: true } },
     /** === Control Hide === */
     // someControl: { table: { disable: true } },
-     /** === Control Disable === */
+    /** === Control Disable === */
     // someControl: { control: { disable: true } },
   },
   args: {},
-} satisfies Meta<ComponentWithCustomControls>
+} satisfies Meta<ComponentWithCustomControls>;
 
 export const MainLayout: StoryObj<ComponentWithCustomControls> = {
   render: (args) => ({ props: args }),
   // play: async ({ canvasElement }) => { const canvasElement = within(canvasElement) },
-}
+};

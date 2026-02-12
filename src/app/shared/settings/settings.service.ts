@@ -92,7 +92,8 @@ export class SettingsService {
         importChainsMode:
           parsed.importChainsMode ?? DEFAULT_SETTINGS.importChainsMode,
         importProductionsMode:
-          parsed.importProductionsMode ?? DEFAULT_SETTINGS.importProductionsMode,
+          parsed.importProductionsMode ??
+          DEFAULT_SETTINGS.importProductionsMode,
       };
     } catch (error) {
       console.warn('Unable to read settings from storage', error);

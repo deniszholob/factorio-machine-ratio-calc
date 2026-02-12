@@ -1,3 +1,10 @@
+import {
+  CdkDrag,
+  CdkDragEnd,
+  CdkDragHandle,
+  CdkDragMove,
+  CdkDragStart,
+} from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -7,26 +14,25 @@ import {
   output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  CdkDrag,
-  CdkDragHandle,
-  CdkDragMove,
-  CdkDragStart,
-  CdkDragEnd,
-} from '@angular/cdk/drag-drop';
+import { TooltipDirective } from 'src/app/components/tooltip/tooltip.directive';
+import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
 import {
   Production,
   reCalcProductionRates,
 } from '../../production-editor/production.model';
-import { TooltipDirective } from 'src/app/components/tooltip/tooltip.directive';
-import { ProductionCatalogService } from 'src/app/shared/production-catalog/production-catalog.service';
 
 @Component({
   selector: 'app-production-item',
   templateUrl: './production-item.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, TooltipDirective, CdkDrag, CdkDragHandle],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TooltipDirective,
+    CdkDrag,
+    CdkDragHandle,
+  ],
 })
 export class ProductionItemComponent {
   private readonly productionCatalogService = inject(ProductionCatalogService);
@@ -52,7 +58,10 @@ export class ProductionItemComponent {
   public readonly $addChild = output<string>();
   public readonly $dragStarted = output<string>();
   public readonly $dragEnded = output<void>();
-  public readonly $dragMoved = output<{ machineId: string; distanceX: number }>();
+  public readonly $dragMoved = output<{
+    machineId: string;
+    distanceX: number;
+  }>();
 
   protected onEditMachine(machine: Production): void {
     this.$editMachine.emit(machine);
@@ -79,6 +88,7 @@ export class ProductionItemComponent {
     this.$addChild.emit(machineId);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onDragStarted(machineId: string, _event: CdkDragStart): void {
     this.$dragStarted.emit(machineId);
   }
@@ -87,6 +97,7 @@ export class ProductionItemComponent {
     this.$dragMoved.emit({ machineId, distanceX: event.distance.x });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onDragEnded(_event: CdkDragEnd): void {
     this.$dragEnded.emit();
   }

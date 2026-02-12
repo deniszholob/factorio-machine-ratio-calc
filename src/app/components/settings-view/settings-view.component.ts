@@ -18,7 +18,8 @@ import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-l
 export class SettingsViewComponent {
   private readonly settingsService = inject(SettingsService);
 
-  protected readonly $editorDisplayMode = this.settingsService.$editorDisplayMode;
+  protected readonly $editorDisplayMode =
+    this.settingsService.$editorDisplayMode;
   protected readonly $importChainsMode = this.settingsService.$importChainsMode;
   protected readonly $importProductionsMode =
     this.settingsService.$importProductionsMode;

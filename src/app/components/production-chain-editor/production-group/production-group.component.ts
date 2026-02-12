@@ -88,17 +88,16 @@ export class ProductionGroupComponent {
   protected readonly $dragSubtreeCountById = computed<
     Partial<Record<string, number>>
   >(() => {
-      const draggedMachineId = this.$draggedMachineId();
-      if (!draggedMachineId) {
-        return {};
-      }
-      const descendantCount = this.$draggedDescendantIds().size;
-      if (descendantCount <= 0) {
-        return {};
-      }
-      return { [draggedMachineId]: descendantCount };
-    },
-  );
+    const draggedMachineId = this.$draggedMachineId();
+    if (!draggedMachineId) {
+      return {};
+    }
+    const descendantCount = this.$draggedDescendantIds().size;
+    if (descendantCount <= 0) {
+      return {};
+    }
+    return { [draggedMachineId]: descendantCount };
+  });
   /**
    * Derived drop intent from current drag position (index + horizontal offset).
    * This is used for visual hints; final drop recalculates deterministically.
@@ -201,10 +200,7 @@ export class ProductionGroupComponent {
     this.$dragCurrentIndex.set(undefined);
   }
 
-  protected onDragMoved(event: {
-    machineId: string;
-    distanceX: number;
-  }): void {
+  protected onDragMoved(event: { machineId: string; distanceX: number }): void {
     if (this.$draggedMachineId() !== event.machineId) {
       return;
     }

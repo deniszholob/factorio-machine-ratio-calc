@@ -107,7 +107,8 @@ export class TooltipDirective implements OnDestroy {
       return;
     }
 
-    const tooltipElement = this.tooltipRef.location.nativeElement as HTMLElement;
+    const tooltipElement = this.tooltipRef.location
+      .nativeElement as HTMLElement;
     if (tooltipElement.parentNode) {
       this.renderer.removeChild(this.document.body, tooltipElement);
     }

@@ -195,7 +195,9 @@ export class ProductionService {
         : -1;
 
       const movedWithParent = movedItems.map((item) =>
-        item.id === machineId ? { ...item, parentProductionId: nextParentId } : item,
+        item.id === machineId
+          ? { ...item, parentProductionId: nextParentId }
+          : item,
       );
 
       if (targetIndex === -1) {
