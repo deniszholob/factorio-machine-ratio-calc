@@ -1,16 +1,16 @@
 // @ref https://storybook.js.org/docs/writing-stories
 import { Meta, StoryObj } from '@storybook/angular';
 
-import { ProductionChainItemComponent } from './production-chain-item.component';
-import { MOCK_ProductionChain } from 'src/app/shared/models/production-chain/production-chain.model.mock';
+import { ProductionEditorComponent } from './production-editor.component';
+import { MOCK_Machine } from './production.util';
 
-type ComponentWithCustomControls = ProductionChainItemComponent; // & {};
+type ComponentWithCustomControls = ProductionEditorComponent; // & {};
 
 export default {
-  component: ProductionChainItemComponent,
+  component: ProductionEditorComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {
-    docs: { description: { component: `ProductionChainItem` } },
+    docs: { description: { component: `ProductionEditor` } },
     // layout: 'fullscreen', // https://storybook.js.org/docs/configure/story-layout
   },
   argTypes: {
@@ -25,15 +25,11 @@ export default {
     // someControl: { control: { disable: true } },
   },
   args: {
-    $productionChain: MOCK_ProductionChain,
-    $activeProductionChainId: 'activeProductionChainId',
-    $editingProductionChainId: 'editingProductionChainId',
-    $editingProductionChainName: 'editingProductionChainName',
-    $editingProductionChainIconUrl: 'editingProductionChainIconUrl',
+    $machine: MOCK_Machine,
   },
 } satisfies Meta<ComponentWithCustomControls>;
 
-export const ProductionChainItem: StoryObj<ComponentWithCustomControls> = {
+export const ProductionEditor: StoryObj<ComponentWithCustomControls> = {
   render: (args) => ({ props: args }),
   // play: async ({ canvasElement }) => { const canvasElement = within(canvasElement) },
 };

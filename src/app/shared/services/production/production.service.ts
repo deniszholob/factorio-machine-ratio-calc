@@ -2,16 +2,16 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, computed, signal } from '@angular/core';
 
 import {
-  Production as Production,
-  MachineItem,
   newProduction,
   normalizeProduction,
-} from 'src/app/components/production-chain-editor/production-editor/production.model';
+} from 'src/app/components/production/production-chain-editor/production-editor/production.util';
 import { guid } from 'src/app/shared/utils/guid/guid.util';
 import {
   collectSubtreeIds,
   collectSubtreeItemsInOrder,
 } from './production-tree-dnd.util';
+import { MachineItem } from '../../models/production-chain/production/machine-item/machine-item.model';
+import { Production } from '../../models/production-chain/production/production.model';
 
 export interface ProductionTotals {
   deltas: TotalRate[];

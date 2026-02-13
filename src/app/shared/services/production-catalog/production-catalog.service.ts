@@ -7,13 +7,11 @@ import {
   CatalogRecipe,
   ProductionCatalogState,
   createDefaultCatalogState,
-} from './production-catalog.model';
+} from '../../models/production-catalog-state/production-catalog-state.model';
 import { LOCAL_STORAGE_KEY_CATALOG } from '../import-export/local-storage.data';
-import {
-  Production,
-  normalizeProduction,
-} from 'src/app/components/production-chain-editor/production-editor/production.model';
+import { normalizeProduction } from 'src/app/components/production/production-chain-editor/production-editor/production.util';
 import { SharedProductionIconsPayload } from '../production-chain/production-chain-hash.util';
+import { Production } from '../../models/production-chain/production/production.model';
 
 const DOWNLOAD_FILE_EXTENSION = 'json';
 const DEFAULT_ITEM_NAME = 'Default-Item';

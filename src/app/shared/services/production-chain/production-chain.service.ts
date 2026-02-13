@@ -11,16 +11,16 @@ import { ImportExportService } from 'src/app/shared/services/import-export/impor
 import { ProductionService } from '../production/production.service';
 import { ProductionCatalogService } from '../production-catalog/production-catalog.service';
 import {
-  Production,
   normalizeProduction,
   syncAutoProductionName,
-} from '../../../components/production-chain-editor/production-editor/production.model';
+} from '../../../components/production/production-chain-editor/production-editor/production.util';
 import { guid } from 'src/app/shared/utils/guid/guid.util';
-import { ProductionChain } from 'src/app/components/production-chain-group/production-chain-item/production-chain.model';
 import {
   decodeProductionChainHash,
   encodeProductionChainHash,
 } from './production-chain-hash.util';
+import { ProductionChain } from '../../models/production-chain/production-chain.model';
+import { Production } from '../../models/production-chain/production/production.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductionChainService {
@@ -317,52 +317,55 @@ export class ProductionChainService {
     let hasChanges = false;
     this.$productionChains.update((chains) =>
       chains.map((chain) => {
-        const nextProductions = chain.productions.map((production) => {
-          let changed = false;
-          const nextRecipeInputs = production.recipe.inputs.map((item) => {
-            if (item.name.trim().toLowerCase() !== from.toLowerCase()) {
-              return item;
+        const nextProductions = chain.productions.map(
+          (production: Production) => {
+            let changed = false;
+            const nextRecipeInputs = production.recipe.inputs.map((item) => {
+              if (item.name.trim().toLowerCase() !== from.toLowerCase()) {
+                return item;
+              }
+              changed = true;
+              return { ...item, name: to };
+            });
+            const nextRecipeOutputs = production.recipe.outputs.map((item) => {
+              if (item.name.trim().toLowerCase() !== from.toLowerCase()) {
+                return item;
+              }
+              changed = true;
+              return { ...item, name: to };
+            });
+
+            let nextMachineName = production.machine.name;
+            if (
+              isMachine &&
+              production.machine.name.trim().toLowerCase() ===
+                from.toLowerCase()
+            ) {
+              changed = true;
+              nextMachineName = to;
             }
-            changed = true;
-            return { ...item, name: to };
-          });
-          const nextRecipeOutputs = production.recipe.outputs.map((item) => {
-            if (item.name.trim().toLowerCase() !== from.toLowerCase()) {
-              return item;
+
+            if (!changed) {
+              return production;
             }
-            changed = true;
-            return { ...item, name: to };
-          });
 
-          let nextMachineName = production.machine.name;
-          if (
-            isMachine &&
-            production.machine.name.trim().toLowerCase() === from.toLowerCase()
-          ) {
-            changed = true;
-            nextMachineName = to;
-          }
-
-          if (!changed) {
-            return production;
-          }
-
-          hasChanges = true;
-          const nextProduction: Production = {
-            ...production,
-            recipe: {
-              ...production.recipe,
-              inputs: nextRecipeInputs,
-              outputs: nextRecipeOutputs,
-            },
-            machine: {
-              ...production.machine,
-              name: nextMachineName,
-            },
-          };
-          syncAutoProductionName(nextProduction);
-          return nextProduction;
-        });
+            hasChanges = true;
+            const nextProduction: Production = {
+              ...production,
+              recipe: {
+                ...production.recipe,
+                inputs: nextRecipeInputs,
+                outputs: nextRecipeOutputs,
+              },
+              machine: {
+                ...production.machine,
+                name: nextMachineName,
+              },
+            };
+            syncAutoProductionName(nextProduction);
+            return nextProduction;
+          },
+        );
 
         if (!hasChanges) {
           return chain;

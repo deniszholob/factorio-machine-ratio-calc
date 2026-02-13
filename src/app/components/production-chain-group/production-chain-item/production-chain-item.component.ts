@@ -9,10 +9,9 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-
-import { ProductionChain } from './production-chain.model';
-import { ModalComponent } from '../../modal/modal.component';
-import { TooltipDirective } from '../../tooltip/tooltip.directive';
+import { ModalComponent } from '../../generic/modal/modal.component';
+import { TooltipDirective } from '../../generic/tooltip/tooltip.directive';
+import { ProductionChain } from 'src/app/shared/models/production-chain/production-chain.model';
 
 @Component({
   selector: 'app-production-chain-item',

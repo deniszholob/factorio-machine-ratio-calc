@@ -8,9 +8,9 @@ import {
 
 import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
 import { ProductionChainItemComponent } from './production-chain-item/production-chain-item.component';
-import { ProductionChain } from './production-chain-item/production-chain.model';
-import { ModalComponent } from '../modal/modal.component';
-import { TooltipDirective } from '../tooltip/tooltip.directive';
+import { ModalComponent } from '../generic/modal/modal.component';
+import { TooltipDirective } from '../generic/tooltip/tooltip.directive';
+import { ProductionChain } from 'src/app/shared/models/production-chain/production-chain.model';
 
 @Component({
   selector: 'app-production-chain-group',

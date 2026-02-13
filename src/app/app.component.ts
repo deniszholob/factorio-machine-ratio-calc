@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { PromoFactoryTimeComponent } from './components/promo-factory-time/promo-factory-time.component';
+import { PromoFactoryTimeComponent } from './components/generic/promo-factory-time/promo-factory-time.component';
 
 @Component({
   selector: 'app-root',

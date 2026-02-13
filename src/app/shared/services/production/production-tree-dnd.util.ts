@@ -1,4 +1,4 @@
-import { Production } from 'src/app/components/production-chain-editor/production-editor/production.model';
+import { Production } from '../../models/production-chain/production/production.model';
 
 export interface ProductionTreeRow {
   production: Production;

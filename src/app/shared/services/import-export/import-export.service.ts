@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Production } from 'src/app/components/production-chain-editor/production-editor/production.model';
 import { guid } from '../../utils/guid/guid.util';
 import { LOCAL_STORAGE_KEY_STATE } from './local-storage.data';
-import { ProductionChain } from 'src/app/components/production-chain-group/production-chain-item/production-chain.model';
 import { ImportMode } from '../settings/settings.service';
+import { ProductionChain } from '../../models/production-chain/production-chain.model';
+import { Production } from '../../models/production-chain/production/production.model';
 
 // const DOWNLOAD_FILE_PREFIX = `PRC1`;
 // const DOWNLOAD_FILE_SUFFIX = `data`;

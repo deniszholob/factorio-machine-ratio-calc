@@ -1,8 +1,6 @@
-import { ProductionChain } from 'src/app/components/production-chain-group/production-chain-item/production-chain.model';
-import {
-  Production,
-  normalizeProduction,
-} from 'src/app/components/production-chain-editor/production-editor/production.model';
+import { normalizeProduction } from 'src/app/components/production/production-chain-editor/production-editor/production.util';
+import { Production } from '../../models/production-chain/production/production.model';
+import { ProductionChain } from '../../models/production-chain/production-chain.model';
 
 const SHARED_HASH_PREFIX = '#prc1:';
 

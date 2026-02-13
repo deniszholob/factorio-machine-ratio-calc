@@ -4,18 +4,18 @@ import {
   Signal,
   inject,
 } from '@angular/core';
-import { FooterComponent } from 'src/app/components/footer/footer.component';
-import { HeaderComponent } from 'src/app/components/header/header.component';
-import { LinksComponent } from 'src/app/components/links/links.component';
-import { ProductionChainGroupComponent } from 'src/app/components/production-chain-group/production-chain-group.component';
+import { FooterComponent } from 'src/app/views/main/footer/footer.component';
+import { HeaderComponent } from 'src/app/views/main/header/header.component';
+import { LinksComponent } from 'src/app/views/main/links/links.component';
 import { SettingsViewComponent } from 'src/app/components/settings-view/settings-view.component';
-import { ProductionChainEditorComponent } from 'src/app/components/production-chain-editor/production-chain-editor.component';
+import { ProductionChainEditorComponent } from 'src/app/components/production/production-chain-editor/production-chain-editor.component';
 import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
 import { SettingsService } from 'src/app/shared/services/settings/settings.service';
 import { MainLayoutComponent } from 'src/app/layouts/main-layout/main-layout.component';
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
-import { ProductionCatalogEditorComponent } from 'src/app/components/production-chain-editor/production-catalog-editor/production-catalog-editor.component';
+import { ProductionCatalogEditorComponent } from 'src/app/components/production/production-chain-editor/production-catalog-editor/production-catalog-editor.component';
 import { ProductionCatalogUiService } from 'src/app/shared/services/production-catalog/production-catalog-ui.service';
+import { ProductionChainGroupComponent } from 'src/app/components/production-chain-group/production-chain-group.component';
 
 @Component({
   selector: 'app-main',
