@@ -5,7 +5,6 @@ import { AppComponent } from './app.component';
 type ComponentWithCustomControls = AppComponent;
 
 const meta: Meta<ComponentWithCustomControls> = {
-  title: 'App',
   component: AppComponent,
   parameters: {
     controls: { hideNoControlsWarning: true },

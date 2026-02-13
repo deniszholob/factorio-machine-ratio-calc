@@ -6,7 +6,6 @@ import { ProductionChainGroupComponent } from './production-chain-group.componen
 type ComponentWithCustomControls = ProductionChainGroupComponent; // & {};
 
 export default {
-  title: 'Components/Production Chain Group',
   component: ProductionChainGroupComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

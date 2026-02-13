@@ -6,7 +6,6 @@ import { TooltipComponent } from './tooltip.component';
 type ComponentWithCustomControls = TooltipComponent; // & {};
 
 export default {
-  title: 'Components/Tooltip',
   component: TooltipComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {
@@ -24,7 +23,9 @@ export default {
     /** === Control Disable === */
     // someControl: { control: { disable: true } },
   },
-  args: {},
+  args: {
+    $text: 'Tooltip',
+  },
 } satisfies Meta<ComponentWithCustomControls>;
 
 export const Tooltip: StoryObj<ComponentWithCustomControls> = {

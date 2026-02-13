@@ -6,7 +6,6 @@ import { ProductionCatalogEditorComponent } from './production-catalog-editor.co
 type ComponentWithCustomControls = ProductionCatalogEditorComponent; // & {};
 
 export default {
-  title: 'Components/Production Catalog Editor',
   component: ProductionCatalogEditorComponent,
   parameters: {
     docs: { description: { component: `ProductionCatalogEditorComponent` } },

@@ -6,7 +6,6 @@ import { HeaderComponent } from './header.component';
 type ComponentWithCustomControls = HeaderComponent; // & {};
 
 export default {
-  title: 'Components/Header',
   component: HeaderComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

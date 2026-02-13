@@ -6,7 +6,6 @@ import { LinksComponent } from './links.component';
 type ComponentWithCustomControls = LinksComponent; // & {};
 
 export default {
-  title: 'Components/Links',
   component: LinksComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

@@ -6,7 +6,6 @@ import { ContentLayoutComponent } from './content-layout.component';
 type ComponentWithCustomControls = ContentLayoutComponent; // & {};
 
 export default {
-  title: 'Layouts/Content Layout',
   component: ContentLayoutComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

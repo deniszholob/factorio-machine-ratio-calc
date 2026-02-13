@@ -1,9 +1,10 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
 const meta: Meta = {
-  title: 'Styles/Buttons',
   parameters: {
-    docs: { description: { component: 'Button style variants for visual testing.' } },
+    docs: {
+      description: { component: 'Button style variants for visual testing.' },
+    },
   },
 };
 
@@ -11,7 +12,7 @@ export default meta;
 
 type Story = StoryObj;
 
-export const Variants: Story = {
+export const ButtonStyles: Story = {
   render: () => ({
     template: `
       <div class="flex flex-col gap-2 p-4">

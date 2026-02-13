@@ -6,7 +6,6 @@ import { MOCK_Machine } from '../production.model';
 type ComponentWithCustomControls = ProductionEditorModalComponent;
 
 const meta: Meta<ComponentWithCustomControls> = {
-  title: 'Components/Production Editor Modal',
   component: ProductionEditorModalComponent,
   // decorators: [moduleMetadata({imports: []})],
   parameters: {

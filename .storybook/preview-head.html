@@ -3,3 +3,25 @@
   src="https://use.fontawesome.com/releases/v6.4.0/js/all.js"
   crossorigin="anonymous"
 ></script>
+
+<!-- Make sure pages can scroll -->
+<style>
+  /* Override game's overflow:hidden and fixed height to allow scrolling in Storybook */
+  html,
+  body {
+    overflow: auto !important;
+    height: auto !important;
+    width: auto !important;
+  }
+
+  .sb-show-main,
+  .sb-main-padded.sb-show-main,
+  .sb-show-main.sb-main-fullscreen {
+    display: flex;
+  }
+
+  #storybook-root,
+  storybook-root {
+    display: contents;
+  }
+</style>

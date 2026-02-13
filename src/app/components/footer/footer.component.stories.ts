@@ -6,7 +6,6 @@ import { FooterComponent } from './footer.component';
 type ComponentWithCustomControls = FooterComponent; // & {};
 
 export default {
-  title: 'Components/Footer',
   component: FooterComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

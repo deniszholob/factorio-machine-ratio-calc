@@ -6,7 +6,6 @@ import { ProductionCatalogEditorModalComponent } from './production-catalog-edit
 type ComponentWithCustomControls = ProductionCatalogEditorModalComponent; // & {};
 
 export default {
-  title: 'Components/Production Catalog Editor Modal',
   component: ProductionCatalogEditorModalComponent,
   parameters: {
     docs: {

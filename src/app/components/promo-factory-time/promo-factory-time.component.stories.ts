@@ -6,7 +6,6 @@ import { PromoFactoryTimeComponent } from './promo-factory-time.component';
 type ComponentWithCustomControls = PromoFactoryTimeComponent; // & {};
 
 export default {
-  title: 'Components/Promo Factory Time',
   component: PromoFactoryTimeComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

@@ -7,7 +7,6 @@ import { MOCK_Machine } from '../production.model';
 type ComponentWithCustomControls = ProductionEditorSidebarComponent; // & {};
 
 export default {
-  title: 'Components/Production Editor Sidebar',
   component: ProductionEditorSidebarComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

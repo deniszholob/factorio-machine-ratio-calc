@@ -14,7 +14,6 @@ const totals: ProductionTotals = {
 };
 
 export default {
-  title: 'Components/Production Group',
   component: ProductionGroupComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

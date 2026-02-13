@@ -7,7 +7,6 @@ import { MOCK_Machine } from '../production.model';
 type ComponentWithCustomControls = ProductionEditorFullComponent; // & {};
 
 export default {
-  title: 'Components/Production Editor Full',
   component: ProductionEditorFullComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

@@ -5,7 +5,6 @@ import { ModalComponent } from './modal.component';
 type ComponentWithCustomControls = ModalComponent;
 
 const meta: Meta<ComponentWithCustomControls> = {
-  title: 'Components/Modal',
   component: ModalComponent,
   // decorators: [moduleMetadata({imports: []})],
   parameters: {

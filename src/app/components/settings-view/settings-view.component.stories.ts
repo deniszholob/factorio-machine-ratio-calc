@@ -6,7 +6,6 @@ import { SettingsViewComponent } from './settings-view.component';
 type ComponentWithCustomControls = SettingsViewComponent; // & {};
 
 export default {
-  title: 'Components/Settings View',
   component: SettingsViewComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {

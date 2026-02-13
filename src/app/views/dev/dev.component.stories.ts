@@ -5,7 +5,6 @@ import { DevComponent } from './dev.component';
 type ComponentWithCustomControls = DevComponent;
 
 const meta: Meta<ComponentWithCustomControls> = {
-  title: 'Dev',
   component: DevComponent,
   // decorators: [moduleMetadata({imports: []})],
   parameters: {

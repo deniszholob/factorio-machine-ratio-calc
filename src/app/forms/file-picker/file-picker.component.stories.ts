@@ -7,7 +7,6 @@ type ComponentWithCustomControls = FilePickerComponent & {
 };
 
 const meta: Meta<ComponentWithCustomControls> = {
-  title: 'Components/File Picker',
   component: FilePickerComponent,
   // decorators: [moduleMetadata({imports: []})],
   parameters: {

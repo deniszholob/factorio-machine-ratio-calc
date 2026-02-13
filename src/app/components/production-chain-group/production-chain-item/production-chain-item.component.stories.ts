@@ -2,11 +2,11 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
 import { ProductionChainItemComponent } from './production-chain-item.component';
+import { MOCK_ProductionChain } from './production-chain.model.mock';
 
 type ComponentWithCustomControls = ProductionChainItemComponent; // & {};
 
 export default {
-  title: 'Components/Production Chain Item',
   component: ProductionChainItemComponent,
   // decorators: [moduleMetadata({ imports: [] }), applicationConfig({ providers: [ importProvidersFrom() ]})],
   parameters: {
@@ -24,7 +24,13 @@ export default {
     /** === Control Disable === */
     // someControl: { control: { disable: true } },
   },
-  args: {},
+  args: {
+    $productionChain: MOCK_ProductionChain,
+    $activeProductionChainId: 'activeProductionChainId',
+    $editingProductionChainId: 'editingProductionChainId',
+    $editingProductionChainName: 'editingProductionChainName',
+    $editingProductionChainIconUrl: 'editingProductionChainIconUrl',
+  },
 } satisfies Meta<ComponentWithCustomControls>;
 
 export const ProductionChainItem: StoryObj<ComponentWithCustomControls> = {

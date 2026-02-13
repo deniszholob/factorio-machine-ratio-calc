@@ -1,4 +1,4 @@
-import { MOCK_Machines } from '../production-chain-editor/production-chain-editor.mock';
+import { MOCK_Machines } from '../../production-chain-editor/production-chain-editor.mock';
 import { ProductionChain } from './production-chain.model';
 
 export const MOCK_ProductionChain: ProductionChain = {
