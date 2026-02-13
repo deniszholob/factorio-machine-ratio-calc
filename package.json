@@ -14,6 +14,7 @@
   "scripts": {
     "i": "pnpm i",
     "storybook": "nx run factorio-machine-ratio-calc:storybook --no-open",
+    "storybook:moke-test": "pnpm run storybook -- --ci --smoke-test",
     "reset": "nx reset",
     "start": "nx serve --port=4985",
     "build:updateBuildInfo": "node .github/ci/update-build-info.js",

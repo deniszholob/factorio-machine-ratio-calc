@@ -9,21 +9,18 @@ import { Meta, StoryObj } from '@storybook/angular';
 import {
   buildEnumEntries,
   buildModelMocks,
+  buildTreeRenderRows,
+  compactSingleChains,
   createTreeRows,
+  filterRowsBySearch,
+  getCollapseTargets,
   getSelectedMockHeader,
   MockModuleExports,
   SRC_ROOT_LABEL,
   stringifyMock,
-  TreeRow,
+  toMockRowId,
+  TreeRenderRow,
 } from './model.util';
-
-type RenderRow = TreeRow &
-  Readonly<{
-    isSelected: boolean;
-    isCollapsed: boolean;
-    isEnumEntry: boolean;
-    isCompactRow: boolean;
-  }>;
 
 type RequireWithContext = NodeRequire & {
   context: (
@@ -64,70 +61,8 @@ const MODEL_MOCKS = {
 
 const MOCK_KEYS = Object.keys(MODEL_MOCKS).sort();
 const DEFAULT_MOCK_KEY = MOCK_KEYS[0] ?? '';
-
 const TREE_ROWS = createTreeRows(MOCK_KEYS);
-
-function isArrayMockKey(mockKey: string): boolean {
-  return mockKey.endsWith('_Array');
-}
-
-function isEnumFilePath(filePath: string): boolean {
-  return filePath.endsWith('.enum.ts');
-}
-
-function isRelevantEnumExport(mockKey: string): boolean {
-  const [, exportName = ''] = mockKey.split(' :: ');
-  return exportName.endsWith('_INFO_OPTIONS');
-}
-
-function collapseVisibleFolderChains(
-  rows: readonly RenderRow[],
-): readonly RenderRow[] {
-  const output: RenderRow[] = [];
-  let index = 0;
-
-  while (index < rows.length) {
-    const row = rows[index];
-    if (row.kind !== 'folder') {
-      output.push(row);
-      index += 1;
-      continue;
-    }
-
-    const mergedLabels = [row.label];
-    let current = row;
-    let cursor = index + 1;
-
-    while (cursor < rows.length) {
-      const next = rows[cursor];
-      if (
-        next.kind !== 'folder' ||
-        next.depth !== current.depth + 1 ||
-        next.parentFolderPaths.at(-1) !== current.folderPath
-      ) {
-        break;
-      }
-
-      mergedLabels.push(next.label);
-      current = next;
-      cursor += 1;
-    }
-
-    if (mergedLabels.length > 1) {
-      output.push({
-        ...row,
-        label: mergedLabels.join('/'),
-      });
-      index = cursor;
-      continue;
-    }
-
-    output.push(row);
-    index += 1;
-  }
-
-  return output;
-}
+const COLLAPSE_TARGETS = getCollapseTargets(TREE_ROWS);
 
 @Component({
   selector: 'app-models-mocks-viewer',
@@ -154,42 +89,40 @@ function collapseVisibleFolderChains(
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap items-center gap-2">
               <button
-                class="inline-flex cursor-pointer items-center gap-2 rounded-md border border-sky-400/40 bg-sky-500/10 px-2 py-1 text-xs text-sky-100 hover:bg-sky-500/20 focus-visible:outline-2 focus-visible:outline-sky-300"
+                [class]="controlButtonClass"
                 [attr.aria-pressed]="$hideArrayEntries()"
                 (click)="toggleHideArrays()"
                 type="button"
               >
                 <span
-                  class="inline-block h-3 w-3 rounded-sm border border-sky-300/60"
+                  class="inline-block h-3.5 w-3.5 rounded-sm border border-sky-300"
                   [class.bg-sky-300]="$hideArrayEntries()"
-                  [class.border-sky-200]="$hideArrayEntries()"
                 ></span>
                 Relevant Values
               </button>
               <button
-                class="inline-flex cursor-pointer items-center gap-2 rounded-md border border-sky-400/40 bg-sky-500/10 px-2 py-1 text-xs text-sky-100 hover:bg-sky-500/20 focus-visible:outline-2 focus-visible:outline-sky-300"
+                [class]="controlButtonClass"
                 [attr.aria-pressed]="$compactSingleChains()"
                 (click)="toggleCompactSingleChains()"
                 type="button"
               >
                 <span
-                  class="inline-block h-3 w-3 rounded-sm border border-sky-300/60"
+                  class="inline-block h-3.5 w-3.5 rounded-sm border border-sky-300"
                   [class.bg-sky-300]="$compactSingleChains()"
-                  [class.border-sky-200]="$compactSingleChains()"
                 ></span>
                 Compact Tree
               </button>
             </div>
             <div class="flex items-center gap-2">
               <button
-                class="inline-flex cursor-pointer items-center rounded-md border border-sky-400/40 bg-sky-500/10 px-2 py-1 text-xs text-sky-100 hover:bg-sky-500/20 focus-visible:outline-2 focus-visible:outline-sky-300"
+                [class]="controlButtonClass"
                 (click)="expandAllFolders()"
                 type="button"
               >
                 Expand
               </button>
               <button
-                class="inline-flex cursor-pointer items-center rounded-md border border-sky-400/40 bg-sky-500/10 px-2 py-1 text-xs text-sky-100 hover:bg-sky-500/20 focus-visible:outline-2 focus-visible:outline-sky-300"
+                [class]="controlButtonClass"
                 (click)="collapseAllFolders()"
                 type="button"
               >
@@ -246,6 +179,7 @@ function collapseVisibleFolderChains(
           tabindex="0"
           role="tree"
           aria-label="Model mocks explorer"
+          [attr.aria-activedescendant]="$activeRowId() || null"
         >
           @if ($displayRows().length === 0) {
             <p class="px-2 py-3 text-sm text-zinc-400">No matching entries.</p>
@@ -254,7 +188,10 @@ function collapseVisibleFolderChains(
               @if (row.kind === 'folder') {
                 <button
                   class="relative flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-xs font-semibold tracking-wide text-zinc-200 uppercase hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-zinc-400"
+                  [id]="row.id"
                   [attr.aria-expanded]="!row.isCollapsed"
+                  [attr.aria-level]="row.depth + 1"
+                  [attr.aria-selected]="row.id === $activeRowId()"
                   [style.paddingLeft.px]="8 + row.depth * 16"
                   [class.bg-sky-950]="row.id === $activeRowId()"
                   [class.ring-1]="row.id === $activeRowId()"
@@ -285,7 +222,10 @@ function collapseVisibleFolderChains(
               } @else if (row.kind === 'file') {
                 <button
                   class="relative flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-xs font-medium text-zinc-200 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-zinc-400"
+                  [id]="row.id"
                   [attr.aria-expanded]="!row.isCollapsed"
+                  [attr.aria-level]="row.depth + 1"
+                  [attr.aria-selected]="row.id === $activeRowId()"
                   [style.paddingLeft.px]="8 + row.depth * 16"
                   [class.bg-sky-950]="row.id === $activeRowId()"
                   [class.ring-1]="row.id === $activeRowId()"
@@ -322,6 +262,9 @@ function collapseVisibleFolderChains(
               } @else {
                 <button
                   class="relative w-full rounded-md px-2 py-1 text-left text-sm focus-visible:outline-2 focus-visible:outline-zinc-400"
+                  [id]="row.id"
+                  [attr.aria-level]="row.depth + 1"
+                  [attr.aria-selected]="row.id === $activeRowId()"
                   [style.paddingLeft.px]="8 + row.depth * 16"
                   [class.bg-sky-950]="row.isSelected"
                   [class.border]="row.isSelected"
@@ -379,10 +322,18 @@ function collapseVisibleFolderChains(
         [class.bg-zinc-700/60]="$isResizingSidebar()"
         [class.ring-1]="$isResizingSidebar()"
         [class.ring-zinc-500]="$isResizingSidebar()"
+        [attr.aria-label]="'Resize models explorer sidebar'"
+        [attr.aria-valuemax]="maxSidebarWidth"
+        [attr.aria-valuemin]="minSidebarWidth"
+        [attr.aria-valuenow]="$sidebarWidth()"
+        (keydown)="onResizeHandleKeydown($event)"
         (pointerdown)="startSidebarResize($event)"
         (pointermove)="onSidebarResize($event)"
         (pointerup)="stopSidebarResize($event)"
         (pointercancel)="stopSidebarResize($event)"
+        role="separator"
+        aria-orientation="vertical"
+        tabindex="0"
       >
         <span
           class="my-3 w-1 rounded bg-zinc-500/60 transition group-hover:bg-zinc-300/80"
@@ -416,6 +367,9 @@ function collapseVisibleFolderChains(
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModelsMocksViewerComponent {
+  protected readonly controlButtonClass =
+    'inline-flex cursor-pointer items-center gap-2 rounded-md border border-sky-400/40 bg-sky-500/10 px-2 py-1 text-xs text-sky-100 hover:bg-sky-500/20 focus-visible:outline-2 focus-visible:outline-sky-300';
+
   protected readonly $rootLabel = SRC_ROOT_LABEL;
   protected readonly $selectedMockKey = signal(DEFAULT_MOCK_KEY);
   protected readonly $searchQuery = signal('');
@@ -424,7 +378,7 @@ export class ModelsMocksViewerComponent {
   protected readonly $sidebarWidth = signal(450);
   protected readonly $isResizingSidebar = signal(false);
   protected readonly $activeRowId = signal(
-    DEFAULT_MOCK_KEY ? `mock:${DEFAULT_MOCK_KEY.replace(' :: ', '::')}` : '',
+    DEFAULT_MOCK_KEY ? toMockRowId(DEFAULT_MOCK_KEY) : '',
   );
   protected readonly $collapsedFolderPaths = signal<ReadonlySet<string>>(
     new Set<string>(),
@@ -433,6 +387,9 @@ export class ModelsMocksViewerComponent {
     new Set<string>(),
   );
 
+  protected readonly minSidebarWidth = 260;
+  protected readonly maxSidebarWidth = 720;
+
   protected readonly $selectedMockData = computed(() =>
     stringifyMock(MODEL_MOCKS, this.$selectedMockKey()),
   );
@@ -440,259 +397,18 @@ export class ModelsMocksViewerComponent {
     getSelectedMockHeader(this.$selectedMockKey()),
   );
 
-  protected readonly $visibleRows = computed<readonly RenderRow[]>(() => {
-    const selectedMockKey = this.$selectedMockKey();
-    const hideArrayEntries = this.$hideArrayEntries();
-    const collapsedFolderPaths = this.$collapsedFolderPaths();
-    const collapsedFilePaths = this.$collapsedFilePaths();
-
-    return TREE_ROWS.filter((row) => {
-      const rowIsEnumEntry =
-        row.kind === 'file'
-          ? isEnumFilePath(row.filePath ?? '')
-          : isEnumFilePath(row.parentFilePath ?? '');
-
-      return (
-        (!hideArrayEntries ||
-          row.kind !== 'mock' ||
-          (rowIsEnumEntry
-            ? isRelevantEnumExport(row.mockKey ?? '')
-            : !isArrayMockKey(row.mockKey ?? ''))) &&
-        row.parentFolderPaths.every(
-          (path) => !collapsedFolderPaths.has(path),
-        ) &&
-        (!row.parentFilePath || !collapsedFilePaths.has(row.parentFilePath))
-      );
-    }).map((row) => ({
-      ...row,
-      isEnumEntry:
-        row.kind === 'file'
-          ? isEnumFilePath(row.filePath ?? '')
-          : isEnumFilePath(row.parentFilePath ?? ''),
-      isCompactRow: false,
-      isSelected: row.kind === 'mock' && row.mockKey === selectedMockKey,
-      isCollapsed:
-        (row.kind === 'folder' && row.folderPath
-          ? collapsedFolderPaths.has(row.folderPath)
-          : false) ||
-        (row.kind === 'file' && row.filePath
-          ? collapsedFilePaths.has(row.filePath)
-          : false),
-    }));
-  });
-  protected readonly $renderRows = computed<readonly RenderRow[]>(() => {
-    const visibleRows = this.$visibleRows();
-    if (!this.$compactSingleChains()) {
-      return visibleRows;
-    }
-
-    const fileCountByFolderPath = new Map<string, number>();
-    const folderCountByFolderPath = new Map<string, number>();
-    const mockCountByFilePath = new Map<string, number>();
-
-    visibleRows.forEach((row) => {
-      if (row.kind === 'file') {
-        const parentFolderPath = row.parentFolderPaths.at(-1);
-        if (parentFolderPath) {
-          fileCountByFolderPath.set(
-            parentFolderPath,
-            (fileCountByFolderPath.get(parentFolderPath) ?? 0) + 1,
-          );
-        }
-      }
-
-      if (row.kind === 'folder') {
-        const parentFolderPath = row.parentFolderPaths.at(-1);
-        if (parentFolderPath) {
-          folderCountByFolderPath.set(
-            parentFolderPath,
-            (folderCountByFolderPath.get(parentFolderPath) ?? 0) + 1,
-          );
-        }
-      }
-
-      if (row.kind === 'mock' && row.parentFilePath) {
-        mockCountByFilePath.set(
-          row.parentFilePath,
-          (mockCountByFilePath.get(row.parentFilePath) ?? 0) + 1,
-        );
-      }
+  protected readonly $displayRows = computed<readonly TreeRenderRow[]>(() => {
+    const visibleRows = buildTreeRenderRows(TREE_ROWS, {
+      selectedMockKey: this.$selectedMockKey(),
+      hideArrayEntries: this.$hideArrayEntries(),
+      collapsedFolderPaths: this.$collapsedFolderPaths(),
+      collapsedFilePaths: this.$collapsedFilePaths(),
     });
+    const renderRows = this.$compactSingleChains()
+      ? compactSingleChains(visibleRows)
+      : visibleRows;
 
-    const rowsToSkip = new Set<string>();
-    const mockDepthAdjustByFilePath = new Map<string, number>();
-    const compactedRows: RenderRow[] = [];
-
-    visibleRows.forEach((row) => {
-      if (rowsToSkip.has(row.id)) {
-        return;
-      }
-
-      if (row.kind === 'mock') {
-        const depthAdjust = row.parentFilePath
-          ? (mockDepthAdjustByFilePath.get(row.parentFilePath) ?? 0)
-          : 0;
-        compactedRows.push({
-          ...row,
-          depth: row.depth + depthAdjust,
-          guideOffsets: row.guideOffsets.slice(
-            0,
-            Math.max(0, row.depth + depthAdjust),
-          ),
-        });
-        return;
-      }
-
-      if (row.kind === 'folder' && row.folderPath && !row.isCollapsed) {
-        const childFileCount = fileCountByFolderPath.get(row.folderPath) ?? 0;
-        const childFolderCount =
-          folderCountByFolderPath.get(row.folderPath) ?? 0;
-        if (childFileCount !== 1 || childFolderCount !== 0) {
-          compactedRows.push(row);
-          return;
-        }
-
-        const childFile = visibleRows.find(
-          (item) =>
-            item.kind === 'file' &&
-            item.parentFolderPaths.at(-1) === row.folderPath &&
-            !rowsToSkip.has(item.id),
-        );
-        if (!childFile || !childFile.filePath || childFile.isCollapsed) {
-          compactedRows.push(row);
-          return;
-        }
-
-        const childMockCount = mockCountByFilePath.get(childFile.filePath) ?? 0;
-        if (childMockCount === 1) {
-          const childMock = visibleRows.find(
-            (item) =>
-              item.kind === 'mock' &&
-              item.parentFilePath === childFile.filePath &&
-              !rowsToSkip.has(item.id),
-          );
-          if (childMock?.mockKey) {
-            rowsToSkip.add(childFile.id);
-            rowsToSkip.add(childMock.id);
-            compactedRows.push({
-              ...childMock,
-              id: `compact:${row.id}:${childFile.id}:${childMock.id}`,
-              label: childFile.label,
-              depth: row.depth,
-              guideOffsets: row.guideOffsets,
-              parentFilePath: undefined,
-              parentFolderPaths: row.parentFolderPaths,
-              isCompactRow: true,
-            });
-            return;
-          }
-        }
-
-        rowsToSkip.add(childFile.id);
-        mockDepthAdjustByFilePath.set(childFile.filePath, -1);
-        compactedRows.push({
-          ...childFile,
-          id: `compact:${row.id}:${childFile.id}`,
-          depth: row.depth,
-          guideOffsets: row.guideOffsets,
-          parentFolderPaths: row.parentFolderPaths,
-          isCompactRow: true,
-        });
-        return;
-      }
-
-      if (row.kind !== 'file' || !row.filePath || row.isCollapsed) {
-        compactedRows.push(row);
-        return;
-      }
-
-      const childMockCount = mockCountByFilePath.get(row.filePath) ?? 0;
-      if (childMockCount !== 1) {
-        compactedRows.push(row);
-        return;
-      }
-
-      const childMock = visibleRows.find(
-        (item) =>
-          item.kind === 'mock' &&
-          item.parentFilePath === row.filePath &&
-          !rowsToSkip.has(item.id),
-      );
-      if (!childMock || !childMock.mockKey) {
-        compactedRows.push(row);
-        return;
-      }
-
-      rowsToSkip.add(childMock.id);
-      compactedRows.push({
-        ...childMock,
-        id: `compact:${row.id}:${childMock.id}`,
-        label: row.label,
-        isCompactRow: true,
-      });
-    });
-
-    return compactedRows;
-  });
-  protected readonly $displayRows = computed<readonly RenderRow[]>(() => {
-    const searchQuery = this.$searchQuery().trim().toLowerCase();
-    const rows = this.$renderRows();
-    if (!searchQuery) {
-      return rows;
-    }
-
-    const matchedRows = rows.filter((row) => {
-      const searchableText = [
-        row.label,
-        row.folderPath ?? '',
-        row.filePath ?? '',
-        row.parentFilePath ?? '',
-        row.mockKey ?? '',
-      ]
-        .join(' ')
-        .toLowerCase();
-      return searchableText.includes(searchQuery);
-    });
-
-    if (matchedRows.length === 0) {
-      return [];
-    }
-
-    const includedIds = new Set<string>();
-    const matchedFolderPaths = new Set<string>();
-    const matchedFilePaths = new Set<string>();
-
-    matchedRows.forEach((row) => {
-      includedIds.add(row.id);
-      row.parentFolderPaths.forEach((folderPath) => {
-        includedIds.add(`folder:${folderPath}`);
-      });
-      if (row.parentFilePath) {
-        includedIds.add(`file:${row.parentFilePath}`);
-      }
-      if (row.kind === 'folder' && row.folderPath) {
-        matchedFolderPaths.add(row.folderPath);
-      }
-      if (row.kind === 'file' && row.filePath) {
-        matchedFilePaths.add(row.filePath);
-      }
-    });
-
-    rows.forEach((row) => {
-      if (
-        row.parentFolderPaths.some((folderPath) =>
-          matchedFolderPaths.has(folderPath),
-        )
-      ) {
-        includedIds.add(row.id);
-      }
-      if (row.parentFilePath && matchedFilePaths.has(row.parentFilePath)) {
-        includedIds.add(row.id);
-      }
-    });
-
-    const filteredRows = rows.filter((row) => includedIds.has(row.id));
-    return collapseVisibleFolderChains(filteredRows);
+    return filterRowsBySearch(renderRows, this.$searchQuery());
   });
 
   constructor() {
@@ -702,7 +418,7 @@ export class ModelsMocksViewerComponent {
         return;
       }
 
-      const selectedRowId = `mock:${selectedMockKey.replace(' :: ', '::')}`;
+      const selectedRowId = toMockRowId(selectedMockKey);
       const matchingRow = this.$displayRows().find(
         (row) =>
           row.id === selectedRowId ||
@@ -731,6 +447,10 @@ export class ModelsMocksViewerComponent {
   }
 
   protected toggleFolder(folderPath: string): void {
+    if (!folderPath) {
+      return;
+    }
+
     this.$collapsedFolderPaths.update((current) => {
       const next = new Set(current);
 
@@ -747,11 +467,19 @@ export class ModelsMocksViewerComponent {
   }
 
   protected selectMock(mockKey: string): void {
+    if (!mockKey) {
+      return;
+    }
+
     this.$selectedMockKey.set(mockKey);
-    this.$activeRowId.set(`mock:${mockKey.replace(' :: ', '::')}`);
+    this.$activeRowId.set(toMockRowId(mockKey));
   }
 
   protected toggleFile(filePath: string): void {
+    if (!filePath) {
+      return;
+    }
+
     this.$collapsedFilePaths.update((current) => {
       const next = new Set(current);
 
@@ -773,15 +501,8 @@ export class ModelsMocksViewerComponent {
   }
 
   protected collapseAllFolders(): void {
-    const folderPaths = TREE_ROWS.flatMap((row) =>
-      row.kind === 'folder' && row.folderPath ? [row.folderPath] : [],
-    );
-    const filePaths = TREE_ROWS.flatMap((row) =>
-      row.kind === 'file' && row.filePath ? [row.filePath] : [],
-    );
-
-    this.$collapsedFolderPaths.set(new Set(folderPaths));
-    this.$collapsedFilePaths.set(new Set(filePaths));
+    this.$collapsedFolderPaths.set(new Set(COLLAPSE_TARGETS.folderPaths));
+    this.$collapsedFilePaths.set(new Set(COLLAPSE_TARGETS.filePaths));
   }
 
   protected startSidebarResize(event: PointerEvent): void {
@@ -799,13 +520,7 @@ export class ModelsMocksViewerComponent {
       return;
     }
 
-    const minSidebarWidth = 260;
-    const maxSidebarWidth = 720;
-    const nextWidth = Math.max(
-      minSidebarWidth,
-      Math.min(maxSidebarWidth, event.clientX - 16),
-    );
-    this.$sidebarWidth.set(nextWidth);
+    this.setSidebarWidth(event.clientX - 16);
   }
 
   protected stopSidebarResize(event: PointerEvent): void {
@@ -818,6 +533,33 @@ export class ModelsMocksViewerComponent {
     }
 
     this.$isResizingSidebar.set(false);
+  }
+
+  protected onResizeHandleKeydown(event: KeyboardEvent): void {
+    const step = event.shiftKey ? 48 : 16;
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.setSidebarWidth(this.$sidebarWidth() - step);
+      return;
+    }
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.setSidebarWidth(this.$sidebarWidth() + step);
+      return;
+    }
+
+    if (event.key === 'Home') {
+      event.preventDefault();
+      this.$sidebarWidth.set(this.minSidebarWidth);
+      return;
+    }
+
+    if (event.key === 'End') {
+      event.preventDefault();
+      this.$sidebarWidth.set(this.maxSidebarWidth);
+    }
   }
 
   protected onTreeKeydown(event: KeyboardEvent): void {
@@ -842,6 +584,18 @@ export class ModelsMocksViewerComponent {
     if (event.key === 'ArrowLeft') {
       event.preventDefault();
       this.collapseOrGoParent();
+      return;
+    }
+
+    if (event.key === 'Home') {
+      event.preventDefault();
+      this.moveToEdge('start');
+      return;
+    }
+
+    if (event.key === 'End') {
+      event.preventDefault();
+      this.moveToEdge('end');
       return;
     }
 
@@ -870,6 +624,12 @@ export class ModelsMocksViewerComponent {
     this.$searchQuery.set('');
   }
 
+  private setSidebarWidth(nextWidth: number): void {
+    this.$sidebarWidth.set(
+      Math.max(this.minSidebarWidth, Math.min(this.maxSidebarWidth, nextWidth)),
+    );
+  }
+
   private moveActive(delta: number): void {
     const rows = this.$displayRows();
     if (rows.length === 0) {
@@ -887,6 +647,20 @@ export class ModelsMocksViewerComponent {
     const nextRow = rows[nextIndex];
 
     this.$activeRowId.set(nextRow.id);
+    if (nextRow.kind === 'mock' && nextRow.mockKey) {
+      this.$selectedMockKey.set(nextRow.mockKey);
+    }
+  }
+
+  private moveToEdge(edge: 'start' | 'end'): void {
+    const rows = this.$displayRows();
+    if (rows.length === 0) {
+      return;
+    }
+
+    const nextRow = edge === 'start' ? rows[0] : rows[rows.length - 1];
+    this.$activeRowId.set(nextRow.id);
+
     if (nextRow.kind === 'mock' && nextRow.mockKey) {
       this.$selectedMockKey.set(nextRow.mockKey);
     }
@@ -976,7 +750,7 @@ const meta: Meta<ModelsMocksViewerComponent> = {
     docs: {
       description: {
         component:
-          'File-explorer viewer for model mocks with auto-discovery, tree navigation, collapse, and JSON preview.',
+          'File-explorer viewer for model mocks and enums with auto-discovery, search, keyboard navigation, and JSON preview.',
       },
     },
     layout: 'fullscreen',
