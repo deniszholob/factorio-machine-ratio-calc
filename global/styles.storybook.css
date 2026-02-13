@@ -1,0 +1,4 @@
+@import './styles.css';
+
+/* Storybook-only Tailwind source for the mocks explorer story */
+@source '../src/app/shared/models/models.stories.ts';

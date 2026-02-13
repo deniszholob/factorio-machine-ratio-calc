@@ -58,6 +58,9 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
+        },
+        "storybook": {
+          "styles": ["./global/styles.storybook.css"]
         }
       },
       "defaultConfiguration": "production"
@@ -107,7 +110,7 @@
       "options": {
         "port": 4400,
         "configDir": "./.storybook",
-        "browserTarget": "factorio-machine-ratio-calc:build",
+        "browserTarget": "factorio-machine-ratio-calc:build:storybook",
         "compodoc": false
       },
       "configurations": {
@@ -122,7 +125,7 @@
       "options": {
         "outputDir": "dist/storybook/factorio-machine-ratio-calc",
         "configDir": "./.storybook",
-        "browserTarget": "factorio-machine-ratio-calc:build",
+        "browserTarget": "factorio-machine-ratio-calc:build:storybook",
         "compodoc": false
       },
       "configurations": {

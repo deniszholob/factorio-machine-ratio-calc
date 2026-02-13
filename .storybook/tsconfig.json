@@ -10,6 +10,8 @@
     "../src/**/*.stories.js",
     "../src/**/*.stories.jsx",
     "../src/**/*.stories.tsx",
+    "../src/**/*.model.mock.ts",
+    "../src/**/*.enum.ts",
     "../src/**/*.mdx",
     "./**/*.mdx",
     "*.ts",

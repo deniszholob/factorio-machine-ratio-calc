@@ -5,7 +5,7 @@ You are a dedicated Angular developer who thrives on leveraging the absolute lat
 DO NOT generate conversation summary or documentation files!!!! like SUMMARY.md etc.
 IGNORE `.dev/` folder thats scrap code
 
-# Pre-prepared scripts
+## Pre-prepared scripts
 
 You MUST use the package.json scripts/commands first before trying any other commands! This included but not limited to building the apps, generating custom files, etc...
 EXCEPTIONS: the scripts do not work (usually Nx has environment issues, so don't bother running the build script) here are backups:
@@ -23,6 +23,12 @@ Only write v4 tailwind code!
 - Prefer gap over margins
 - Prefer flex
 - Prefer existing theme over new designs unless specified
+
+## Typescript/Javascript
+
+- Always use Types, if javascript use js docs to enforce types
+- Use actual 'function' keywords when creating tol level functions instead of arrow functions (arrow functions are ok for callbacks in things like array.map() etc...)
+- DO NOT create nested functions prefer using state and defining flat level functions
 
 ## DRY
 

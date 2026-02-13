@@ -176,7 +176,7 @@ export class ProductionChainService {
     );
 
     if (!production) {
-      return;
+      throw new Error('Production chain not found');
     }
 
     this.$activeProductionChainId.set(productionId);

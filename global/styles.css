@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @source './src/**/*.{html,ts}';
+@source not './src/app/shared/models/models-mocks.stories.ts';
 
 @plugin '@tailwindcss/forms' {
   strategy: 'class';
