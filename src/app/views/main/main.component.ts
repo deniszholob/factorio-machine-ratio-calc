@@ -43,6 +43,8 @@ export class MainComponent {
 
   protected readonly $hasProductionChains: Signal<boolean> =
     this.productionChainService.$hasProductionChains;
+  protected readonly $activeProductionChainId: Signal<string | undefined> =
+    this.productionChainService.$activeProductionChainId;
   protected readonly $isSettingsOpen = this.settingsService.$isSettingsOpen;
   protected readonly $isCatalogOpen =
     this.productionCatalogUiService.$isCatalogOpen;

@@ -96,6 +96,7 @@ export class ProductionChainService {
     effect(() => {
       const activeId = this.$activeProductionChainId();
       if (!activeId) {
+        this.productionService.clearMachines();
         return;
       }
 
@@ -149,6 +150,14 @@ export class ProductionChainService {
   }
 
   // #region Actions
+  public clearActiveProductionChain(): void {
+    this.$activeProductionChainId.set(undefined);
+    this.$editingProductionChainId.set(undefined);
+    this.$editingProductionChainDisplay.set('');
+    this.$editingProductionChainIconUrl.set('');
+    this.replaceHash('');
+  }
+
   public addProduction(): void {
     const id: string = guid();
     const newProduction: ProductionChain = {

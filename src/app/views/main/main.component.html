@@ -12,7 +12,7 @@
     <app-content-layout [$title]="'Catalog'" ($close)="closeCatalog()" ngProjectAs="main-content">
       <app-production-catalog-editor></app-production-catalog-editor>
     </app-content-layout>
-  } @else if ($hasProductionChains()) {
+  } @else if ($hasProductionChains() && $activeProductionChainId()) {
     <app-production-chain-editor ngProjectAs="main-content"></app-production-chain-editor>
   } @else {
     <app-content-layout
@@ -23,7 +23,11 @@
       <div
         class="flex min-h-0 flex-1 items-center justify-center px-6 py-10 text-center text-stone-300"
       >
-        Add a production chain in the sidebar to begin building ratios.
+        @if ($hasProductionChains()) {
+          Select a production chain in the sidebar to begin building ratios.
+        } @else {
+          Add a production chain in the sidebar to begin building ratios.
+        }
       </div>
     </app-content-layout>
   }

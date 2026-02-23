@@ -1,12 +1,13 @@
 import { NgClass, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
+import { Router } from '@angular/router';
 import { ImportExportService } from 'src/app/shared/services/import-export/import-export.service';
+import { ProductionCatalogUiService } from 'src/app/shared/services/production-catalog/production-catalog-ui.service';
+import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
+import { SettingsService } from 'src/app/shared/services/settings/settings.service';
 import { TooltipDirective } from '../../../components/generic/tooltip/tooltip.directive';
 import { FilePickerComponent } from '../../../forms/file-picker/file-picker.component';
-import { SettingsService } from 'src/app/shared/services/settings/settings.service';
-import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
-import { ProductionCatalogUiService } from 'src/app/shared/services/production-catalog/production-catalog-ui.service';
 
 @Component({
   selector: 'app-header',
@@ -16,6 +17,7 @@ import { ProductionCatalogUiService } from 'src/app/shared/services/production-c
   imports: [TooltipDirective, NgOptimizedImage, FilePickerComponent, NgClass],
 })
 export class HeaderComponent {
+  private readonly router = inject(Router);
   private readonly importExportService: ImportExportService =
     inject(ImportExportService);
   private readonly settingsService = inject(SettingsService);
@@ -26,6 +28,11 @@ export class HeaderComponent {
   protected readonly $isSettingsOpen = this.settingsService.$isSettingsOpen;
   protected readonly $isCatalogOpen =
     this.productionCatalogUiService.$isCatalogOpen;
+
+  protected onGoHome(): void {
+    this.productionChainService.clearActiveProductionChain();
+    this.router.navigateByUrl('/');
+  }
 
   protected onImportProductionChains(files: File[]): void {
     const mode = this.settingsService.$importChainsMode();
