@@ -148,6 +148,7 @@ export class ProductionChainService {
     });
   }
 
+  // #region Actions
   public addProduction(): void {
     const id: string = guid();
     const newProduction: ProductionChain = {
@@ -479,7 +480,9 @@ export class ProductionChainService {
     view.history.replaceState(null, '', nextUrl);
   }
 }
+// #endregion
 
+// #region Helpers
 function serializeProductions(productions: Production[]): string {
   return JSON.stringify(productions);
 }
@@ -577,3 +580,4 @@ function toSortedProductionIds(productions: Production[]): string[] {
     .filter((id) => id.length > 0)
     .sort((a, b) => a.localeCompare(b));
 }
+// #endregion

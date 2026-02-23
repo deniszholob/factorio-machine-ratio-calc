@@ -1,21 +1,25 @@
 <footer
-  class="flex flex-wrap items-center justify-between gap-3 border-t border-stone-700 bg-stone-950/70 px-6 py-3 text-xs text-stone-400"
+  class="flex flex-wrap items-center justify-between gap-3 border-t border-stone-700 bg-stone-950 px-4 py-2 text-xs text-stone-400"
 >
-  <div class="flex items-center gap-3">
-    <span>
-      Design by
-      <a href="http://www.deniszholob.com" target="_blank" rel="noopener"> Denis Zholob </a>
-    </span>
-    <span class="text-stone-500">|</span>
+  <div class="flex flex-col text-left">
+    <small>Made by</small>
+    <a href="http://www.deniszholob.com" target="_blank" rel="noopener">Denis Zholob</a>
+  </div>
+
+  <div class="flex flex-col text-center">
+    <small>Source Code on</small>
+
     <a
       href="https://github.com/deniszholob/factorio-machine-ratio-calc"
       target="_blank"
       rel="noopener"
     >
-      Github Source
+      Github
     </a>
   </div>
-  <div class="flex items-center gap-3">
-    <span>Updated {{ APP_BUILD_DATE | date: 'y/M/d' }}</span>
+
+  <div class="flex flex-col text-right">
+    <small>Updated</small>
+    <span class="text-stone-200">{{ APP_BUILD_DATE | date: 'y/M/d' }}</span>
   </div>
 </footer>

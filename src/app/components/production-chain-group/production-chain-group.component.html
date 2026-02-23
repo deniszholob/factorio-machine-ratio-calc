@@ -4,10 +4,10 @@
 @let editingName = $editingName();
 @let editingIconUrl = $editingIconUrl();
 
-<div class="flex flex-1 flex-col gap-2 overflow-auto">
+<div class="flex flex-1 flex-col gap-2 overflow-auto px-2">
   <div class="flex flex-row items-center justify-between gap-1">
     <div class="text-xs font-semibold tracking-[0.32em] text-stone-500 uppercase">
-      Production Chains
+      Production Chains <span class="tracking-normal">({{ productions.length }})</span>
     </div>
 
     <div class="flex items-center gap-1">

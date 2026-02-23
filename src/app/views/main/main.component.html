@@ -1,7 +1,10 @@
 <app-main-layout>
   <app-header ngProjectAs="side-header"></app-header>
   <app-production-chain-group ngProjectAs="side-content"></app-production-chain-group>
-  <app-links ngProjectAs="side-footer"></app-links>
+  <div class="flex flex-col" ngProjectAs="side-footer">
+    <app-links></app-links>
+    <app-footer></app-footer>
+  </div>
 
   @if ($isSettingsOpen()) {
     <app-settings-view ngProjectAs="main-content"></app-settings-view>
@@ -25,5 +28,5 @@
     </app-content-layout>
   }
 
-  <app-footer ngProjectAs="main-footer"></app-footer>
+  <!-- <app-footer ngProjectAs="main-footer"></app-footer> -->
 </app-main-layout>

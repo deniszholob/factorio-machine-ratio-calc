@@ -206,3 +206,8 @@ Copilot MUST follow this order when styling components:
 - Never duplicate styles that exist globally or in Tailwind
 
 Creating new CSS when Tailwind or reusable styles exist is considered incorrect output.
+
+## General styling guides
+
+- Keep it modern
+- Do not draw borders everywhere: avoid bordered box in a bordered box in bordered box etc... situations

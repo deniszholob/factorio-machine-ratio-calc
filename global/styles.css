@@ -68,7 +68,8 @@
   /* a {
     @apply text-orange-400 hover:text-orange-500;
   } */
-  a {
+  a,
+  .link {
     @apply text-orange-400 transition hover:text-orange-300;
   }
 }
