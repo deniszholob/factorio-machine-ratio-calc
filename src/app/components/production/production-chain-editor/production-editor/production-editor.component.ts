@@ -120,12 +120,14 @@ export class ProductionEditorComponent {
     if (saved) {
       production.machine.craftingSpeed = saved.craftingSpeed;
       production.machine.productivity = saved.productivity;
+      production.machine.drain = saved.drain;
     } else {
       this.productionCatalogService.upsertMachine({
         name,
         iconUrl: this.findMachineIconUrl(name),
         craftingSpeed: production.machine.craftingSpeed,
         productivity: production.machine.productivity,
+        drain: production.machine.drain,
       });
     }
 
@@ -156,6 +158,7 @@ export class ProductionEditorComponent {
         iconUrl: this.findMachineIconUrl(name),
         craftingSpeed: production.machine.craftingSpeed,
         productivity: production.machine.productivity,
+        drain: production.machine.drain,
       });
     }
     this.emitMachineChanged(production);

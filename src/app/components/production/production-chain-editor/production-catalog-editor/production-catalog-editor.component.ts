@@ -55,6 +55,7 @@ export class ProductionCatalogEditorComponent {
         iconUrl: item.iconUrl,
         craftingSpeed: item.craftingSpeed ?? 1,
         productivity: item.productivity ?? 1,
+        drain: item.drain ?? 1,
       })),
   );
   public readonly $productions = computed<CatalogProduction[]>(
@@ -370,6 +371,7 @@ export class ProductionCatalogEditorComponent {
       iconUrl: machine.iconUrl?.trim() || undefined,
       craftingSpeed: machine.craftingSpeed,
       productivity: machine.productivity,
+      drain: machine.drain,
     });
     this.productionCatalogService.renameReferences(previousName, nextName);
     this.productionChainService.renameCatalogReferences(

@@ -83,9 +83,23 @@
             name="machineCraftSpeed"
             min="0"
             step="0.05"
+            title="Speed multiplier affects the time required to produce the same output (time / speed)."
           />
         </app-form-field-block>
-        <app-form-field-block [$label]="'Productivity'">
+        <app-form-field-block [$label]="'Input Drain'">
+          <input
+            class="h-9 max-w-28"
+            [(ngModel)]="machine.drain"
+            (change)="onMachineStatsChange(production)"
+            (keyup)="onMachineStatsChange(production)"
+            type="number"
+            name="machineDrain"
+            min="0"
+            step="0.05"
+            title="Drain multiplier affects the inputs required to produce the same output (input * drain)."
+          />
+        </app-form-field-block>
+        <app-form-field-block [$label]="'Output Productivity'">
           <input
             class="h-9 max-w-28"
             [(ngModel)]="machine.productivity"
@@ -95,6 +109,7 @@
             name="machineProductivity"
             min="0"
             step="0.05"
+            title="Productivity multiplier affects the outputs produced from the same inputs (output * productivity)."
           />
         </app-form-field-block>
       </div>

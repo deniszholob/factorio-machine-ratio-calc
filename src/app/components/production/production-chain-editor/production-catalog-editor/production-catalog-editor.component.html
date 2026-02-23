@@ -398,6 +398,26 @@
                   step="0.05"
                   placeholder="Speed"
                   aria-label="Machine craft speed"
+                  title="Speed multiplier affects the time required to produce the same output (time / speed)."
+                />
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                  >Drain</span
+                >
+                <input
+                  class="h-9 max-w-28"
+                  [(ngModel)]="machine.drain"
+                  (change)="onMachineChange(machine)"
+                  (keyup)="onMachineChange(machine)"
+                  type="number"
+                  name="catalogMachineDrain"
+                  min="0"
+                  step="0.05"
+                  placeholder="Drain"
+                  aria-label="Machine drain"
+                  title="Drain multiplier affects the inputs required to produce the same output (input * drain)."
                 />
               </div>
 
@@ -416,6 +436,7 @@
                   step="0.05"
                   placeholder="Productivity"
                   aria-label="Machine productivity"
+                  title="Productivity multiplier affects the outputs produced from the same inputs (output * productivity)."
                 />
               </div>
 

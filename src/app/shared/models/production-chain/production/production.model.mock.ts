@@ -21,6 +21,7 @@ export const MOCK_Production: Production = {
     name: 'Assembler 1',
     craftingSpeed: 0.75,
     productivity: 1,
+    drain: 1,
   },
 };
 
@@ -42,6 +43,7 @@ export const MOCK_Production_Array: Production[] = [
       name: 'Furnace',
       craftingSpeed: 1,
       productivity: 1,
+      drain: 1,
     },
   },
   {
@@ -60,6 +62,7 @@ export const MOCK_Production_Array: Production[] = [
       name: 'Assembler 1',
       craftingSpeed: 0.75,
       productivity: 1,
+      drain: 1,
     },
   },
   {
@@ -80,6 +83,7 @@ export const MOCK_Production_Array: Production[] = [
       name: 'Furnace',
       craftingSpeed: 1,
       productivity: 1,
+      drain: 1,
     },
   },
 ];

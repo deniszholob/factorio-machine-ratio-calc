@@ -141,6 +141,7 @@ export class ProductionCatalogService {
       iconUrl: machineItem.iconUrl,
       craftingSpeed: machineItem.craftingSpeed ?? 1,
       productivity: machineItem.productivity ?? 1,
+      drain: machineItem.drain ?? 1,
     };
   }
 
@@ -296,6 +297,7 @@ export class ProductionCatalogService {
       iconUrl: item.iconUrl,
       craftingSpeed: item.craftingSpeed ?? 1,
       productivity: item.productivity ?? 1,
+      drain: item.drain ?? 1,
     }));
     downloadJson(machines, 'PRC_catalog_machines');
   }
@@ -542,6 +544,7 @@ export class ProductionCatalogService {
             isMachine: true,
             craftingSpeed: 1,
             productivity: 1,
+            drain: 1,
           },
         ],
       });
@@ -712,6 +715,7 @@ function machineToCatalogItem(machine: CatalogMachine): CatalogItem {
     isMachine: true,
     craftingSpeed: machine.craftingSpeed,
     productivity: machine.productivity,
+    drain: machine.drain,
   };
 }
 
@@ -775,6 +779,7 @@ function buildCatalogStateFromProductions(
         iconUrl: findIconByName(machineIconsByName, machineName),
         craftingSpeed: production.machine.craftingSpeed,
         productivity: production.machine.productivity,
+        drain: production.machine.drain,
       });
     }
 
@@ -1142,6 +1147,7 @@ function normalizeCatalogItem(payload: unknown): CatalogItem | undefined {
     isMachine?: unknown;
     craftingSpeed?: unknown;
     productivity?: unknown;
+    drain?: unknown;
   };
   const name = typeof item.name === 'string' ? item.name.trim() : '';
   if (!isAllowedCatalogName(name, 'item')) {
@@ -1157,6 +1163,7 @@ function normalizeCatalogItem(payload: unknown): CatalogItem | undefined {
     isMachine: item.isMachine === true,
     craftingSpeed: toValidNumber(item.craftingSpeed, undefined),
     productivity: toValidNumber(item.productivity, undefined),
+    drain: toValidNumber(item.drain, undefined),
   };
 }
 
@@ -1253,6 +1260,7 @@ function normalizeCatalogMachine(payload: unknown): CatalogMachine | undefined {
     iconUrl?: unknown;
     craftingSpeed?: unknown;
     productivity?: unknown;
+    drain?: unknown;
   };
 
   const name = typeof machine.name === 'string' ? machine.name.trim() : '';
@@ -1268,6 +1276,7 @@ function normalizeCatalogMachine(payload: unknown): CatalogMachine | undefined {
         : undefined,
     craftingSpeed: toValidNumber(machine.craftingSpeed, 1) ?? 1,
     productivity: toValidNumber(machine.productivity, 1) ?? 1,
+    drain: toValidNumber(machine.drain, 1) ?? 1,
   };
 }
 

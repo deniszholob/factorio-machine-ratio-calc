@@ -14,6 +14,7 @@ interface ProductionNormalizationInput {
   count?: number;
   craftingSpeed?: number;
   productivity?: number;
+  drain?: number;
   timeToComplete?: number;
   effectiveTime?: number;
   machineInputs?: MachineItem[];
@@ -53,6 +54,7 @@ export function newProduction(): Production {
       name: 'Default Machine',
       craftingSpeed: 1,
       productivity: 1,
+      drain: 1,
     },
   };
   production.recipe.inputs.push(newMachineItem());
@@ -109,11 +111,13 @@ export function normalizeProduction(
         name: legacy.machine.name ?? 'Default Machine',
         craftingSpeed: legacy.machine.craftingSpeed ?? 1,
         productivity: legacy.machine.productivity ?? 1,
+        drain: legacy.machine.drain ?? 1,
       }
     : {
         name: 'Default Machine',
         craftingSpeed: legacy.craftingSpeed ?? 1,
         productivity: legacy.productivity ?? 1,
+        drain: legacy.drain ?? 1,
       };
 
   const production: Production = {
@@ -195,15 +199,23 @@ export function syncAutoRecipeName(production: Production): void {
   production.recipe.name = getAutoRecipeName(production);
 }
 
+/**
+ * Recalculates per-machine and total item rates using the current production multipliers.
+ * Formula:
+ * - effectiveTime = recipe.timeToComplete / machine.craftingSpeed
+ * - input rate = item.count * machine.drain / effectiveTime
+ * - output rate = item.count * machine.productivity / effectiveTime
+ */
 export function reCalcItemRate(
   item: MachineItem,
   production: Production,
 ): void {
   const effectiveTime = production.effectiveTime;
-  const productivity =
-    production.machine.productivity < 0 ? 0 : production.machine.productivity;
-  item.rate =
-    effectiveTime > 0 ? (item.count * productivity) / effectiveTime : 0;
+  const productivity = toNonNegativeMultiplier(production.machine.productivity);
+  const drain = toNonNegativeMultiplier(production.machine.drain);
+  const isInput = production.recipe.inputs.includes(item);
+  const multiplier = isInput ? drain : productivity;
+  item.rate = effectiveTime > 0 ? (item.count * multiplier) / effectiveTime : 0;
   item.totalRate = item.rate * production.count;
 }
 
@@ -246,4 +258,8 @@ function ensureRecipeItems(recipe: ProductionRecipe): void {
   ) {
     recipe.iconUrl = undefined;
   }
+}
+
+function toNonNegativeMultiplier(value: number): number {
+  return value < 0 ? 0 : value;
 }

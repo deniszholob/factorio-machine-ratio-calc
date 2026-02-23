@@ -7,6 +7,7 @@ export interface CatalogItem {
   isMachine?: boolean;
   craftingSpeed?: number;
   productivity?: number;
+  drain?: number;
 }
 
 export interface CatalogRecipe {
@@ -22,6 +23,7 @@ export interface CatalogMachine {
   iconUrl?: string;
   craftingSpeed: number;
   productivity: number;
+  drain: number;
 }
 
 export interface CatalogProduction {
