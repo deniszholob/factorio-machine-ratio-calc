@@ -15,6 +15,7 @@
   </div>
 
   @for (item of $items(); track item; let i = $index) {
+    @let itemIconUrl = $itemIconsByName()[item.name];
     <div
       class="transition-color flex cursor-pointer items-center gap-2 rounded-lg bg-stone-950/45 p-2 text-stone-100 ring-1 ring-stone-800/70 hover:bg-stone-900/70 hover:ring-stone-700"
       [cdkDragDisabled]="!$dragEnabled()"
@@ -37,9 +38,13 @@
           <i class="fas fa-trash"></i>
         </button>
 
-        <app-form-field-block [$label]="'Qty'">
+        <app-form-field-block
+          [$label]="'Qty'"
+          [$className]="'w-32'"
+          [$prefixIconClass]="'fas fa-cubes'"
+        >
           <input
-            class="h-9 max-w-28"
+            class="h-9 w-full"
             [(ngModel)]="item.count"
             (change)="onItemCountChange(i)"
             (keyup)="onItemCountChange(i)"
@@ -50,21 +55,24 @@
           />
         </app-form-field-block>
 
-        <app-icon-autocomplete-input
-          [$value]="item.name"
-          [$name]="'recipeItemName'"
-          [$placeholder]="'Item name'"
-          [$options]="$itemNameOptions()"
-          [$iconsByName]="$itemIconsByName()"
-          ($valueChange)="item.name = $event"
-          ($commit)="onItemNameCommit(i)"
-        ></app-icon-autocomplete-input>
-
-        @if ($showRates()) {
-          <span class="whitespace-nowrap"
-            >{{ item.rate ?? 0 | number: '0.1-2' }} {{ $rateUnit() }}</span
-          >
-        }
+        <app-form-field-block
+          [$label]="'Item'"
+          [$className]="'min-w-56'"
+          [$prefixImageUrl]="itemIconUrl || ''"
+          [$prefixIconClass]="itemIconUrl ? '' : 'fas fa-image'"
+          [$suffix]="$showRates() ? (item.rate ?? 0 | number: '0.1-2') + ' ' + $rateUnit() : ''"
+        >
+          <app-icon-autocomplete-input
+            [$value]="item.name"
+            [$name]="'recipeItemName'"
+            [$placeholder]="'Item name'"
+            [$options]="$itemNameOptions()"
+            [$iconsByName]="$itemIconsByName()"
+            [$showCurrentIcon]="false"
+            ($valueChange)="item.name = $event"
+            ($commit)="onItemNameCommit(i)"
+          ></app-icon-autocomplete-input>
+        </app-form-field-block>
       </div>
     </div>
   }

@@ -1,0 +1,9 @@
+<span [class]="'inline-flex items-center gap-0.5 font-mono tabular-nums ' + $valueClass()">
+  <span>{{ $value() }}</span>
+  <span
+    class="text-[10px] font-semibold tracking-wide uppercase"
+    [class]="'text-[10px] font-semibold tracking-wide uppercase ' + $unitClass()"
+  >
+    {{ $unit() }}
+  </span>
+</span>

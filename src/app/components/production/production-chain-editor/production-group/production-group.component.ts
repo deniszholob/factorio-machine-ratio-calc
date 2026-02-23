@@ -17,6 +17,7 @@ import {
 import { ProductionTotals } from 'src/app/shared/services/production/production.service';
 import { ProductionItemComponent } from './production-item/production-item.component';
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
+import { RateUnitValueComponent } from 'src/app/components/generic/rate-unit-value/rate-unit-value.component';
 import {
   ProductionMoveEvent,
   ProductionMovePreview,
@@ -32,7 +33,13 @@ import { Production } from 'src/app/shared/models/production-chain/production/pr
   templateUrl: './production-group.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, DecimalPipe, ProductionItemComponent, DragDropModule],
+  imports: [
+    NgClass,
+    DecimalPipe,
+    ProductionItemComponent,
+    DragDropModule,
+    RateUnitValueComponent,
+  ],
 })
 export class ProductionGroupComponent {
   private readonly productionCatalogService = inject(ProductionCatalogService);

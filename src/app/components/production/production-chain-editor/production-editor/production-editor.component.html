@@ -62,20 +62,31 @@
         <div class="h-px flex-1 bg-stone-700/70"></div>
       </div>
       <div class="flex flex-wrap items-center gap-4">
-        <app-form-field-block [$label]="'Machine Name'" [$className]="'min-w-56'">
+        <app-form-field-block
+          [$label]="'Machine Name'"
+          [$className]="'min-w-72'"
+          [$prefixImageUrl]="machineIconUrl || ''"
+          [$prefixIconClass]="machineIconUrl ? '' : 'fas fa-image'"
+        >
           <app-icon-autocomplete-input
             [$value]="machine.name"
             [$name]="'machineName'"
             [$placeholder]="'Machine name'"
             [$options]="machineNameOptions"
             [$iconsByName]="machineIconsByName"
+            [$showCurrentIcon]="false"
             ($valueChange)="machine.name = $event"
             ($commit)="onMachineNameChange(production)"
           ></app-icon-autocomplete-input>
         </app-form-field-block>
-        <app-form-field-block [$label]="'Craft Speed'">
+        <app-form-field-block
+          [$label]="'Craft Speed'"
+          [$className]="'w-36'"
+          [$prefixIconClass]="'fas fa-gauge'"
+          [$suffix]="'x'"
+        >
           <input
-            class="h-9 max-w-28"
+            class="h-9 w-full"
             [(ngModel)]="machine.craftingSpeed"
             (change)="onMachineStatsChange(production)"
             (keyup)="onMachineStatsChange(production)"
@@ -86,9 +97,14 @@
             title="Speed multiplier affects the time required to produce the same output (time / speed)."
           />
         </app-form-field-block>
-        <app-form-field-block [$label]="'Input Drain'">
+        <app-form-field-block
+          [$label]="'Input Drain'"
+          [$className]="'w-36'"
+          [$prefixIconClass]="'fas fa-right-to-bracket'"
+          [$suffix]="'x'"
+        >
           <input
-            class="h-9 max-w-28"
+            class="h-9 w-full"
             [(ngModel)]="machine.drain"
             (change)="onMachineStatsChange(production)"
             (keyup)="onMachineStatsChange(production)"
@@ -99,9 +115,14 @@
             title="Drain multiplier affects the inputs required to produce the same output (input * drain)."
           />
         </app-form-field-block>
-        <app-form-field-block [$label]="'Output Productivity'">
+        <app-form-field-block
+          [$label]="'Output Productivity'"
+          [$className]="'w-36'"
+          [$prefixIconClass]="'fas fa-right-from-bracket'"
+          [$suffix]="'x'"
+        >
           <input
-            class="h-9 max-w-28"
+            class="h-9 w-full"
             [(ngModel)]="machine.productivity"
             (change)="onMachineStatsChange(production)"
             (keyup)="onMachineStatsChange(production)"
@@ -122,20 +143,31 @@
       </div>
       <div class="flex flex-col gap-4">
         <div class="flex flex-wrap items-center gap-4">
-          <app-form-field-block [$label]="'Recipe Name'" [$className]="'min-w-56'">
+          <app-form-field-block
+            [$label]="'Recipe Name'"
+            [$className]="'min-w-72'"
+            [$prefixImageUrl]="recipeIconUrl || ''"
+            [$prefixIconClass]="recipeIconUrl ? '' : 'fas fa-image'"
+          >
             <app-icon-autocomplete-input
               [$value]="recipe.name"
               [$name]="'recipeName'"
               [$placeholder]="'Recipe name'"
               [$options]="recipeNameOptions"
               [$iconsByName]="recipeIconsByName"
+              [$showCurrentIcon]="false"
               ($valueChange)="onRecipeNameInput($event, production)"
               ($commit)="onRecipeNameChange(production)"
             ></app-icon-autocomplete-input>
           </app-form-field-block>
-          <app-form-field-block [$label]="'Time (s)'">
+          <app-form-field-block
+            [$label]="'Time'"
+            [$className]="'w-40'"
+            [$prefixIconClass]="'fas fa-clock'"
+            [$suffix]="'s'"
+          >
             <input
-              class="h-9 max-w-28"
+              class="h-9 w-full"
               [(ngModel)]="recipe.timeToComplete"
               (change)="onRecipeTimeChange(production)"
               (keyup)="onRecipeTimeChange(production)"
@@ -145,9 +177,24 @@
               step="0.05"
             />
           </app-form-field-block>
-          <div class="flex items-center gap-2 text-sm text-stone-300">
-            <span>Effective Time</span>
-            <span class="text-stone-100"> {{ production.effectiveTime | number: '0.1-2' }} s </span>
+          <div class="flex flex-col gap-1">
+            <span
+              class="text-xs font-semibold tracking-wide whitespace-nowrap text-stone-400 uppercase"
+            >
+              Effective Time
+            </span>
+            <div class="flex items-stretch">
+              <span
+                class="inline-flex h-9 items-center rounded-l-sm border border-r-0 border-stone-700/70 bg-stone-950/80 px-3 font-mono text-sm text-stone-300 tabular-nums"
+              >
+                {{ production.effectiveTime | number: '0.1-2' }}
+              </span>
+              <span
+                class="inline-flex h-9 items-center rounded-r-sm border border-l-0 border-stone-700/70 bg-stone-900 px-2 text-xs font-semibold tracking-wide text-stone-400 uppercase"
+              >
+                s
+              </span>
+            </div>
           </div>
         </div>
 
@@ -158,6 +205,7 @@
             [$itemNameOptions]="itemNameOptions"
             [$itemIconsByName]="itemIconsByName"
             [$showRates]="true"
+            [$rateUnit]="'/s'"
             [$dragEnabled]="true"
             [$listId]="inputListId"
             [$connectedTo]="[outputListId]"
@@ -174,6 +222,7 @@
             [$itemNameOptions]="itemNameOptions"
             [$itemIconsByName]="itemIconsByName"
             [$showRates]="true"
+            [$rateUnit]="'/s'"
             [$dragEnabled]="true"
             [$listId]="outputListId"
             [$connectedTo]="[inputListId]"

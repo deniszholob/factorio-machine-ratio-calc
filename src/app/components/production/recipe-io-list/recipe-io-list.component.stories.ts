@@ -25,7 +25,8 @@ export default {
     $dragEnabled: false,
     $listId: 'story-recipe-io',
     $connectedTo: [],
-    $rateUnit: 'i/s',
+    $countUnit: 'x',
+    $rateUnit: '/s',
   },
 } satisfies Meta<RecipeIoListComponent>;
 

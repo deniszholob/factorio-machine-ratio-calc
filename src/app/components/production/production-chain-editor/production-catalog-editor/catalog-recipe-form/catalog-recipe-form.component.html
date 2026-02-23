@@ -50,9 +50,9 @@
       />
     </app-form-field-block>
 
-    <app-form-field-block [$label]="'Time'" [$className]="'max-w-28'">
+    <app-form-field-block [$label]="'Time'" [$className]="'w-40'" [$suffix]="'s'">
       <input
-        class="h-9 max-w-28"
+        class="h-9 w-full"
         [(ngModel)]="recipe.timeToComplete"
         (change)="onRecipeChange()"
         (keyup)="onRecipeChange()"
@@ -60,7 +60,7 @@
         name="catalogRecipeTime"
         min="0"
         step="0.05"
-        placeholder="Time (s)"
+        placeholder="Time"
         aria-label="Recipe time in seconds"
       />
     </app-form-field-block>
@@ -88,6 +88,8 @@
       [$items]="recipe.inputs"
       [$itemNameOptions]="$itemNames()"
       [$itemIconsByName]="$itemIconsByName()"
+      [$showRates]="true"
+      [$rateUnit]="'/s'"
       ($add)="onAddRecipeItem('inputs')"
       ($remove)="onRemoveRecipeItem('inputs', $event)"
       ($itemCountChange)="onRecipeChange()"
@@ -99,6 +101,8 @@
       [$items]="recipe.outputs"
       [$itemNameOptions]="$itemNames()"
       [$itemIconsByName]="$itemIconsByName()"
+      [$showRates]="true"
+      [$rateUnit]="'/s'"
       ($add)="onAddRecipeItem('outputs')"
       ($remove)="onRemoveRecipeItem('outputs', $event)"
       ($itemCountChange)="onRecipeChange()"

@@ -22,6 +22,7 @@ export class IconAutocompleteInputComponent {
   public readonly $iconsByName = input<Record<string, string>>({});
   public readonly $placeholder = input<string>('');
   public readonly $name = input<string>('');
+  public readonly $showCurrentIcon = input<boolean>(true);
   public readonly $valueChange = output<string>();
   public readonly $commit = output<string>();
 

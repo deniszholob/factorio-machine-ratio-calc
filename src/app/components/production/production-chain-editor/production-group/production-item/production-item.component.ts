@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TooltipDirective } from 'src/app/components/generic/tooltip/tooltip.directive';
+import { RateUnitValueComponent } from 'src/app/components/generic/rate-unit-value/rate-unit-value.component';
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
 import { reCalcProductionRates } from '../../production-editor/production.util';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
@@ -28,6 +29,7 @@ import { Production } from 'src/app/shared/models/production-chain/production/pr
     CommonModule,
     FormsModule,
     TooltipDirective,
+    RateUnitValueComponent,
     CdkDrag,
     CdkDragHandle,
   ],

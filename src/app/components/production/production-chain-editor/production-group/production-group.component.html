@@ -33,9 +33,10 @@
               'text-red-500': productionEntry.totalRate < 0,
             }"
           >
-            <strong class="w-24 text-right font-mono tabular-nums">
-              {{ productionEntry.totalRate | number: '1.2-2' }}/sec
-            </strong>
+            <app-rate-unit-value
+              [$value]="productionEntry.totalRate | number: '1.2-2'"
+              [$valueClass]="'w-24 justify-end'"
+            ></app-rate-unit-value>
             @if (itemIconUrl) {
               <img
                 class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
@@ -62,9 +63,10 @@
       @for (productionEntry of machinesTotals.inputs; track productionEntry) {
         @let itemIconUrl = itemIconsByName[productionEntry.name];
         <div class="flex items-center gap-1">
-          <strong class="w-24 text-right font-mono tabular-nums">
-            {{ productionEntry.totalRate | number: '1.2-2' }}/sec
-          </strong>
+          <app-rate-unit-value
+            [$value]="productionEntry.totalRate | number: '1.2-2'"
+            [$valueClass]="'w-24 justify-end'"
+          ></app-rate-unit-value>
           @if (itemIconUrl) {
             <img
               class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
@@ -90,9 +92,10 @@
       @for (productionEntry of machinesTotals.outputs; track productionEntry) {
         @let itemIconUrl = itemIconsByName[productionEntry.name];
         <div class="flex items-center gap-1">
-          <strong class="w-24 text-right font-mono tabular-nums">
-            {{ productionEntry.totalRate | number: '1.2-2' }}/sec
-          </strong>
+          <app-rate-unit-value
+            [$value]="productionEntry.totalRate | number: '1.2-2'"
+            [$valueClass]="'w-24 justify-end'"
+          ></app-rate-unit-value>
           @if (itemIconUrl) {
             <img
               class="h-8 w-8 rounded-sm border border-stone-700 object-cover"

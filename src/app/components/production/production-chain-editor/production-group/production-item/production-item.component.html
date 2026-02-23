@@ -205,9 +205,10 @@
       @let itemIconUrl = itemIconsByName[item.name];
       <div class="flex items-center gap-1">
         <span class="inline-flex items-center gap-1">
-          <strong class="w-24 text-right font-mono tabular-nums">
-            {{ item.totalRate | number: '1.2-2' }}/sec
-          </strong>
+          <app-rate-unit-value
+            [$value]="item.totalRate | number: '1.2-2'"
+            [$valueClass]="'w-24 justify-end'"
+          ></app-rate-unit-value>
           @if (itemIconUrl) {
             <img
               class="h-8 w-8 rounded-sm border border-stone-700 object-cover"

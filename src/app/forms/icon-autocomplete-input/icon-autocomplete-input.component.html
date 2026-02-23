@@ -4,20 +4,22 @@
 @let highlightedIndex = $highlightedIndex();
 
 <div class="relative flex min-w-44 items-center gap-2">
-  @if (currentIconUrl) {
-    <img
-      class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
-      [src]="currentIconUrl"
-      [alt]="$value() + ' icon'"
-    />
-  } @else {
-    <span
-      class="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
-      title="Provide an icon in the Catalog"
-      aria-hidden="true"
-    >
-      <i class="fas fa-image"></i>
-    </span>
+  @if ($showCurrentIcon()) {
+    @if (currentIconUrl) {
+      <img
+        class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
+        [src]="currentIconUrl"
+        [alt]="$value() + ' icon'"
+      />
+    } @else {
+      <span
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+        title="Provide an icon in the Catalog"
+        aria-hidden="true"
+      >
+        <i class="fas fa-image"></i>
+      </span>
+    }
   }
 
   <input

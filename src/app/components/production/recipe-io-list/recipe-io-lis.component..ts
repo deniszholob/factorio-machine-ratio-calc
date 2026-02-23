@@ -45,7 +45,8 @@ export class RecipeIoListComponent {
   public readonly $dragEnabled = input<boolean>(false);
   public readonly $listId = input<string>('');
   public readonly $connectedTo = input<string[]>([]);
-  public readonly $rateUnit = input<string>('i/s');
+  public readonly $countUnit = input<string>('x');
+  public readonly $rateUnit = input<string>('/s');
 
   public readonly $add = output<void>();
   public readonly $remove = output<number>();

@@ -383,12 +383,9 @@
                 />
               </div>
 
-              <div class="flex flex-col gap-1">
-                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
-                  >Speed</span
-                >
+              <app-form-field-block [$label]="'Speed'" [$className]="'w-36'" [$suffix]="'x'">
                 <input
-                  class="h-9 max-w-28"
+                  class="h-9 w-full"
                   [(ngModel)]="machine.craftingSpeed"
                   (change)="onMachineChange(machine)"
                   (keyup)="onMachineChange(machine)"
@@ -400,14 +397,11 @@
                   aria-label="Machine craft speed"
                   title="Speed multiplier affects the time required to produce the same output (time / speed)."
                 />
-              </div>
+              </app-form-field-block>
 
-              <div class="flex flex-col gap-1">
-                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
-                  >Drain</span
-                >
+              <app-form-field-block [$label]="'Drain'" [$className]="'w-36'" [$suffix]="'x'">
                 <input
-                  class="h-9 max-w-28"
+                  class="h-9 w-full"
                   [(ngModel)]="machine.drain"
                   (change)="onMachineChange(machine)"
                   (keyup)="onMachineChange(machine)"
@@ -419,14 +413,11 @@
                   aria-label="Machine drain"
                   title="Drain multiplier affects the inputs required to produce the same output (input * drain)."
                 />
-              </div>
+              </app-form-field-block>
 
-              <div class="flex flex-col gap-1">
-                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
-                  >Prod</span
-                >
+              <app-form-field-block [$label]="'Prod'" [$className]="'w-36'" [$suffix]="'x'">
                 <input
-                  class="h-9 max-w-28"
+                  class="h-9 w-full"
                   [(ngModel)]="machine.productivity"
                   (change)="onMachineChange(machine)"
                   (keyup)="onMachineChange(machine)"
@@ -438,7 +429,7 @@
                   aria-label="Machine productivity"
                   title="Productivity multiplier affects the outputs produced from the same inputs (output * productivity)."
                 />
-              </div>
+              </app-form-field-block>
 
               <span
                 class="rounded border border-stone-700/70 bg-stone-900/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
