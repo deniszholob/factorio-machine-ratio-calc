@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { guid } from '../../utils/guid/guid.util';
 import { LOCAL_STORAGE_KEY_STATE } from './local-storage.data';
-import { ImportMode } from '../settings/settings.service';
 import { ProductionChain } from '../../models/production-chain/production-chain.model';
 import { Production } from '../../models/production-chain/production/production.model';
+import { ImportMode } from '../../models/import-mode.enum';
 
 // const DOWNLOAD_FILE_PREFIX = `PRC1`;
 // const DOWNLOAD_FILE_SUFFIX = `data`;
@@ -38,7 +38,7 @@ export class ImportExportService {
 
     const chains: ProductionChain[] =
       await readJsonFile<ProductionChain[]>(file);
-    if (mode === 'override') {
+    if (mode === ImportMode.Override) {
       this.saveProductionChains(chains);
       return;
     }
@@ -122,7 +122,7 @@ export class ImportExportService {
     const existingChain: ProductionChain | undefined = existingChains.find(
       (chain) => chain.display === productionChainName,
     );
-    if (mode === 'override') {
+    if (mode === ImportMode.Override) {
       if (existingChain) {
         const nextChains = existingChains.map((chain) =>
           chain.display === productionChainName

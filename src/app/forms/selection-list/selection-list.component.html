@@ -1,0 +1,49 @@
+<div class="flex flex-col gap-2" role="list">
+  @for (option of $options(); track option.id) {
+    @let isRadio = $type() === 'radio';
+    @let isSelected = isRadio ? $selectedValue() === option.id : $selectedValueSet().has(option.id);
+
+    <label
+      class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
+      [class.border-amber-400]="isSelected"
+      [class.bg-stone-900/70]="isSelected"
+      [class.text-amber-100]="isSelected"
+    >
+      <input
+        class="sr-only"
+        [checked]="isSelected"
+        [type]="$type()"
+        [name]="$name()"
+        (change)="isRadio ? onRadioChange(option.id) : onCheckboxInputChange(option.id, $event)"
+      />
+
+      @if (isRadio) {
+        <span class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500">
+          <span
+            class="h-2 w-2 rounded-full bg-amber-400"
+            [style.opacity]="isSelected ? 1 : 0"
+          ></span>
+        </span>
+      } @else {
+        <span class="flex h-4 w-4 items-center justify-center rounded border border-stone-500">
+          <i
+            class="fas fa-check text-[9px] text-amber-400"
+            [style.opacity]="isSelected ? 1 : 0"
+          ></i>
+        </span>
+      }
+
+      <span class="flex flex-col gap-0.5">
+        <span class="flex items-center gap-2 font-semibold">
+          {{ option.id }}
+          @if ($defaultValue() === option.id) {
+            <app-badge [$label]="'Default'" [$tone]="BadgeTone.Amber"></app-badge>
+          }
+        </span>
+        @if (option.description) {
+          <span class="text-sm text-stone-400">{{ option.description }}</span>
+        }
+      </span>
+    </label>
+  }
+</div>

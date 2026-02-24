@@ -14,11 +14,20 @@ import {
   CatalogProduction,
   CatalogRecipe,
 } from 'src/app/shared/models/production-catalog-state/production-catalog-state.model';
-import { ImportMode } from 'src/app/shared/services/settings/settings.service';
 import { FilePickerComponent } from 'src/app/forms/file-picker/file-picker.component';
 import { SectionBlockComponent } from 'src/app/layouts/section-block/section-block.component';
 import { CatalogRecipeFormComponent } from './catalog-recipe-form/catalog-recipe-form.component';
 import { FormFieldBlockComponent } from '../../forms/form-field-block/form-field-block.component';
+import { BadgeComponent } from '../generic/badge/badge.component';
+import {
+  SelectionButtonGroupComponent,
+  SelectionButtonOption,
+} from 'src/app/forms/selection-button-group/selection-button-group.component';
+import { CatalogEditorTab } from './catalog-editor-tab.enum';
+import {
+  IMPORT_MODE_INFO_OPTIONS,
+  ImportMode,
+} from 'src/app/shared/models/import-mode.enum';
 
 @Component({
   selector: 'app-production-catalog-editor',
@@ -32,9 +41,13 @@ import { FormFieldBlockComponent } from '../../forms/form-field-block/form-field
     SectionBlockComponent,
     CatalogRecipeFormComponent,
     FormFieldBlockComponent,
+    BadgeComponent,
+    SelectionButtonGroupComponent,
   ],
 })
 export class ProductionCatalogEditorComponent {
+  protected readonly CatalogEditorTab = CatalogEditorTab;
+
   private readonly productionCatalogService = inject(ProductionCatalogService);
   private readonly productionChainService = inject(ProductionChainService);
 
@@ -61,10 +74,10 @@ export class ProductionCatalogEditorComponent {
   public readonly $productions = computed<CatalogProduction[]>(
     () => this.$catalog().productions,
   );
-  protected readonly $activeTab = signal<
-    'import' | 'items' | 'machines' | 'recipes' | 'productions'
-  >('import');
-  protected readonly $importMode = signal<ImportMode>('add');
+  protected readonly $activeTab = signal<CatalogEditorTab>(
+    CatalogEditorTab.Import,
+  );
+  protected readonly $importMode = signal<ImportMode>(ImportMode.Add);
   protected readonly $uploadError = signal<string | undefined>(undefined);
   protected readonly $itemFilter = signal<string>('');
   protected readonly $machineFilter = signal<string>('');
@@ -160,14 +173,44 @@ export class ProductionCatalogEditorComponent {
       };
     });
   });
+  protected readonly $tabOptions = computed<
+    readonly SelectionButtonOption<CatalogEditorTab>[]
+  >(() => [
+    {
+      id: CatalogEditorTab.Import,
+      display: 'Import',
+      iconClass: 'fas fa-right-left',
+      count: 5,
+    },
+    {
+      id: CatalogEditorTab.Items,
+      display: 'Items',
+      iconClass: 'fas fa-box',
+      count: this.$plainItems().length,
+    },
+    {
+      id: CatalogEditorTab.Machines,
+      display: 'Machines',
+      iconClass: 'fas fa-industry',
+      count: this.$machines().length,
+    },
+    {
+      id: CatalogEditorTab.Recipes,
+      display: 'Recipes',
+      iconClass: 'fas fa-scroll',
+      count: this.$catalog().recipes.length,
+    },
+    {
+      id: CatalogEditorTab.Productions,
+      display: 'Productions',
+      iconClass: 'fas fa-diagram-project',
+      count: this.$productions().length,
+    },
+  ]);
+  protected readonly importModeOptions: readonly SelectionButtonOption<ImportMode>[] =
+    [...IMPORT_MODE_INFO_OPTIONS];
   private readonly itemNameBeforeEdit = new WeakMap<object, string>();
   private readonly machineNameBeforeEdit = new WeakMap<object, string>();
-
-  protected setActiveTab(
-    tab: 'import' | 'items' | 'machines' | 'recipes' | 'productions',
-  ): void {
-    this.$activeTab.set(tab);
-  }
 
   protected onItemFilterChange(value: string): void {
     this.$itemFilter.set(value);
@@ -183,10 +226,6 @@ export class ProductionCatalogEditorComponent {
 
   protected onProductionFilterChange(value: string): void {
     this.$productionFilter.set(value);
-  }
-
-  protected onSetImportMode(mode: ImportMode): void {
-    this.$importMode.set(mode);
   }
 
   protected async onUploadCatalog(files: File[]): Promise<void> {

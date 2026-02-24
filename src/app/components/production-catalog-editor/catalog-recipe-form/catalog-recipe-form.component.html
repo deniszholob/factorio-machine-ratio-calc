@@ -19,10 +19,7 @@
         <i class="fas fa-image"></i>
       </span>
     }
-    <app-section-title
-      [$title]="recipe.name || 'Untitled Recipe'"
-      [$iconClass]="'fas fa-vial text-stone-500'"
-    ></app-section-title>
+    <app-section-title [$title]="recipe.name || 'Untitled Recipe'"></app-section-title>
   </div>
 
   <div class="flex flex-wrap items-end gap-3">
@@ -65,7 +62,7 @@
       />
     </app-form-field-block>
 
-    <app-badge [$label]="'Used ' + usageCount"></app-badge>
+    <app-badge [$label]="`Used ${usageCount ?? 0}`"></app-badge>
     <span [title]="usageCount > 0 ? deleteDisabledReason : ''">
       <button
         class="btn btn-icon btn-danger h-9"

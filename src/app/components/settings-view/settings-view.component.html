@@ -29,115 +29,14 @@
           </span>
         </div>
 
-        <div class="flex flex-col gap-2">
-          <label
-            class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
-            [ngClass]="{
-              'border-amber-400 bg-stone-900/70 text-amber-100': editorMode === 'modal',
-            }"
-          >
-            <input
-              class="sr-only"
-              [checked]="editorMode === 'modal'"
-              (change)="setEditorDisplayMode('modal')"
-              type="radio"
-              name="editor-display"
-            />
-            <span
-              class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
-            >
-              <span
-                class="h-2 w-2 rounded-full bg-amber-400"
-                [style.opacity]="editorMode === 'modal' ? 1 : 0"
-              ></span>
-            </span>
-            <span class="flex flex-col gap-0.5">
-              <span class="flex items-center gap-2 font-semibold">
-                Modal Popup
-                @if (defaultEditorMode === 'modal') {
-                  <span
-                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
-                  >
-                    Default
-                  </span>
-                }
-              </span>
-              <span class="text-sm text-stone-400">Keep focus in a dialog overlay.</span>
-            </span>
-          </label>
-
-          <label
-            class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
-            [ngClass]="{
-              'border-amber-400 bg-stone-900/70 text-amber-100': editorMode === 'sidebar',
-            }"
-          >
-            <input
-              class="sr-only"
-              [checked]="editorMode === 'sidebar'"
-              (change)="setEditorDisplayMode('sidebar')"
-              type="radio"
-              name="editor-display"
-            />
-            <span
-              class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
-            >
-              <span
-                class="h-2 w-2 rounded-full bg-amber-400"
-                [style.opacity]="editorMode === 'sidebar' ? 1 : 0"
-              ></span>
-            </span>
-            <span class="flex flex-col gap-0.5">
-              <span class="flex items-center gap-2 font-semibold">
-                Right Sidebar
-                @if (defaultEditorMode === 'sidebar') {
-                  <span
-                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
-                  >
-                    Default
-                  </span>
-                }
-              </span>
-              <span class="text-sm text-stone-400">Slide out editor beside the list.</span>
-            </span>
-          </label>
-
-          <label
-            class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
-            [ngClass]="{
-              'border-amber-400 bg-stone-900/70 text-amber-100': editorMode === 'full',
-            }"
-          >
-            <input
-              class="sr-only"
-              [checked]="editorMode === 'full'"
-              (change)="setEditorDisplayMode('full')"
-              type="radio"
-              name="editor-display"
-            />
-            <span
-              class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
-            >
-              <span
-                class="h-2 w-2 rounded-full bg-amber-400"
-                [style.opacity]="editorMode === 'full' ? 1 : 0"
-              ></span>
-            </span>
-            <span class="flex flex-col gap-0.5">
-              <span class="flex items-center gap-2 font-semibold">
-                Full Main Content
-                @if (defaultEditorMode === 'full') {
-                  <span
-                    class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
-                  >
-                    Default
-                  </span>
-                }
-              </span>
-              <span class="text-sm text-stone-400">Replace the list with the editor.</span>
-            </span>
-          </label>
-        </div>
+        <app-selection-list
+          [$name]="'editor-display'"
+          [$type]="'radio'"
+          [$options]="editorDisplayOptions"
+          [$selectedValue]="editorMode"
+          [$defaultValue]="defaultEditorMode"
+          ($selectedValueChange)="setEditorDisplayMode($event)"
+        ></app-selection-list>
       </div>
 
       <div class="flex flex-col gap-4 rounded-lg border border-stone-800 bg-stone-900/70 p-4">
@@ -151,161 +50,26 @@
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-2">
             <div class="font-semibold text-stone-200">Production Chains</div>
-            <div class="flex flex-col gap-2">
-              <label
-                class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
-                [ngClass]="{
-                  'border-amber-400 bg-stone-900/70 text-amber-100': importChainsMode === 'add',
-                }"
-              >
-                <input
-                  class="sr-only"
-                  [checked]="importChainsMode === 'add'"
-                  (change)="setImportChainsMode('add')"
-                  type="radio"
-                  name="import-chains-mode"
-                />
-                <span
-                  class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
-                >
-                  <span
-                    class="h-2 w-2 rounded-full bg-amber-400"
-                    [style.opacity]="importChainsMode === 'add' ? 1 : 0"
-                  ></span>
-                </span>
-                <span class="flex flex-col gap-0.5">
-                  <span class="flex items-center gap-2 font-semibold">
-                    Add
-                    @if (defaultImportChainsMode === 'add') {
-                      <span
-                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
-                      >
-                        Default
-                      </span>
-                    }
-                  </span>
-                  <span class="text-sm text-stone-400">
-                    Merge uploads alongside existing chains.
-                  </span>
-                </span>
-              </label>
-
-              <label
-                class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
-                [ngClass]="{
-                  'border-amber-400 bg-stone-900/70 text-amber-100':
-                    importChainsMode === 'override',
-                }"
-              >
-                <input
-                  class="sr-only"
-                  [checked]="importChainsMode === 'override'"
-                  (change)="setImportChainsMode('override')"
-                  type="radio"
-                  name="import-chains-mode"
-                />
-                <span
-                  class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
-                >
-                  <span
-                    class="h-2 w-2 rounded-full bg-amber-400"
-                    [style.opacity]="importChainsMode === 'override' ? 1 : 0"
-                  ></span>
-                </span>
-                <span class="flex flex-col gap-0.5">
-                  <span class="flex items-center gap-2 font-semibold">
-                    Override
-                    @if (defaultImportChainsMode === 'override') {
-                      <span
-                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
-                      >
-                        Default
-                      </span>
-                    }
-                  </span>
-                  <span class="text-sm text-stone-400">Replace everything with the upload.</span>
-                </span>
-              </label>
-            </div>
+            <app-selection-list
+              [$name]="'import-chains-mode'"
+              [$type]="'radio'"
+              [$options]="importBehaviorOptions"
+              [$selectedValue]="importChainsMode"
+              [$defaultValue]="defaultImportChainsMode"
+              ($selectedValueChange)="setImportChainsMode($event)"
+            ></app-selection-list>
           </div>
 
           <div class="flex flex-col gap-2">
             <div class="font-semibold text-stone-200">Productions</div>
-            <div class="flex flex-col gap-2">
-              <label
-                class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
-                [ngClass]="{
-                  'border-amber-400 bg-stone-900/70 text-amber-100':
-                    importProductionsMode === 'add',
-                }"
-              >
-                <input
-                  class="sr-only"
-                  [checked]="importProductionsMode === 'add'"
-                  (change)="setImportProductionsMode('add')"
-                  type="radio"
-                  name="import-productions-mode"
-                />
-                <span
-                  class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
-                >
-                  <span
-                    class="h-2 w-2 rounded-full bg-amber-400"
-                    [style.opacity]="importProductionsMode === 'add' ? 1 : 0"
-                  ></span>
-                </span>
-                <span class="flex flex-col gap-0.5">
-                  <span class="flex items-center gap-2 font-semibold">
-                    Add
-                    @if (defaultImportProductionsMode === 'add') {
-                      <span
-                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
-                      >
-                        Default
-                      </span>
-                    }
-                  </span>
-                  <span class="text-sm text-stone-400">Create a new chain for this upload.</span>
-                </span>
-              </label>
-
-              <label
-                class="flex cursor-pointer items-center gap-3 rounded-md border border-stone-800 bg-stone-950/30 px-3 py-2 transition"
-                [ngClass]="{
-                  'border-amber-400 bg-stone-900/70 text-amber-100':
-                    importProductionsMode === 'override',
-                }"
-              >
-                <input
-                  class="sr-only"
-                  [checked]="importProductionsMode === 'override'"
-                  (change)="setImportProductionsMode('override')"
-                  type="radio"
-                  name="import-productions-mode"
-                />
-                <span
-                  class="flex h-4 w-4 items-center justify-center rounded-full border border-stone-500"
-                >
-                  <span
-                    class="h-2 w-2 rounded-full bg-amber-400"
-                    [style.opacity]="importProductionsMode === 'override' ? 1 : 0"
-                  ></span>
-                </span>
-                <span class="flex flex-col gap-0.5">
-                  <span class="flex items-center gap-2 font-semibold">
-                    Override
-                    @if (defaultImportProductionsMode === 'override') {
-                      <span
-                        class="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-semibold tracking-[0.2em] text-amber-200 uppercase"
-                      >
-                        Default
-                      </span>
-                    }
-                  </span>
-                  <span class="text-sm text-stone-400">Replace a chain if names match.</span>
-                </span>
-              </label>
-            </div>
+            <app-selection-list
+              [$name]="'import-productions-mode'"
+              [$type]="'radio'"
+              [$options]="importBehaviorOptions"
+              [$selectedValue]="importProductionsMode"
+              [$defaultValue]="defaultImportProductionsMode"
+              ($selectedValueChange)="setImportProductionsMode($event)"
+            ></app-selection-list>
           </div>
         </div>
       </div>

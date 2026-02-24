@@ -1,0 +1,27 @@
+<div class="inline-flex flex-wrap gap-2 rounded-md bg-stone-950/50 p-1" [class]="$containerClass()">
+  @let activeTone = $activeTone();
+  @let value = $value();
+
+  @for (option of $options(); track option.id) {
+    @let isSelected = value === option.id;
+    <button
+      class="btn"
+      [class]="$buttonClass()"
+      [class.btn-primary]="isSelected && activeTone === 'primary'"
+      [class.btn-warning]="isSelected && activeTone === 'warning'"
+      [class.btn-secondary-outline]="!isSelected"
+      [attr.aria-label]="option.display"
+      [attr.aria-pressed]="isSelected"
+      (click)="onSelect(option.id)"
+      type="button"
+    >
+      @if (option.iconClass) {
+        <i [class]="option.iconClass"></i>
+      }
+      {{ option.display }}
+      @if (option.count !== undefined) {
+        <span>({{ option.count }})</span>
+      }
+    </button>
+  }
+</div>

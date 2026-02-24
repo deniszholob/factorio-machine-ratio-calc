@@ -1,5 +1,4 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { ImportMode } from '../settings/settings.service';
 import {
   CatalogItem,
   CatalogMachine,
@@ -12,6 +11,7 @@ import { LOCAL_STORAGE_KEY_CATALOG } from '../import-export/local-storage.data';
 import { normalizeProduction } from 'src/app/components/production/production-chain-editor/production-editor/production.util';
 import { SharedProductionIconsPayload } from '../production-chain/production-chain-hash.util';
 import { Production } from '../../models/production-chain/production/production.model';
+import { ImportMode } from '../../models/import-mode.enum';
 
 const DOWNLOAD_FILE_EXTENSION = 'json';
 const DEFAULT_ITEM_NAME = 'Default-Item';
@@ -170,7 +170,7 @@ export class ProductionCatalogService {
     const payload = await readJsonFile<unknown>(file);
     const incoming = normalizeCatalogState(payload);
     const nextState =
-      mode === 'override'
+      mode === ImportMode.Override
         ? incoming
         : mergeCatalogStates(this.$catalog(), incoming);
     this.setCatalog(nextState);
@@ -190,7 +190,7 @@ export class ProductionCatalogService {
         (item) => item.isMachine === true,
       );
       const nextItems =
-        mode === 'override'
+        mode === ImportMode.Override
           ? [...incomingItems, ...machineItems]
           : mergeByName(state.items, incomingItems);
       const nextState = withCatalogConsistency({
@@ -213,7 +213,7 @@ export class ProductionCatalogService {
 
     this._$catalog.update((state) => {
       const nextRecipes =
-        mode === 'override'
+        mode === ImportMode.Override
           ? incomingRecipes
           : mergeByName(state.recipes, incomingRecipes);
       const nextState = withCatalogConsistency({
@@ -239,7 +239,7 @@ export class ProductionCatalogService {
     this._$catalog.update((state) => {
       const nonMachineItems = state.items.filter((item) => !item.isMachine);
       const nextItems =
-        mode === 'override'
+        mode === ImportMode.Override
           ? [...nonMachineItems, ...incomingMachines]
           : mergeByName(state.items, incomingMachines);
       const nextState = withCatalogConsistency({
@@ -264,7 +264,7 @@ export class ProductionCatalogService {
     const incomingTemplates = normalizeCatalogProductions(payload);
     this._$catalog.update((state) => {
       const nextTemplates =
-        mode === 'override'
+        mode === ImportMode.Override
           ? incomingTemplates
           : mergeByName(state.productions, incomingTemplates);
       const nextState = withCatalogConsistency({

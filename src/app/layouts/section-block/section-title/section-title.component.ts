@@ -24,5 +24,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class SectionTitleComponent {
   public readonly $title = input.required<string>();
-  public readonly $iconClass = input<string>('fas fa-layer-group');
+  public readonly $iconClass = input<string>();
 }

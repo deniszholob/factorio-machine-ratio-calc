@@ -1,14 +1,9 @@
-@let catalog = $catalog();
-@let plainItems = $plainItems();
-@let machines = $machines();
-@let productions = $productions();
 @let visibleItems = $visibleItems();
 @let visibleMachines = $visibleMachines();
 @let visibleRecipes = $visibleRecipes();
 @let itemNames = $itemNames();
 @let itemIconsByName = $itemIconsByName();
 @let uploadError = $uploadError();
-@let importMode = $importMode();
 @let activeTab = $activeTab();
 @let itemFilter = $itemFilter();
 @let machineFilter = $machineFilter();
@@ -18,82 +13,26 @@
 @let machineUsageByName = $machineUsageByName();
 @let recipeUsageByName = $recipeUsageByName();
 
-<section class="flex flex-col gap-4 p-2">
-  <div
-    class="flex flex-wrap items-center gap-2 rounded-lg border border-stone-800 bg-stone-900/70 p-2"
-  >
-    <button
-      class="btn h-8 px-3 py-0"
-      [ngClass]="activeTab === 'import' ? 'btn-primary' : 'btn-secondary-outline'"
-      (click)="setActiveTab('import')"
-      type="button"
-    >
-      <i class="fas fa-right-left"></i>
-      Import (5)
-    </button>
-    <button
-      class="btn h-8 px-3 py-0"
-      [ngClass]="activeTab === 'items' ? 'btn-primary' : 'btn-secondary-outline'"
-      (click)="setActiveTab('items')"
-      type="button"
-    >
-      <i class="fas fa-box"></i>
-      Items ({{ plainItems.length }})
-    </button>
-    <button
-      class="btn h-8 px-3 py-0"
-      [ngClass]="activeTab === 'machines' ? 'btn-primary' : 'btn-secondary-outline'"
-      (click)="setActiveTab('machines')"
-      type="button"
-    >
-      <i class="fas fa-industry"></i>
-      Machines ({{ machines.length }})
-    </button>
-    <button
-      class="btn h-8 px-3 py-0"
-      [ngClass]="activeTab === 'recipes' ? 'btn-primary' : 'btn-secondary-outline'"
-      (click)="setActiveTab('recipes')"
-      type="button"
-    >
-      <i class="fas fa-scroll"></i>
-      Recipes ({{ catalog.recipes.length }})
-    </button>
-    <button
-      class="btn h-8 px-3 py-0"
-      [ngClass]="activeTab === 'productions' ? 'btn-primary' : 'btn-secondary-outline'"
-      (click)="setActiveTab('productions')"
-      type="button"
-    >
-      <i class="fas fa-diagram-project"></i>
-      Productions ({{ productions.length }})
-    </button>
+<section class="flex flex-col gap-4 p-4">
+  <div>
+    <app-selection-button-group
+      [($value)]="$activeTab"
+      [$options]="$tabOptions()"
+    ></app-selection-button-group>
   </div>
 
-  @if (activeTab === 'import') {
-    <app-section-block
-      [$title]="'Import / Export'"
-      [$iconClass]="'fas fa-right-left text-stone-400'"
-    >
-      <div class="flex flex-col gap-4 p-4">
-        <app-form-field-block [$label]="'Import Mode'" [$className]="''">
-          <div class="inline-flex rounded-md bg-stone-950/50 p-1">
-            <button
-              class="btn h-8 px-3 py-0"
-              [ngClass]="importMode === 'add' ? 'btn-primary' : 'btn-secondary-outline'"
-              (click)="onSetImportMode('add')"
-              type="button"
-            >
-              Add / Merge
-            </button>
-            <button
-              class="btn h-8 px-3 py-0"
-              [ngClass]="importMode === 'override' ? 'btn-warning' : 'btn-secondary-outline'"
-              (click)="onSetImportMode('override')"
-              type="button"
-            >
-              Full Replace
-            </button>
-          </div>
+  @switch (activeTab) {
+    @case (CatalogEditorTab.Import) {
+      <app-section-block
+        [$title]="'Import / Export'"
+        [$iconClass]="'fas fa-right-left text-stone-400'"
+        [$showToolbar]="false"
+      >
+        <app-form-field-block [$label]="'(Import) Mode'" [$className]="''">
+          <app-selection-button-group
+            [($value)]="$importMode"
+            [$options]="importModeOptions"
+          ></app-selection-button-group>
         </app-form-field-block>
 
         <div class="flex flex-col divide-y divide-stone-800/80 rounded-md bg-stone-950/20 px-2">
@@ -217,29 +156,23 @@
             <span>Delete Whole Catalog</span>
           </button>
         </div>
-      </div>
-    </app-section-block>
-  }
+      </app-section-block>
+    }
 
-  @if (activeTab === 'items') {
-    <app-section-block
-      [$title]="'Items'"
-      [$iconClass]="'fas fa-box text-stone-400'"
-      [$showToolbar]="true"
-      [$addLabel]="'item'"
-      [$filterValue]="itemFilter"
-      ($add)="onAddItem()"
-      ($filterValueChange)="onItemFilterChange($event)"
-    >
-      <div class="flex flex-col gap-3 p-4">
-        @if (visibleItems.length === 0) {
-          <div class="text-stone-400">No items match.</div>
-        }
-
-        <div class="flex flex-col divide-y divide-stone-800/80">
+    @case (CatalogEditorTab.Items) {
+      <app-section-block
+        [$title]="'Items'"
+        [$iconClass]="'fas fa-box text-stone-400'"
+        [$showToolbar]="true"
+        [$addLabel]="'item'"
+        [$filterValue]="itemFilter"
+        ($add)="onAddItem()"
+        ($filterValueChange)="onItemFilterChange($event)"
+      >
+        <div class="flex flex-col gap-2">
           @for (item of visibleItems; track item) {
             @let itemUsageCount = itemUsageByName[item.name.trim().toLowerCase()];
-            <div class="flex flex-wrap items-end gap-3 py-3">
+            <div class="flex flex-wrap items-end gap-3 rounded-md bg-stone-950/20 px-4 py-2">
               @if (item.iconUrl) {
                 <img
                   class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
@@ -287,11 +220,7 @@
                 />
               </div>
 
-              <span
-                class="rounded border border-stone-700/70 bg-stone-900/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
-              >
-                Used {{ itemUsageCount }}
-              </span>
+              <app-badge [$label]="'Used ' + itemUsageCount"></app-badge>
               <span
                 [title]="
                   itemUsageCount > 0
@@ -311,31 +240,27 @@
                 </button>
               </span>
             </div>
+          } @empty {
+            <div class="text-stone-400">No items match.</div>
           }
         </div>
-      </div>
-    </app-section-block>
-  }
+      </app-section-block>
+    }
 
-  @if (activeTab === 'machines') {
-    <app-section-block
-      [$title]="'Machines'"
-      [$iconClass]="'fas fa-industry text-stone-400'"
-      [$showToolbar]="true"
-      [$addLabel]="'machine'"
-      [$filterValue]="machineFilter"
-      ($add)="onAddMachine()"
-      ($filterValueChange)="onMachineFilterChange($event)"
-    >
-      <div class="flex flex-col gap-4 rounded-lg border border-stone-800 bg-stone-900/70 p-4">
-        @if (visibleMachines.length === 0) {
-          <div class="text-stone-400">No machines match.</div>
-        }
-
-        <div class="flex flex-col divide-y divide-stone-800/80">
+    @case (CatalogEditorTab.Machines) {
+      <app-section-block
+        [$title]="'Machines'"
+        [$iconClass]="'fas fa-industry text-stone-400'"
+        [$showToolbar]="true"
+        [$addLabel]="'machine'"
+        [$filterValue]="machineFilter"
+        ($add)="onAddMachine()"
+        ($filterValueChange)="onMachineFilterChange($event)"
+      >
+        <div class="flex flex-col gap-2">
           @for (machine of visibleMachines; track machine) {
             @let machineUsageCount = machineUsageByName[machine.name.trim().toLowerCase()];
-            <div class="flex flex-wrap items-end gap-3 py-3">
+            <div class="flex flex-wrap items-end gap-3 rounded-md bg-stone-950/20 px-4 py-2">
               @if (machine.iconUrl) {
                 <img
                   class="h-8 w-8 rounded-sm border border-stone-700 object-cover"
@@ -431,11 +356,7 @@
                 />
               </app-form-field-block>
 
-              <span
-                class="rounded border border-stone-700/70 bg-stone-900/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
-              >
-                Used {{ machineUsageCount }}
-              </span>
+              <app-badge [$label]="`Used ${machineUsageCount ?? 0}`"></app-badge>
               <span
                 [title]="
                   machineUsageCount > 0
@@ -455,139 +376,135 @@
                 </button>
               </span>
             </div>
+          } @empty {
+            <div class="text-stone-400">No machines match.</div>
           }
         </div>
-      </div>
-    </app-section-block>
-  }
+      </app-section-block>
+    }
 
-  @if (activeTab === 'recipes') {
-    <app-section-block
-      [$title]="'Recipes'"
-      [$iconClass]="'fas fa-scroll text-stone-400'"
-      [$showToolbar]="true"
-      [$addLabel]="'recipe'"
-      [$filterValue]="recipeFilter"
-      ($add)="onAddRecipe()"
-      ($filterValueChange)="onRecipeFilterChange($event)"
-    >
-      @for (recipe of visibleRecipes; track recipe) {
-        @let recipeUsageCount = recipeUsageByName[recipe.name.trim().toLowerCase()];
-        <app-catalog-recipe-form
-          [$recipe]="recipe"
-          [$itemNames]="itemNames"
-          [$itemIconsByName]="itemIconsByName"
-          [$usageCount]="recipeUsageCount"
-          [$deleteDisabledReason]="
-            recipeUsageCount > 0
-              ? 'Cannot delete recipe: used by ' +
-                recipeUsageCount +
-                ' productions. Update those productions first.'
-              : undefined
-          "
-          ($recipeChange)="onRecipeChange(recipe)"
-          ($removeRecipe)="onRemoveRecipe(recipe)"
-          ($addRecipeItem)="onAddRecipeItem(recipe, $event)"
-          ($removeRecipeItem)="onRemoveRecipeItem(recipe, $event.index, $event.collection)"
-        ></app-catalog-recipe-form>
-      } @empty {
-        <div class="text-stone-400">No recipes match.</div>
-      }
-    </app-section-block>
-  }
-
-  @if (activeTab === 'productions') {
-    <app-section-block
-      [$title]="'Productions'"
-      [$iconClass]="'fas fa-diagram-project text-stone-400'"
-      [$showToolbar]="false"
-    >
-      <div class="flex flex-col gap-4 p-4">
-        @if (visibleProductionCards.length === 0) {
-          <div class="text-stone-400">No productions available.</div>
+    @case (CatalogEditorTab.Recipes) {
+      <app-section-block
+        [$title]="'Recipes'"
+        [$iconClass]="'fas fa-scroll text-stone-400'"
+        [$showToolbar]="true"
+        [$addLabel]="'recipe'"
+        [$filterValue]="recipeFilter"
+        ($add)="onAddRecipe()"
+        ($filterValueChange)="onRecipeFilterChange($event)"
+      >
+        @for (recipe of visibleRecipes; track recipe) {
+          @let recipeUsageCount = recipeUsageByName[recipe.name.trim().toLowerCase()];
+          <app-catalog-recipe-form
+            [$recipe]="recipe"
+            [$itemNames]="itemNames"
+            [$itemIconsByName]="itemIconsByName"
+            [$usageCount]="recipeUsageCount"
+            [$deleteDisabledReason]="
+              recipeUsageCount > 0
+                ? 'Cannot delete recipe: used by ' +
+                  recipeUsageCount +
+                  ' productions. Update those productions first.'
+                : undefined
+            "
+            ($recipeChange)="onRecipeChange(recipe)"
+            ($removeRecipe)="onRemoveRecipe(recipe)"
+            ($addRecipeItem)="onAddRecipeItem(recipe, $event)"
+            ($removeRecipeItem)="onRemoveRecipeItem(recipe, $event.index, $event.collection)"
+          ></app-catalog-recipe-form>
+        } @empty {
+          <div class="text-stone-400">No recipes match.</div>
         }
+      </app-section-block>
+    }
 
-        <div class="flex flex-col divide-y divide-stone-800/80">
-          @for (template of visibleProductionCards; track template.name) {
-            <div class="flex flex-wrap items-center gap-3 py-3">
-              <span class="relative h-8 w-10 shrink-0">
-                @if (template.machineIconUrl) {
-                  <img
-                    class="absolute top-0 left-0 h-8 w-8 rounded-sm border border-stone-700 object-cover"
-                    [src]="template.machineIconUrl"
-                    [alt]="template.machineName + ' icon'"
-                  />
-                } @else {
-                  <span
-                    class="absolute top-0 left-0 flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
-                    title="Provide an icon in the Catalog"
-                    aria-hidden="true"
-                  >
-                    <i class="fas fa-image"></i>
-                  </span>
-                }
-                @if (template.recipeIconUrl) {
-                  <img
-                    class="absolute right-0 bottom-0 h-5 w-5 rounded-sm border border-stone-700 object-cover"
-                    [src]="template.recipeIconUrl"
-                    [alt]="template.recipeName + ' icon'"
-                  />
-                } @else {
-                  <span
-                    class="absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
-                    title="Provide an icon in the Catalog"
-                    aria-hidden="true"
-                  >
-                    <i class="fas fa-image"></i>
-                  </span>
-                }
-              </span>
-
-              <div class="flex min-w-56 flex-col gap-1">
-                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
-                  >Name</span
-                >
-                <span class="text-stone-100">{{ template.name }}</span>
-              </div>
-
-              <div class="flex min-w-56 flex-col gap-1">
-                <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
-                  >Details</span
-                >
-                <span class="text-stone-300">
-                  {{ template.recipeName }} in {{ template.machineName }}
-                </span>
-                <span class="text-stone-500">Read-only, inferred from production data</span>
-              </div>
-
-              <span
-                class="rounded border border-stone-700/70 bg-stone-900/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
-              >
-                Used {{ template.usageCount }}
-              </span>
-
-              <span
-                [title]="
-                  template.usageCount > 0
-                    ? 'Cannot delete production template: used in ' +
-                      template.usageCount +
-                      ' productions across chains.'
-                    : ''
-                "
-              >
-                <button
-                  class="btn btn-icon btn-danger h-9"
-                  [disabled]="template.usageCount > 0"
-                  (click)="onRemoveProduction(template.index, template.name)"
-                  type="button"
-                >
-                  <i class="fas fa-trash"></i>
-                </button>
-              </span>
-            </div>
+    @case (CatalogEditorTab.Productions) {
+      <app-section-block
+        [$title]="'Productions'"
+        [$iconClass]="'fas fa-diagram-project text-stone-400'"
+        [$showToolbar]="false"
+      >
+        <div class="flex flex-col gap-4 p-4">
+          @if (visibleProductionCards.length === 0) {
+            <div class="text-stone-400">No productions available.</div>
           }
+
+          <div class="flex flex-col divide-y divide-stone-800/80">
+            @for (template of visibleProductionCards; track template.name) {
+              <div class="flex flex-wrap items-center gap-3 py-3">
+                <span class="relative h-8 w-10 shrink-0">
+                  @if (template.machineIconUrl) {
+                    <img
+                      class="absolute top-0 left-0 h-8 w-8 rounded-sm border border-stone-700 object-cover"
+                      [src]="template.machineIconUrl"
+                      [alt]="template.machineName + ' icon'"
+                    />
+                  } @else {
+                    <span
+                      class="absolute top-0 left-0 flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+                      title="Provide an icon in the Catalog"
+                      aria-hidden="true"
+                    >
+                      <i class="fas fa-image"></i>
+                    </span>
+                  }
+                  @if (template.recipeIconUrl) {
+                    <img
+                      class="absolute right-0 bottom-0 h-5 w-5 rounded-sm border border-stone-700 object-cover"
+                      [src]="template.recipeIconUrl"
+                      [alt]="template.recipeName + ' icon'"
+                    />
+                  } @else {
+                    <span
+                      class="absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+                      title="Provide an icon in the Catalog"
+                      aria-hidden="true"
+                    >
+                      <i class="fas fa-image"></i>
+                    </span>
+                  }
+                </span>
+
+                <div class="flex min-w-56 flex-col gap-1">
+                  <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"
+                    >Name</span
+                  >
+                  <span
+                    class="text-stone-100"
+                    [title]="'Read-only, inferred from production data'"
+                    >{{ template.name }}</span
+                  >
+                </div>
+
+                <app-badge [$label]="'Used ' + template.usageCount"></app-badge>
+
+                <span
+                  [title]="
+                    template.usageCount > 0
+                      ? 'Cannot delete production template: used in ' +
+                        template.usageCount +
+                        ' productions across chains.'
+                      : ''
+                  "
+                >
+                  <button
+                    class="btn btn-icon btn-danger h-9"
+                    [disabled]="template.usageCount > 0"
+                    (click)="onRemoveProduction(template.index, template.name)"
+                    type="button"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </span>
+              </div>
+            }
+          </div>
         </div>
-      </div>
-    </app-section-block>
+      </app-section-block>
+    }
+
+    @default {
+      <span>No Content For this tab yet</span>
+    }
   }
 </section>
