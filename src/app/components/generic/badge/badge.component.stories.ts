@@ -46,10 +46,10 @@ export const Badge: StoryObj<ComponentWithCustomControls> = {
   // play: async ({ canvasElement }) => { const canvasElement = within(canvasElement) },
 };
 
-export const AmberBadge: StoryObj<BadgeComponent> = {
-  args: {
-    $label: 'Default',
-    $tone: BadgeTone.Amber,
-  },
-  render: (args) => ({ props: args }),
-};
+// export const AmberBadge: StoryObj<BadgeComponent> = {
+//   args: {
+//     $label: 'Default',
+//     $tone: BadgeTone.Amber,
+//   },
+//   render: (args) => ({ props: args }),
+// };

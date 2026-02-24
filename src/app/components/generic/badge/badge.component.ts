@@ -15,7 +15,7 @@ import { BadgeTone } from './badge-tone.enum';
       [ngClass]="{
         'h-5 rounded px-1.5 text-[10px]': size === BadgeSize.Sm,
         'h-9 rounded-full px-2 text-xs': size === BadgeSize.Md,
-        'border-stone-500/70 bg-stone-900/70 text-stone-300':
+        'border-stone-600/70 bg-stone-900/70 text-stone-300':
           tone === BadgeTone.Stone,
         'border-teal-700/70 bg-teal-950/30 text-teal-300':
           tone === BadgeTone.Teal,
