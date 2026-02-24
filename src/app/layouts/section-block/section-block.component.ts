@@ -6,18 +6,19 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormFieldBlockComponent } from '../../forms/form-field-block/form-field-block.component';
+import { SectionTitleComponent } from './section-title/section-title.component';
 
 @Component({
   selector: 'app-section-block',
   templateUrl: './section-block.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, FormFieldBlockComponent],
+  imports: [FormsModule, FormFieldBlockComponent, SectionTitleComponent],
 })
 export class SectionBlockComponent {
   public readonly $title = input.required<string>();
   public readonly $iconClass = input<string>('fas fa-layer-group');
-  public readonly $showToolbar = input<boolean>(false);
+  public readonly $showToolbar = input<boolean>(true);
   public readonly $addLabel = input<string>('item');
   public readonly $filterValue = input<string>('');
 

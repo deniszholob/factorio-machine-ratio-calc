@@ -26,6 +26,7 @@ import { FormFieldBlockComponent } from 'src/app/forms/form-field-block/form-fie
 import { RecipeIoListComponent } from 'src/app/components/production/recipe-io-list/recipe-io-lis.component.';
 import { MachineItem } from 'src/app/shared/models/production-chain/production/machine-item/machine-item.model';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
+import { SectionTitleComponent } from 'src/app/layouts/section-block/section-title/section-title.component';
 
 @Component({
   selector: 'app-production-editor',
@@ -38,6 +39,7 @@ import { Production } from 'src/app/shared/models/production-chain/production/pr
     IconAutocompleteInputComponent,
     FormFieldBlockComponent,
     RecipeIoListComponent,
+    SectionTitleComponent,
   ],
 })
 export class ProductionEditorComponent {

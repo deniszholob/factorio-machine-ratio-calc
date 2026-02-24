@@ -1,13 +1,5 @@
 <section class="flex flex-col gap-3">
-  <div class="flex items-center gap-3">
-    <h4
-      class="flex items-center gap-2 text-sm font-semibold tracking-wide text-stone-200 uppercase"
-    >
-      <i [class]="$iconClass()"></i>
-      <span>{{ $title() }}</span>
-    </h4>
-    <div class="h-px flex-1 bg-stone-700/70"></div>
-  </div>
+  <app-section-title [$title]="$title()" [$iconClass]="$iconClass()"></app-section-title>
 
   @if ($showToolbar()) {
     <div class="flex flex-wrap items-end gap-3">

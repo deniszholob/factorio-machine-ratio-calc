@@ -57,10 +57,8 @@
     </div>
 
     <section class="flex flex-col gap-3">
-      <div class="flex items-center gap-3">
-        <h4 class="text-sm font-semibold tracking-wide text-stone-200 uppercase">Machine</h4>
-        <div class="h-px flex-1 bg-stone-700/70"></div>
-      </div>
+      <app-section-title [$title]="'Machine'" [$iconClass]="'fas fa-industry'"></app-section-title>
+
       <div class="flex flex-wrap items-center gap-4">
         <app-form-field-block
           [$label]="'Machine Name'"
@@ -137,10 +135,8 @@
     </section>
 
     <section class="flex flex-col gap-3">
-      <div class="flex items-center gap-3">
-        <h4 class="text-sm font-semibold tracking-wide text-stone-200 uppercase">Recipe</h4>
-        <div class="h-px flex-1 bg-stone-700/70"></div>
-      </div>
+      <app-section-title [$title]="'Recipe'" [$iconClass]="'fas fa-scroll'"></app-section-title>
+
       <div class="flex flex-col gap-4">
         <div class="flex flex-wrap items-center gap-4">
           <app-form-field-block

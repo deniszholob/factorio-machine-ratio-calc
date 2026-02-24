@@ -55,7 +55,7 @@
       (click)="setActiveTab('recipes')"
       type="button"
     >
-      <i class="fas fa-vial"></i>
+      <i class="fas fa-scroll"></i>
       Recipes ({{ catalog.recipes.length }})
     </button>
     <button
@@ -464,7 +464,7 @@
   @if (activeTab === 'recipes') {
     <app-section-block
       [$title]="'Recipes'"
-      [$iconClass]="'fas fa-vial text-stone-400'"
+      [$iconClass]="'fas fa-scroll text-stone-400'"
       [$showToolbar]="true"
       [$addLabel]="'recipe'"
       [$filterValue]="recipeFilter"

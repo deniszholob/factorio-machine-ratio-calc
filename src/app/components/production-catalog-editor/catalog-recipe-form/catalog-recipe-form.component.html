@@ -19,10 +19,10 @@
         <i class="fas fa-image"></i>
       </span>
     }
-    <h4 class="text-base font-semibold text-stone-200">
-      {{ recipe.name || 'Untitled Recipe' }}
-    </h4>
-    <div class="h-px flex-1 bg-stone-700/70"></div>
+    <app-section-title
+      [$title]="recipe.name || 'Untitled Recipe'"
+      [$iconClass]="'fas fa-vial text-stone-500'"
+    ></app-section-title>
   </div>
 
   <div class="flex flex-wrap items-end gap-3">

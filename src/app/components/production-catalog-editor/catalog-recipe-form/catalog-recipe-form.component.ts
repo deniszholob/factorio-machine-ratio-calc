@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { CatalogRecipe } from 'src/app/shared/models/production-catalog-state/production-catalog-state.model';
 import { FormFieldBlockComponent } from 'src/app/forms/form-field-block/form-field-block.component';
 import { RecipeIoListComponent } from 'src/app/components/production/recipe-io-list/recipe-io-lis.component.';
+import { SectionTitleComponent } from 'src/app/layouts/section-block/section-title/section-title.component';
 
 @Component({
   selector: 'app-catalog-recipe-form',
@@ -20,6 +21,7 @@ import { RecipeIoListComponent } from 'src/app/components/production/recipe-io-l
     FormsModule,
     FormFieldBlockComponent,
     RecipeIoListComponent,
+    SectionTitleComponent,
   ],
 })
 export class CatalogRecipeFormComponent {

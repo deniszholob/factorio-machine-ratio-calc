@@ -13,7 +13,7 @@ import { ProductionChainService } from 'src/app/shared/services/production-chain
 import { SettingsService } from 'src/app/shared/services/settings/settings.service';
 import { MainLayoutComponent } from 'src/app/layouts/main-layout/main-layout.component';
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
-import { ProductionCatalogEditorComponent } from 'src/app/components/production/production-chain-editor/production-catalog-editor/production-catalog-editor.component';
+import { ProductionCatalogEditorComponent } from 'src/app/components/production-catalog-editor/production-catalog-editor.component';
 import { ProductionCatalogUiService } from 'src/app/shared/services/production-catalog/production-catalog-ui.service';
 import { ProductionChainGroupComponent } from 'src/app/components/production-chain-group/production-chain-group.component';
 
