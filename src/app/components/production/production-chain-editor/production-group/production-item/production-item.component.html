@@ -12,14 +12,21 @@
 @let hasChildren = $hasChildren();
 @let childCount = $childCount();
 @let dragSubtreeCount = $dragSubtreeCount();
-@let isDropBefore = $isDropBefore();
-@let isDropParent = $isDropParent();
+@let isDropContainer = $isDropContainer();
+@let dropContainerMode = $dropContainerMode();
 @let isDragging = $isDragging();
 <div
-  class="flex cursor-pointer flex-row items-center gap-3 rounded-sm border border-stone-700 bg-stone-950/40 px-3 py-2 text-stone-100 transition-colors hover:border-stone-600 hover:bg-stone-900/70"
-  [class.border-blue-400]="isDropBefore"
-  [class.border-teal-400]="isDropParent"
-  [class.opacity-60]="isDragging"
+  class="flex w-full cursor-pointer flex-row items-center gap-3 rounded-sm border px-3 py-2 text-stone-100 transition-colors hover:border-stone-600 hover:bg-stone-900/70"
+  [ngClass]="{
+    'border-stone-700 bg-stone-950/40': !isDropContainer,
+    'border-blue-400 bg-blue-950/35':
+      isDropContainer && dropContainerMode === ProductionMovePreviewMode.Reorder,
+    'border-cyan-400 bg-cyan-950/35':
+      isDropContainer && dropContainerMode === ProductionMovePreviewMode.IntoParent,
+    'border-amber-400 bg-amber-950/35':
+      isDropContainer && dropContainerMode === ProductionMovePreviewMode.OutsideParent,
+    'opacity-60': isDragging,
+  }"
   [style.paddingLeft.px]="depth * 24 + 12"
   [cdkDragData]="production.id"
   (cdkDragStarted)="onDragStarted(production.id, $event)"

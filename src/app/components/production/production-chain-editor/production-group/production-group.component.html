@@ -5,7 +5,10 @@
 @let dropHint = $dropHint();
 @let draggedMachineId = $draggedMachineId();
 @let dropBeforeById = $dropBeforeById();
-@let dropParentById = $dropParentById();
+@let dropContainerById = $dropContainerById();
+@let dropContainerModeById = $dropContainerModeById();
+@let isDropRoot = $isDropRoot();
+@let dropRootMode = $dropRootMode();
 @let dragSubtreeCountById = $dragSubtreeCountById();
 
 @if (machines && machines.length > 0) {
@@ -127,21 +130,35 @@
 
   <hr />
 
-  <p class="px-4 pb-1 text-xs text-stone-400" ngProjectAs="content-header">
-    Drag a production row by the grip to reorder. Drag over another row to place before it, or drag
-    slightly to the left or right over a row to change the nesting level.
-  </p>
-
-  @if (dropHint) {
-    <div
-      class="rounded-md border border-blue-500/60 bg-blue-900/20 px-3 py-2 text-sm text-blue-200"
+  <div class="flex flex-col">
+    <span class="text-xs text-stone-400" ngProjectAs="content-header">
+      Drag a production row by the grip to reorder upa and down. Drag slightly to the left or right
+      over a row to change the nesting level.
+    </span>
+    <span
+      class="text-xs"
+      [ngClass]="{
+        'text-stone-200': !$dragPreview(),
+        'text-blue-200': $dragPreview()?.mode === ProductionMovePreviewMode.Reorder,
+        'text-cyan-200': $dragPreview()?.mode === ProductionMovePreviewMode.IntoParent,
+        'text-amber-200': $dragPreview()?.mode === ProductionMovePreviewMode.OutsideParent,
+      }"
     >
       {{ dropHint }}
-    </div>
-  }
+    </span>
+  </div>
 
   <div
-    class="flex flex-col gap-1 overflow-auto"
+    class="flex flex-col gap-1 overflow-auto rounded-sm border transition-colors"
+    [ngClass]="{
+      'border-transparent': !isDropRoot,
+      'border-blue-400/60 bg-blue-950/20':
+        isDropRoot && dropRootMode === ProductionMovePreviewMode.Reorder,
+      'border-cyan-400/60 bg-cyan-950/20':
+        isDropRoot && dropRootMode === ProductionMovePreviewMode.IntoParent,
+      'border-amber-400/60 bg-amber-950/20':
+        isDropRoot && dropRootMode === ProductionMovePreviewMode.OutsideParent,
+    }"
     [cdkDropListData]="renderRows"
     (cdkDropListDropped)="onDrop($event)"
     (cdkDropListSorted)="onDragSorted($event)"
@@ -155,7 +172,8 @@
         [$childCount]="row.childCount"
         [$dragSubtreeCount]="dragSubtreeCountById[row.production.id] ?? 0"
         [$isDropBefore]="dropBeforeById[row.production.id] === true"
-        [$isDropParent]="dropParentById[row.production.id] === true"
+        [$isDropContainer]="dropContainerById[row.production.id] === true"
+        [$dropContainerMode]="dropContainerModeById[row.production.id]"
         [$isDragging]="draggedMachineId === row.production.id"
         ($editMachine)="onEditMachine($event)"
         ($duplicateMachine)="onDuplicateMachine($event)"

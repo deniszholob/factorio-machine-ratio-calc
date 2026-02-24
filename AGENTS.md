@@ -152,8 +152,7 @@ public readonly $myValue = model<boolean>(true);
 - Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
 - Prefer using `@let myValue = $myValue();` instead of doing `$myValue(); as myValue` in @if statements etc...
 - Prefer Signal forms instead of Reactive forms instead of Template-driven ones in that priority. For context: https://angular.dev/guide/forms/signals/models
-- Do NOT use `[class.*]`, DO use `[ngClass]={}` bindings instead, when using conditional classes to group all the tailwind classes under one condition.
-- Do NOT use `[ngClass]`, use `[class.*]` bindings instead, for any other reasons, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
+- Do NOT use `[class.*]`, instead DO use `[ngClass]={'':conditionDefault, '':condition1}` bindings instead, when using conditional classes to group all the tailwind classes under one condition.
 - Do NOT use `[ngStyle]`, use `[style.*]` bindings instead, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
 - DO NOT use functions in html templates for getting data (signals and events are ok)
 - Do create storybook files along side components

@@ -19,6 +19,7 @@ import { RateUnitValueComponent } from 'src/app/components/generic/rate-unit-val
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
 import { reCalcProductionRates } from '../../production-editor/production.util';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
+import { ProductionMovePreviewMode } from 'src/app/shared/services/production/production-tree-dnd.util';
 
 @Component({
   selector: 'app-production-item',
@@ -35,6 +36,8 @@ import { Production } from 'src/app/shared/models/production-chain/production/pr
   ],
 })
 export class ProductionItemComponent {
+  protected readonly ProductionMovePreviewMode = ProductionMovePreviewMode;
+
   private readonly productionCatalogService = inject(ProductionCatalogService);
 
   public readonly $machine = input.required<Production>();
@@ -43,7 +46,9 @@ export class ProductionItemComponent {
   public readonly $childCount = input<number>(0);
   public readonly $dragSubtreeCount = input<number>(0);
   public readonly $isDropBefore = input<boolean>(false);
-  public readonly $isDropParent = input<boolean>(false);
+  public readonly $isDropContainer = input<boolean>(false);
+  public readonly $dropContainerMode =
+    input<ProductionMovePreviewMode | undefined>(undefined);
   public readonly $isDragging = input<boolean>(false);
   public readonly $itemIconsByName =
     this.productionCatalogService.$itemIconsByName;

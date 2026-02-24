@@ -57,6 +57,7 @@ export class ProductionGroupComponent {
   protected readonly $draggedMachineId = signal<string | undefined>(undefined);
   protected readonly $dragDistanceX = signal<number>(0);
   protected readonly $dragCurrentIndex = signal<number | undefined>(undefined);
+
   /**
    * Full subtree ids (dragged node + descendants) for the active drag.
    * Used to compute preview and hide descendants during drag for clearer UX.
@@ -68,6 +69,7 @@ export class ProductionGroupComponent {
     }
     return collectSubtreeIds(this.$machines(), draggedMachineId);
   });
+
   /** Descendant-only subset of the dragged subtree (excludes dragged node). */
   protected readonly $draggedDescendantIds = computed<Set<string>>(() => {
     const draggedMachineId = this.$draggedMachineId();
@@ -80,6 +82,7 @@ export class ProductionGroupComponent {
     descendants.delete(draggedMachineId);
     return descendants;
   });
+
   /**
    * Rows rendered in the list while dragging.
    * Descendants of the dragged row are temporarily hidden so the parent
@@ -94,6 +97,7 @@ export class ProductionGroupComponent {
       (row) => !descendantIds.has(row.production.id),
     );
   });
+
   /** Map used to show "moving N child rows" only on the dragged parent row. */
   protected readonly $dragSubtreeCountById = computed<
     Partial<Record<string, number>>
@@ -108,6 +112,7 @@ export class ProductionGroupComponent {
     }
     return { [draggedMachineId]: descendantCount };
   });
+
   /**
    * Derived drop intent from current drag position (index + horizontal offset).
    * This is used for visual hints; final drop recalculates deterministically.
@@ -122,19 +127,21 @@ export class ProductionGroupComponent {
         this.$dragDistanceX(),
       ),
   );
-  protected readonly $dropHint = computed<string | undefined>(() => {
+
+  protected readonly $dropHint = computed<string>(() => {
     const preview = this.$dragPreview();
     if (!preview) {
-      return 'Drop mode: none, start dragging to see options';
+      return 'Drop Mode: None, start dragging to see options';
     }
     if (preview.mode === ProductionMovePreviewMode.IntoParent) {
-      return 'Drop mode: into parent';
+      return 'Drop Mode: Into Parent';
     }
     if (preview.mode === ProductionMovePreviewMode.OutsideParent) {
-      return 'Drop mode: outside parent';
+      return 'Drop Mode: Outside Parent';
     }
-    return 'Drop mode: reorder within level';
+    return 'Drop Mode: Reorder Within Level';
   });
+
   protected readonly $dropBeforeById = computed<Record<string, boolean>>(() => {
     const preview = this.$dragPreview();
     if (!preview?.beforeMachineId) {
@@ -142,15 +149,39 @@ export class ProductionGroupComponent {
     }
     return { [preview.beforeMachineId]: true };
   });
-  protected readonly $dropParentById = computed<Record<string, boolean>>(() => {
+
+  protected readonly $dropContainerById = computed<Record<string, boolean>>(
+    () => {
+      const preview = this.$dragPreview();
+      if (!preview?.parentProductionId) {
+        return {};
+      }
+      return { [preview.parentProductionId]: true };
+    },
+  );
+
+  protected readonly $dropContainerModeById = computed<
+    Partial<Record<string, ProductionMovePreviewMode>>
+  >(() => {
     const preview = this.$dragPreview();
-    if (
-      preview?.mode !== ProductionMovePreviewMode.IntoParent ||
-      !preview.parentProductionId
-    ) {
+    if (!preview?.parentProductionId) {
       return {};
     }
-    return { [preview.parentProductionId]: true };
+    return { [preview.parentProductionId]: preview.mode };
+  });
+
+  protected readonly $isDropRoot = computed<boolean>(() => {
+    const preview = this.$dragPreview();
+    return !!preview && !preview.parentProductionId;
+  });
+
+  protected readonly $dropRootMode = computed<
+    ProductionMovePreviewMode | undefined
+  >(() => {
+    if (!this.$isDropRoot()) {
+      return undefined;
+    }
+    return this.$dragPreview()?.mode;
   });
 
   public readonly $editMachine = output<Production>();

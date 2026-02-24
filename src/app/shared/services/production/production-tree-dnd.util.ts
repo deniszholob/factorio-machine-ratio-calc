@@ -130,28 +130,55 @@ export function buildDragPreview(
   const rowsWithoutSubtree = rows.filter(
     (row) => !subtreeIds.has(row.production.id),
   );
-  const originalIndex =
-    currentIndex ??
-    rows.findIndex((row) => row.production.id === draggedMachineId);
+  const sourceIndex = rows.findIndex(
+    (row) => row.production.id === draggedMachineId,
+  );
+  const originalIndex = currentIndex ?? sourceIndex;
+  const previewIndex =
+    currentIndex !== undefined && currentIndex > sourceIndex
+      ? currentIndex + 1
+      : originalIndex;
   const insertionIndex = getAdjustedInsertionIndex(
-    originalIndex,
+    previewIndex,
     rows,
     subtreeIds,
   );
   const nextIndex = clamp(insertionIndex, 0, rowsWithoutSubtree.length);
   const beforeRow = rowsWithoutSubtree[nextIndex];
   const previousRow = rowsWithoutSubtree[nextIndex - 1];
+  const autoIntoParentPreview = buildAutoIntoParentPreview(
+    sourceRow,
+    previousRow,
+    beforeRow,
+    draggedMachineId,
+    distanceX,
+  );
+  if (autoIntoParentPreview) {
+    return autoIntoParentPreview;
+  }
+
   const maxDepth = previousRow ? previousRow.depth + 1 : 0;
   const depthShift = Math.round(distanceX / 24);
   const nextDepth = clamp(sourceRow.depth + depthShift, 0, maxDepth);
-  const parentProductionId = findParentIdForDepth(
+  const parentFromPreviousRow = findParentIdForDepth(
     rowsWithoutSubtree,
     nextIndex,
     nextDepth,
   );
+  const parentProductionId =
+    beforeRow && beforeRow.depth === nextDepth - 1
+      ? beforeRow.production.id
+      : parentFromPreviousRow;
 
+  const sourceParentId = sourceRow.production.parentProductionId;
   let mode: ProductionMovePreview['mode'] = ProductionMovePreviewMode.Reorder;
-  if (nextDepth > sourceRow.depth) {
+  if (parentProductionId !== sourceParentId) {
+    if (parentProductionId) {
+      mode = ProductionMovePreviewMode.IntoParent;
+    } else if (sourceParentId) {
+      mode = ProductionMovePreviewMode.OutsideParent;
+    }
+  } else if (nextDepth > sourceRow.depth) {
     mode = ProductionMovePreviewMode.IntoParent;
   } else if (nextDepth < sourceRow.depth) {
     mode = ProductionMovePreviewMode.OutsideParent;
@@ -162,6 +189,35 @@ export function buildDragPreview(
     beforeMachineId: beforeRow?.production.id,
     parentProductionId,
     mode,
+  };
+}
+
+function buildAutoIntoParentPreview(
+  sourceRow: ProductionTreeRow,
+  previousRow: ProductionTreeRow | undefined,
+  beforeRow: ProductionTreeRow | undefined,
+  draggedMachineId: string,
+  distanceX: number,
+): ProductionMovePreview | undefined {
+  // Require explicit right drag to signal reparenting intent.
+  if (distanceX < 12) {
+    return undefined;
+  }
+
+  // Use the row above the insertion gap as the parent target.
+  const parentRow =
+    previousRow && previousRow.depth <= sourceRow.depth
+      ? previousRow
+      : undefined;
+  if (!parentRow) {
+    return undefined;
+  }
+
+  return {
+    machineId: draggedMachineId,
+    beforeMachineId: beforeRow?.production.id,
+    parentProductionId: parentRow.production.id,
+    mode: ProductionMovePreviewMode.IntoParent,
   };
 }
 
