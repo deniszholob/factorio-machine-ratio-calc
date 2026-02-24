@@ -36,7 +36,7 @@ export default {
     ],
     $ariaLabel: 'Selection',
     $activeTone: SelectionButtonActiveTone.Primary,
-    $buttonClass: 'h-8 px-3 py-0',
+    $buttonClass: 'h-9 px-3 py-0',
     $containerClass: '',
   },
 } satisfies Meta<SelectionButtonGroupComponent>;

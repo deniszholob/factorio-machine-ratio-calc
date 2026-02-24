@@ -1,5 +1,6 @@
 export enum BadgeTone {
   Stone = 'Stone',
+  Teal = 'Teal',
   Amber = 'Amber',
   Red = 'Red',
   Blue = 'Blue',

@@ -19,7 +19,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormFieldBlockComponent } from '../../../forms/form-field-block/form-field-block.component';
-import { IconAutocompleteInputComponent } from '../../../forms/icon-autocomplete-input/icon-autocomplete-input.component';
+import { SelectSingleIconInputComponent } from '../../../forms/select-single-icon-input/select-single-icon-input.component';
 
 interface EditableRecipeItem {
   name: string;
@@ -49,7 +49,7 @@ export enum RecipeIoDropHighlightMode {
     CdkDrag,
     CdkDragHandle,
     FormFieldBlockComponent,
-    IconAutocompleteInputComponent,
+    SelectSingleIconInputComponent,
   ],
 })
 export class RecipeIoListComponent {

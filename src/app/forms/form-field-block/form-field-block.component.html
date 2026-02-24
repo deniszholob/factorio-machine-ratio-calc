@@ -1,18 +1,16 @@
 <div class="flex flex-col gap-1" [ngClass]="$className()">
-  <span
-    class="text-xs font-semibold tracking-wide whitespace-nowrap text-stone-400 uppercase"
-    [ngClass]="{
-      'pl-9': $hasPrefixAddon(),
-    }"
-  >
-    {{ $label() }}
-  </span>
+  @if ($label()) {
+    <span
+      class="text-xs font-semibold tracking-wide whitespace-nowrap text-stone-400 uppercase"
+      [ngClass]="{
+        'pl-9': $hasPrefixAddon(),
+      }"
+    >
+      {{ $label() }}
+    </span>
+  }
   <div
-    class="flex min-w-0 items-stretch"
-    [ngClass]="{
-      'rounded-sm ring-1 ring-stone-600/70 transition-colors focus-within:ring-blue-400/80':
-        $hasAddon(),
-    }"
+    class="flex min-w-0 items-stretch rounded-sm ring-1 ring-stone-600/70 transition-colors focus-within:ring-blue-400/80"
   >
     @if ($hasPrefixAddon()) {
       <span
@@ -33,7 +31,9 @@
           />
         }
         @if ($prefixIconClass()) {
-          <i [class]="$prefixIconClass()"></i>
+          <span>
+            <i [class]="$prefixIconClass()"></i>
+          </span>
         }
         @if ($prefix()) {
           <span>{{ $prefix() }}</span>
@@ -41,13 +41,16 @@
       </span>
     }
     <div
-      class="w-full min-w-0 flex-1 [&_input]:h-9 [&_input]:w-full [&_input]:max-w-none [&_input]:bg-neutral-700 [&_input]:px-3 [&_input]:py-2 [&_input]:text-sm [&_input]:text-slate-200 [&_input]:placeholder-stone-500 [&_input]:shadow-none [&_input]:ring-0 [&_input]:outline-none [&_input]:focus:ring-0 [&_input]:focus:outline-hidden"
+      class="w-full min-w-0 flex-1 [&_.app-field-control]:h-9 [&_.app-field-control]:w-full [&_.app-field-control]:max-w-none [&_input]:h-9 [&_input]:w-full [&_input]:max-w-none [&_input]:bg-neutral-700 [&_input]:px-3 [&_input]:py-2 [&_input]:text-sm [&_input]:text-slate-200 [&_input]:placeholder-stone-500 [&_input]:shadow-none [&_input]:ring-0 [&_input]:outline-none [&_input]:focus:ring-0 [&_input]:focus:outline-hidden"
       [ngClass]="{
-        '[&_input]:rounded-none [&_input]:border-0': $hasPrefixAddon() && $hasSuffixAddon(),
-        '[&_input]:rounded-l-none [&_input]:rounded-r-sm [&_input]:border-0':
+        '[&_.app-field-control]:rounded-none [&_.app-field-control]:border-0 [&_input]:rounded-none [&_input]:border-0':
+          $hasPrefixAddon() && $hasSuffixAddon(),
+        '[&_.app-field-control]:rounded-l-none [&_.app-field-control]:rounded-r-sm [&_.app-field-control]:border-0 [&_input]:rounded-l-none [&_input]:rounded-r-sm [&_input]:border-0':
           $hasPrefixAddon() && !$hasSuffixAddon(),
-        '[&_input]:rounded-l-sm [&_input]:rounded-r-none [&_input]:border-0':
+        '[&_.app-field-control]:rounded-l-sm [&_.app-field-control]:rounded-r-none [&_.app-field-control]:border-0 [&_input]:rounded-l-sm [&_input]:rounded-r-none [&_input]:border-0':
           !$hasPrefixAddon() && $hasSuffixAddon(),
+        '[&_.app-field-control]:rounded-sm [&_.app-field-control]:border-0':
+          !$hasPrefixAddon() && !$hasSuffixAddon(),
       }"
     >
       <ng-content></ng-content>

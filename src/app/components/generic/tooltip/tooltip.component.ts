@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 @Component({
   selector: 'app-tooltip',
@@ -8,4 +8,11 @@ import { Component, input } from '@angular/core';
 })
 export class TooltipComponent {
   public $text = input.required<string>();
+
+  protected readonly $lines = computed<string[]>(() =>
+    this.$text()
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0),
+  );
 }

@@ -174,7 +174,7 @@ public readonly $myValue = model<boolean>(true);
     ```
 - Do NOT use `[ngStyle]`, use `[style.*]` bindings instead, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
 - DO NOT use functions in html templates for getting data (signals and events are ok)
-- Do create storybook files along side components
+- Do create storybook files along side components and make sure to include all the inputs and outputs following the patterns in `.vscode/ngfg-templates/__name__.component.stories.ts.mustache`
 
 ### State Management
 

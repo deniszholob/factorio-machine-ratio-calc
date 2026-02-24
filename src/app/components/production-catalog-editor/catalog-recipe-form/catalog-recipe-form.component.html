@@ -62,10 +62,15 @@
       />
     </app-form-field-block>
 
-    <app-badge [$label]="`Used ${usageCount ?? 0}`"></app-badge>
+    <app-badge
+      [title]="usageCount > 0 ? $usageTooltip() : ''"
+      [$label]="`Used ${usageCount ?? 0}`"
+      [$size]="BadgeSize.Md"
+      [$tone]="usageCount > 0 ? BadgeTone.Red : BadgeTone.Stone"
+    ></app-badge>
     <span [title]="usageCount > 0 ? deleteDisabledReason : ''">
       <button
-        class="btn btn-icon btn-danger h-9"
+        class="btn btn-icon btn-danger"
         [disabled]="usageCount > 0"
         (click)="onRemoveRecipe()"
         type="button"

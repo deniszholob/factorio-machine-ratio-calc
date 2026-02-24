@@ -10,14 +10,18 @@
 @let recipeFilter = $recipeFilter();
 @let visibleProductionCards = $visibleProductionCards();
 @let itemUsageByName = $itemUsageByName();
+@let itemUsageTooltipByName = $itemUsageTooltipByName();
 @let machineUsageByName = $machineUsageByName();
+@let machineUsageTooltipByName = $machineUsageTooltipByName();
 @let recipeUsageByName = $recipeUsageByName();
+@let recipeUsageTooltipByName = $recipeUsageTooltipByName();
 
 <section class="flex flex-col gap-4 p-4">
   <div>
     <app-selection-button-group
       [($value)]="$activeTab"
       [$options]="$tabOptions()"
+      [$buttonClass]="'h-8 px-3 py-0'"
     ></app-selection-button-group>
   </div>
 
@@ -32,6 +36,7 @@
           <app-selection-button-group
             [($value)]="$importMode"
             [$options]="importModeOptions"
+            [$buttonClass]="'h-9 px-3 py-0'"
           ></app-selection-button-group>
         </app-form-field-block>
 
@@ -41,16 +46,13 @@
               <i class="fas fa-database text-stone-500"></i>
               Entire Catalog
             </span>
-            <button
-              class="btn btn-icon btn-primary-outline h-9 gap-2"
-              (click)="onDownloadCatalog()"
-            >
+            <button class="btn btn-icon btn-primary-outline gap-2" (click)="onDownloadCatalog()">
               <i class="fas fa-download"></i>
               <span>Download</span>
             </button>
             <app-file-picker
               [$filesTypesAccepted]="'.json'"
-              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
               ($fileChange)="onUploadCatalog($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -63,13 +65,13 @@
               <i class="fas fa-box text-stone-500"></i>
               Items
             </span>
-            <button class="btn btn-icon btn-primary-outline h-9 gap-2" (click)="onDownloadItems()">
+            <button class="btn btn-icon btn-primary-outline gap-2" (click)="onDownloadItems()">
               <i class="fas fa-download"></i>
               <span>Download</span>
             </button>
             <app-file-picker
               [$filesTypesAccepted]="'.json'"
-              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
               ($fileChange)="onUploadItems($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -82,16 +84,13 @@
               <i class="fas fa-industry text-stone-500"></i>
               Machines
             </span>
-            <button
-              class="btn btn-icon btn-primary-outline h-9 gap-2"
-              (click)="onDownloadMachines()"
-            >
+            <button class="btn btn-icon btn-primary-outline gap-2" (click)="onDownloadMachines()">
               <i class="fas fa-download"></i>
               <span>Download</span>
             </button>
             <app-file-picker
               [$filesTypesAccepted]="'.json'"
-              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
               ($fileChange)="onUploadMachines($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -104,16 +103,13 @@
               <i class="fas fa-vial text-stone-500"></i>
               Recipes
             </span>
-            <button
-              class="btn btn-icon btn-primary-outline h-9 gap-2"
-              (click)="onDownloadRecipes()"
-            >
+            <button class="btn btn-icon btn-primary-outline gap-2" (click)="onDownloadRecipes()">
               <i class="fas fa-download"></i>
               <span>Download</span>
             </button>
             <app-file-picker
               [$filesTypesAccepted]="'.json'"
-              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
               ($fileChange)="onUploadRecipes($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -127,7 +123,7 @@
               Productions
             </span>
             <button
-              class="btn btn-icon btn-primary-outline h-9 gap-2"
+              class="btn btn-icon btn-primary-outline gap-2"
               (click)="onDownloadProductions()"
             >
               <i class="fas fa-download"></i>
@@ -135,7 +131,7 @@
             </button>
             <app-file-picker
               [$filesTypesAccepted]="'.json'"
-              [$btnClass]="'btn btn-icon btn-primary-outline h-9 gap-2'"
+              [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
               ($fileChange)="onUploadProductions($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -171,7 +167,8 @@
       >
         <div class="flex flex-col gap-2">
           @for (item of visibleItems; track item) {
-            @let itemUsageCount = itemUsageByName[item.name.trim().toLowerCase()];
+            @let itemUsageKey = item.name.trim().toLowerCase();
+            @let itemUsageCount = itemUsageByName[itemUsageKey];
             <div class="flex flex-wrap items-end gap-3 rounded-md bg-stone-950/20 px-4 py-2">
               @if (item.iconUrl) {
                 <img
@@ -220,8 +217,16 @@
                 />
               </div>
 
-              <app-badge [$label]="'Used ' + itemUsageCount"></app-badge>
-              <span
+              <app-badge
+                [title]="itemUsageCount > 0 ? itemUsageTooltipByName[itemUsageKey] : ''"
+                [$label]="`Used ${itemUsageCount ?? 0}`"
+                [$size]="BadgeSize.Md"
+                [$tone]="itemUsageCount > 0 ? BadgeTone.Red : BadgeTone.Stone"
+              ></app-badge>
+
+              <button
+                class="btn btn-icon btn-danger"
+                [disabled]="itemUsageCount > 0"
                 [title]="
                   itemUsageCount > 0
                     ? 'Cannot delete item: used by ' +
@@ -229,16 +234,11 @@
                       ' references. Remove it in recipes/productions first.'
                     : ''
                 "
+                (click)="onRemoveItem(item)"
+                type="button"
               >
-                <button
-                  class="btn btn-icon btn-danger h-9"
-                  [disabled]="itemUsageCount > 0"
-                  (click)="onRemoveItem(item)"
-                  type="button"
-                >
-                  <i class="fas fa-trash"></i>
-                </button>
-              </span>
+                <i class="fas fa-trash"></i>
+              </button>
             </div>
           } @empty {
             <div class="text-stone-400">No items match.</div>
@@ -259,7 +259,8 @@
       >
         <div class="flex flex-col gap-2">
           @for (machine of visibleMachines; track machine) {
-            @let machineUsageCount = machineUsageByName[machine.name.trim().toLowerCase()];
+            @let machineUsageKey = machine.name.trim().toLowerCase();
+            @let machineUsageCount = machineUsageByName[machineUsageKey];
             <div class="flex flex-wrap items-end gap-3 rounded-md bg-stone-950/20 px-4 py-2">
               @if (machine.iconUrl) {
                 <img
@@ -356,7 +357,12 @@
                 />
               </app-form-field-block>
 
-              <app-badge [$label]="`Used ${machineUsageCount ?? 0}`"></app-badge>
+              <app-badge
+                [title]="machineUsageCount > 0 ? machineUsageTooltipByName[machineUsageKey] : ''"
+                [$label]="`Used ${machineUsageCount ?? 0}`"
+                [$size]="BadgeSize.Md"
+                [$tone]="machineUsageCount > 0 ? BadgeTone.Red : BadgeTone.Stone"
+              ></app-badge>
               <span
                 [title]="
                   machineUsageCount > 0
@@ -367,7 +373,7 @@
                 "
               >
                 <button
-                  class="btn btn-icon btn-danger h-9"
+                  class="btn btn-icon btn-danger"
                   [disabled]="machineUsageCount > 0"
                   (click)="onRemoveMachine(machine)"
                   type="button"
@@ -394,12 +400,14 @@
         ($filterValueChange)="onRecipeFilterChange($event)"
       >
         @for (recipe of visibleRecipes; track recipe) {
-          @let recipeUsageCount = recipeUsageByName[recipe.name.trim().toLowerCase()];
+          @let recipeUsageKey = recipe.name.trim().toLowerCase();
+          @let recipeUsageCount = recipeUsageByName[recipeUsageKey];
           <app-catalog-recipe-form
             [$recipe]="recipe"
             [$itemNames]="itemNames"
             [$itemIconsByName]="itemIconsByName"
             [$usageCount]="recipeUsageCount"
+            [$usageTooltip]="recipeUsageCount > 0 ? recipeUsageTooltipByName[recipeUsageKey] : ''"
             [$deleteDisabledReason]="
               recipeUsageCount > 0
                 ? 'Cannot delete recipe: used by ' +
@@ -476,9 +484,15 @@
                   >
                 </div>
 
-                <app-badge [$label]="'Used ' + template.usageCount"></app-badge>
+                <app-badge
+                  [title]="template.usageCount > 0 ? template.usageTooltip : ''"
+                  [$label]="`Used ${template.usageCount ?? 0}`"
+                  [$size]="BadgeSize.Md"
+                  [$tone]="template.usageCount > 0 ? BadgeTone.Red : BadgeTone.Stone"
+                ></app-badge>
 
-                <span
+                <button
+                  class="btn btn-icon btn-danger"
                   [title]="
                     template.usageCount > 0
                       ? 'Cannot delete production template: used in ' +
@@ -486,16 +500,12 @@
                         ' productions across chains.'
                       : ''
                   "
+                  [disabled]="template.usageCount > 0"
+                  (click)="onRemoveProduction(template.index, template.name)"
+                  type="button"
                 >
-                  <button
-                    class="btn btn-icon btn-danger h-9"
-                    [disabled]="template.usageCount > 0"
-                    (click)="onRemoveProduction(template.index, template.name)"
-                    type="button"
-                  >
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </span>
+                  <i class="fas fa-trash"></i>
+                </button>
               </div>
             }
           </div>

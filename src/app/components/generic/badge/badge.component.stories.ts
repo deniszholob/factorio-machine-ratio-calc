@@ -2,6 +2,7 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
 import { BadgeComponent } from './badge.component';
+import { BadgeSize } from './badge-size.enum';
 import { BadgeTone } from './badge-tone.enum';
 
 type ComponentWithCustomControls = BadgeComponent; // & {};
@@ -21,6 +22,11 @@ export default {
       mapping: BadgeTone,
       control: { type: 'select' },
     },
+    $size: {
+      options: Object.values(BadgeSize),
+      mapping: BadgeSize,
+      control: { type: 'select' },
+    },
     /** === Output Actions === */
     // inputChange: { action: 'inputChange', table: { disable: true } },
     /** === Control Hide === */
@@ -31,6 +37,7 @@ export default {
   args: {
     $label: 'Used 4',
     $tone: BadgeTone.Stone,
+    $size: BadgeSize.Md,
   },
 } satisfies Meta<ComponentWithCustomControls>;
 

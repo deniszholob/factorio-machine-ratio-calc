@@ -14,7 +14,7 @@ import {
   imports: [NgClass],
 })
 export class FormFieldBlockComponent {
-  public readonly $label = input.required<string>();
+  public readonly $label = input<string>('');
   public readonly $className = input<string>('');
   public readonly $prefix = input<string>('');
   public readonly $suffix = input<string>('');

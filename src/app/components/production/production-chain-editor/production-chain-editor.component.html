@@ -29,15 +29,17 @@
         <button class="btn btn-icon btn-success cursor-pointer" (click)="onAddMachine()">
           <i class="fas fa-plus"></i> Production
         </button>
-        <app-icon-autocomplete-input
+        <app-select-single-icon-input
+          [$className]="'min-w-56'"
           [$value]="$selectedProductionTemplateName()"
           [$name]="'catalogProductionQuickAdd'"
           [$placeholder]="'Production from catalog'"
           [$options]="$productionTemplateNames()"
           [$iconsByName]="$productionTemplateIconsByName()"
+          [$showSelectedIcon]="false"
           ($valueChange)="onProductionTemplateNameChange($event)"
           ($commit)="onProductionTemplateNameChange($event)"
-        ></app-icon-autocomplete-input>
+        ></app-select-single-icon-input>
 
         <button
           class="btn btn-icon btn-primary-outline cursor-pointer"
@@ -48,7 +50,10 @@
           <i class="fas fa-plus"></i> Add From Catalog
         </button>
 
-        <button class="btn btn-icon btn-danger-outline cursor-pointer" (click)="onClearAll()">
+        <button
+          class="btn btn-icon btn-danger-outline cursor-pointer"
+          (click)="onClearAll()"
+        >
           <i class="fas fa-trash"></i> Clear All
         </button>
       </div>

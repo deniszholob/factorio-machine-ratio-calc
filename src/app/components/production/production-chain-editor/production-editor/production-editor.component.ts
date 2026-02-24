@@ -21,12 +21,13 @@ import {
   toRecipeItems,
 } from './production.util';
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
-import { IconAutocompleteInputComponent } from 'src/app/forms/icon-autocomplete-input/icon-autocomplete-input.component';
+import { SelectSingleIconInputComponent } from 'src/app/forms/select-single-icon-input/select-single-icon-input.component';
 import { FormFieldBlockComponent } from 'src/app/forms/form-field-block/form-field-block.component';
 import { RecipeIoListComponent } from 'src/app/components/production/recipe-io-list/recipe-io-lis.component.';
 import { MachineItem } from 'src/app/shared/models/production-chain/production/machine-item/machine-item.model';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
 import { SectionTitleComponent } from 'src/app/layouts/section-block/section-title/section-title.component';
+import { ReadonlyFieldComponent } from 'src/app/forms/readonly-field/readonly-field.component';
 
 @Component({
   selector: 'app-production-editor',
@@ -36,10 +37,11 @@ import { SectionTitleComponent } from 'src/app/layouts/section-block/section-tit
   imports: [
     CommonModule,
     FormsModule,
-    IconAutocompleteInputComponent,
+    SelectSingleIconInputComponent,
     FormFieldBlockComponent,
     RecipeIoListComponent,
     SectionTitleComponent,
+    ReadonlyFieldComponent,
   ],
 })
 export class ProductionEditorComponent {

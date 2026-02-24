@@ -1,0 +1,68 @@
+<app-form-field-block
+  [$label]="$label()"
+  [$className]="$className()"
+  [$prefix]="$prefix()"
+  [$suffix]="$suffix()"
+  [$suffixIconClass]="$suffixIconClass()"
+  [$prefixIconClass]="$prefixIconClass()"
+  [$prefixImageUrl]="$prefixImageUrl()"
+>
+  <ng-select
+    class="app-ng-select app-field-control h-9 min-w-44"
+    [items]="$optionItems()"
+    [bindLabel]="'name'"
+    [bindValue]="'name'"
+    [ngModel]="$value()"
+    [placeholder]="$effectivePlaceholder()"
+    [notFoundText]="$notFoundText()"
+    [addTagText]="$addTagText()"
+    [clearable]="false"
+    [searchable]="true"
+    [addTag]="$addTag()"
+    [attr.aria-label]="$name() || $label() || $placeholder() || 'Select value'"
+    (ngModelChange)="onChange($event)"
+    (blur)="onBlur()"
+  >
+    <ng-template ng-option-tmp let-item="item">
+      <span class="flex items-center gap-2 text-stone-200">
+        @if (item.iconUrl) {
+          <img
+            class="h-5 w-5 rounded-sm border border-stone-700 object-cover"
+            [src]="item.iconUrl"
+            [alt]="item.name + ' icon'"
+          />
+        } @else {
+          <span
+            class="flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+            aria-hidden="true"
+          >
+            <i class="fas fa-image"></i>
+          </span>
+        }
+        <span>{{ item.name }}</span>
+      </span>
+    </ng-template>
+
+    <ng-template ng-label-tmp let-item="item">
+      <span class="flex items-center gap-2 text-stone-200">
+        @if ($showSelectedIcon()) {
+          @if (item.iconUrl) {
+            <img
+              class="h-5 w-5 rounded-sm border border-stone-700 object-cover"
+              [src]="item.iconUrl"
+              [alt]="item.name + ' icon'"
+            />
+          } @else {
+            <span
+              class="flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+              aria-hidden="true"
+            >
+              <i class="fas fa-image"></i>
+            </span>
+          }
+        }
+        <span>{{ item.name }}</span>
+      </span>
+    </ng-template>
+  </ng-select>
+</app-form-field-block>

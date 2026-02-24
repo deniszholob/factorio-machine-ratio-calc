@@ -31,9 +31,10 @@ export class TooltipDirective implements OnDestroy {
 
   public constructor() {
     const hostElement = this.elementRef.nativeElement;
+    const anchorElement = this.getAnchorElement(hostElement);
 
-    this.renderer.setAttribute(hostElement, 'aria-describedby', this.tooltipId);
-    this.renderer.addClass(hostElement, 'cursor-pointer');
+    this.renderer.setAttribute(anchorElement, 'aria-describedby', this.tooltipId);
+    this.renderer.addClass(anchorElement, 'cursor-pointer');
 
     queueMicrotask(() => {
       const titleText = hostElement.title?.trim();
@@ -46,10 +47,10 @@ export class TooltipDirective implements OnDestroy {
     });
 
     this.unlisten.push(
-      this.renderer.listen(hostElement, 'mouseenter', () => this.show()),
-      this.renderer.listen(hostElement, 'mouseleave', () => this.hide()),
-      this.renderer.listen(hostElement, 'focus', () => this.show()),
-      this.renderer.listen(hostElement, 'blur', () => this.hide()),
+      this.renderer.listen(anchorElement, 'mouseenter', () => this.show()),
+      this.renderer.listen(anchorElement, 'mouseleave', () => this.hide()),
+      this.renderer.listen(anchorElement, 'focus', () => this.show()),
+      this.renderer.listen(anchorElement, 'blur', () => this.hide()),
     );
   }
 
@@ -90,7 +91,8 @@ export class TooltipDirective implements OnDestroy {
     this.renderer.setStyle(tooltipElement, 'position', 'fixed');
     this.renderer.setStyle(tooltipElement, 'pointer-events', 'none');
 
-    const rect = hostElement.getBoundingClientRect();
+    const anchorElement = this.getAnchorElement(hostElement);
+    const rect = anchorElement.getBoundingClientRect();
     const offset = 8;
     const top = rect.bottom + offset;
     const left = rect.left;
@@ -115,5 +117,17 @@ export class TooltipDirective implements OnDestroy {
     this.appRef.detachView(this.tooltipRef.hostView);
     this.tooltipRef.destroy();
     this.tooltipRef = undefined;
+  }
+
+  private getAnchorElement(hostElement: HTMLElement): HTMLElement {
+    const hostRect = hostElement.getBoundingClientRect();
+    if (hostRect.width > 0 || hostRect.height > 0) {
+      return hostElement;
+    }
+    const firstChild = hostElement.firstElementChild;
+    if (firstChild instanceof HTMLElement) {
+      return firstChild;
+    }
+    return hostElement;
   }
 }

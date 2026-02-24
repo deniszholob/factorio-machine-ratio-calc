@@ -20,6 +20,9 @@ import { ProductionCatalogService } from 'src/app/shared/services/production-cat
 import { reCalcProductionRates } from '../../production-editor/production.util';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
 import { ProductionMovePreviewMode } from 'src/app/shared/services/production/production-tree-dnd.util';
+import { BadgeComponent } from 'src/app/components/generic/badge/badge.component';
+import { BadgeTone } from 'src/app/components/generic/badge/badge-tone.enum';
+import { BadgeSize } from 'src/app/components/generic/badge/badge-size.enum';
 
 @Component({
   selector: 'app-production-item',
@@ -31,12 +34,15 @@ import { ProductionMovePreviewMode } from 'src/app/shared/services/production/pr
     FormsModule,
     TooltipDirective,
     RateUnitValueComponent,
+    BadgeComponent,
     CdkDrag,
     CdkDragHandle,
   ],
 })
 export class ProductionItemComponent {
   protected readonly ProductionMovePreviewMode = ProductionMovePreviewMode;
+  protected readonly BadgeTone = BadgeTone;
+  protected readonly BadgeSize = BadgeSize;
 
   private readonly productionCatalogService = inject(ProductionCatalogService);
 

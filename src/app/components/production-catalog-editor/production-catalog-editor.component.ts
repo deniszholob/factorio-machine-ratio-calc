@@ -20,6 +20,8 @@ import { SectionBlockComponent } from 'src/app/layouts/section-block/section-blo
 import { CatalogRecipeFormComponent } from './catalog-recipe-form/catalog-recipe-form.component';
 import { FormFieldBlockComponent } from '../../forms/form-field-block/form-field-block.component';
 import { BadgeComponent } from '../generic/badge/badge.component';
+import { BadgeSize } from '../generic/badge/badge-size.enum';
+import { BadgeTone } from '../generic/badge/badge-tone.enum';
 import {
   SelectionButtonGroupComponent,
   SelectionButtonOption,
@@ -50,6 +52,8 @@ import { TooltipDirective } from '../generic/tooltip/tooltip.directive';
 })
 export class ProductionCatalogEditorComponent {
   protected readonly CatalogEditorTab = CatalogEditorTab;
+  protected readonly BadgeSize = BadgeSize;
+  protected readonly BadgeTone = BadgeTone;
 
   private readonly productionCatalogService = inject(ProductionCatalogService);
   private readonly productionChainService = inject(ProductionChainService);
@@ -103,40 +107,81 @@ export class ProductionCatalogEditorComponent {
     const machineByName: Record<string, number> = {};
     const recipeByName: Record<string, number> = {};
     const productionByName: Record<string, number> = {};
+    const itemUsedBySetByName: Record<string, Set<string>> = {};
+    const machineUsedBySetByName: Record<string, Set<string>> = {};
+    const recipeUsedBySetByName: Record<string, Set<string>> = {};
+    const productionUsedBySetByName: Record<string, Set<string>> = {};
     const catalog = this.$catalog();
-    const chainProductions = this.productionChainService
-      .$productionChains()
-      .flatMap((chain) => chain.productions);
+    const chainItems = this.productionChainService.$productionChains();
 
     for (const recipe of catalog.recipes) {
+      const usageLabel = createUsageLabel('Recipe', recipe.name);
       for (const item of recipe.inputs) {
         incrementCountByName(itemByName, item.name);
+        addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
       }
       for (const item of recipe.outputs) {
         incrementCountByName(itemByName, item.name);
+        addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
       }
     }
 
     for (const template of catalog.productions) {
+      const usageLabel = createUsageLabel('Catalog production', template.name);
       incrementCountByName(machineByName, template.production.machine.name);
+      addUsageLabelByName(
+        machineUsedBySetByName,
+        template.production.machine.name,
+        usageLabel,
+      );
       incrementCountByName(recipeByName, template.production.recipe.name);
+      addUsageLabelByName(
+        recipeUsedBySetByName,
+        template.production.recipe.name,
+        usageLabel,
+      );
       for (const item of template.production.recipe.inputs) {
         incrementCountByName(itemByName, item.name);
+        addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
       }
       for (const item of template.production.recipe.outputs) {
         incrementCountByName(itemByName, item.name);
+        addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
       }
     }
 
-    for (const production of chainProductions) {
-      incrementCountByName(machineByName, production.machine.name);
-      incrementCountByName(recipeByName, production.recipe.name);
-      incrementCountByName(productionByName, production.name);
-      for (const item of production.recipe.inputs) {
-        incrementCountByName(itemByName, item.name);
-      }
-      for (const item of production.recipe.outputs) {
-        incrementCountByName(itemByName, item.name);
+    for (const chain of chainItems) {
+      for (const production of chain.productions) {
+        const usageLabel = createUsageLabel(
+          'Production chain',
+          `${chain.display} > ${production.name}`,
+        );
+        incrementCountByName(machineByName, production.machine.name);
+        addUsageLabelByName(
+          machineUsedBySetByName,
+          production.machine.name,
+          usageLabel,
+        );
+        incrementCountByName(recipeByName, production.recipe.name);
+        addUsageLabelByName(
+          recipeUsedBySetByName,
+          production.recipe.name,
+          usageLabel,
+        );
+        incrementCountByName(productionByName, production.name);
+        addUsageLabelByName(
+          productionUsedBySetByName,
+          production.name,
+          createUsageLabel('Production chain', chain.display),
+        );
+        for (const item of production.recipe.inputs) {
+          incrementCountByName(itemByName, item.name);
+          addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
+        }
+        for (const item of production.recipe.outputs) {
+          incrementCountByName(itemByName, item.name);
+          addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
+        }
       }
     }
 
@@ -145,23 +190,40 @@ export class ProductionCatalogEditorComponent {
       machineByName,
       recipeByName,
       productionByName,
+      itemUsedByByName: toSortedUsageMap(itemUsedBySetByName),
+      machineUsedByByName: toSortedUsageMap(machineUsedBySetByName),
+      recipeUsedByByName: toSortedUsageMap(recipeUsedBySetByName),
+      productionUsedByByName: toSortedUsageMap(productionUsedBySetByName),
     };
   });
   protected readonly $itemUsageByName = computed<Record<string, number>>(
     () => this.$usageCounts().itemByName,
   );
+  protected readonly $itemUsageTooltipByName = computed<Record<string, string>>(
+    () => toUsageTooltipMap(this.$usageCounts().itemUsedByByName),
+  );
   protected readonly $machineUsageByName = computed<Record<string, number>>(
     () => this.$usageCounts().machineByName,
   );
+  protected readonly $machineUsageTooltipByName = computed<
+    Record<string, string>
+  >(() => toUsageTooltipMap(this.$usageCounts().machineUsedByByName));
   protected readonly $recipeUsageByName = computed<Record<string, number>>(
     () => this.$usageCounts().recipeByName,
   );
+  protected readonly $recipeUsageTooltipByName = computed<
+    Record<string, string>
+  >(() => toUsageTooltipMap(this.$usageCounts().recipeUsedByByName));
   protected readonly $productionUsageByName = computed<Record<string, number>>(
     () => this.$usageCounts().productionByName,
   );
+  protected readonly $productionUsageTooltipByName = computed<
+    Record<string, string>
+  >(() => toUsageTooltipMap(this.$usageCounts().productionUsedByByName));
   protected readonly $visibleProductionCards = computed(() => {
     const machineIconsByName = this.$machineIconsByName();
     const productionUsageByName = this.$productionUsageByName();
+    const productionUsageTooltipByName = this.$productionUsageTooltipByName();
     const catalogProductions = this.$productions();
     return this.$visibleProductions().map((template) => {
       const machineName = template.production.machine.name;
@@ -173,6 +235,8 @@ export class ProductionCatalogEditorComponent {
         recipeIconUrl: template.production.recipe.iconUrl ?? template.iconUrl,
         machineIconUrl: findIconByName(machineIconsByName, machineName),
         usageCount: getCountByName(productionUsageByName, template.name),
+        usageTooltip:
+          productionUsageTooltipByName[normalizeUsageKey(template.name)] ?? '',
       };
     });
   });
@@ -523,6 +587,10 @@ interface CatalogUsageCounts {
   machineByName: Record<string, number>;
   recipeByName: Record<string, number>;
   productionByName: Record<string, number>;
+  itemUsedByByName: Record<string, string[]>;
+  machineUsedByByName: Record<string, string[]>;
+  recipeUsedByByName: Record<string, string[]>;
+  productionUsedByByName: Record<string, string[]>;
 }
 
 function normalizeUsageKey(name: string): string {
@@ -535,6 +603,45 @@ function incrementCountByName(map: Record<string, number>, name: string): void {
     return;
   }
   map[key] = (map[key] ?? 0) + 1;
+}
+
+function addUsageLabelByName(
+  map: Record<string, Set<string>>,
+  name: string,
+  usageLabel: string,
+): void {
+  const key = normalizeUsageKey(name);
+  if (!key || !usageLabel.trim()) {
+    return;
+  }
+  if (!map[key]) {
+    map[key] = new Set<string>();
+  }
+  map[key].add(usageLabel);
+}
+
+function toSortedUsageMap(
+  map: Record<string, Set<string>>,
+): Record<string, string[]> {
+  return Object.fromEntries(
+    Object.entries(map).map(([key, labels]) => [key, [...labels].sort()]),
+  );
+}
+
+function toUsageTooltipMap(
+  map: Record<string, string[]>,
+): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(map).map(([key, labels]) => [key, labels.join('\n')]),
+  );
+}
+
+function createUsageLabel(context: string, name: string): string {
+  const nextName = name.trim();
+  if (!nextName) {
+    return context;
+  }
+  return `${context}: ${nextName}`;
 }
 
 function getCountByName(map: Record<string, number>, name: string): number {

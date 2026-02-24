@@ -1,0 +1,20 @@
+<app-form-field-block
+  [$label]="$label()"
+  [$className]="$className()"
+  [$prefix]="$prefix()"
+  [$suffix]="$suffix()"
+  [$suffixIconClass]="$suffixIconClass()"
+  [$prefixIconClass]="$prefixIconClass()"
+  [$prefixImageUrl]="$prefixImageUrl()"
+>
+  <input
+    class="app-field-control h-9 w-full"
+    [ngModel]="$value()"
+    [name]="$name()"
+    [placeholder]="$placeholder()"
+    [readonly]="$readonly()"
+    [type]="$type()"
+    (ngModelChange)="onValueChange($event)"
+    (change)="onCommit($value())"
+  />
+</app-form-field-block>

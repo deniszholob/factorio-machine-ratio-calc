@@ -4,48 +4,45 @@ This folder contains reusable form primitives and composable controls.
 
 ## Design Principles
 
-- Keep controls focused: layout wrappers should not own input/search logic.
-- Keep behavior reusable: filtering, keyboard navigation, and selection logic should live in dedicated controls.
-- Keep visuals consistent: readonly displays should align with field rhythm while remaining visually distinct from disabled inputs.
-- Prefer composition: build complex forms by combining small primitives.
+- Common styling and label/addon structure live in a field wrapper such as `form-field-block`.
+- Individual field components own only field-specific behavior.
+- Keep visuals consistent and heights aligned across form fields and form actions.
 
-## Component Roadmap
+## Available Components
 
-### Core Inputs
+### Input
 
-- `input-single`: single value text/number input.
-- `input-multi`: editable list of text/number values.
-- `input-area`: multiline text input.
-- `readonly`: display-only value field; styled as part of the form system, not a disabled input.
+- `input-single`: single primitive value text/number/url/etc. input.
+- `input-multi` (planned): editable list of primitive values.
+- `input-area` (planned): multiline text input.
 
-### File Inputs
+### Readonly
+
+- `readonly-field`: display-only value field (not a disabled input styling).
+
+### File
 
 - `file-picker-single`: choose one file/folder.
-- `file-picker-multi`: choose multiple files with add/remove list management.
+- `file-picker-multi` (planned): choose multiple files with add/remove list management.
 
-### Date Inputs
+### Date
 
-- `date-picker-single`: one date value.
-- `date-picker-multi`: array of dates.
-- `date-picker-range`: start/end range picker.
+- `date-picker-single` (planned): one date value.
+- `date-picker-multi` (planned): array of dates.
+- `date-picker-range` (planned): start/end range picker.
 
-### Selection Inputs
+### Select
 
-- `select-single`: single-value dropdown with type-to-filter and empty-state message.
-- `select-single-input`: single-value dropdown that can create a new value when no option matches.
-- `select-multi`: multi-select chips with filtered dropdown, select/unselect all, option checkboxes, and invalid-value warning when selected values are missing from option source.
-- `select-multi-input`: `select-multi` with create-new behavior from filter input.
+- `select-single` (optionally separate or part of `select-single-input`): single-value searchable select dropdown with type-to-filter and empty-state message
+- `select-single-input`: single-value searchable select using `ng-select`, supports add-custom mode.
+- `select-single-icon-input`: icon-aware single select with templated selected value and dropdown options.
 - `select-list`: radio/checkbox list selection.
-- `select-button-group`: segmented buttons for mutually exclusive choices.
+- `select-button-group`: segmented button selection.
+- `select-multi` (planned): multi-select chips + filter.
+- `select-multi-input` (planned): multi-select with add-custom behavior.
 
-### Display and Utility
+### Utility
 
-- `toggle`: constrained boolean/dual-state variant (often replaceable by `select-button-group`).
 - `pill`/`badge`: compact status indicator with theme variants.
-- `object-editor`: complex object/array editor with add/remove/edit controls.
-
-## Separation of Concerns
-
-- `form-field-block`: label + prefix/suffix layout shell.
-- `select-single-input`: searchable/selectable text behavior.
-- Domain-specific wrappers may compose both, but should not reimplement dropdown behavior.
+- `object-editor` (planned): complex object/array editor with add/remove/edit controls.
+- `toggle` (optional): constrained boolean/dual-state variant (often replaceable by `select-button-group`)

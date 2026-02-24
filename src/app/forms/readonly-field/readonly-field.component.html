@@ -1,0 +1,19 @@
+<app-form-field-block
+  [$label]="$label()"
+  [$className]="$className()"
+  [$prefix]="$prefix()"
+  [$suffix]="$suffix()"
+  [$suffixIconClass]="$suffixIconClass()"
+  [$prefixIconClass]="$prefixIconClass()"
+  [$prefixImageUrl]="$prefixImageUrl()"
+>
+  <div
+    class="app-field-control flex h-9 items-center rounded-sm border border-stone-700/80 bg-stone-900/70 px-3 text-sm"
+    [ngClass]="{
+      'text-stone-200': !$isPlaceholder(),
+      'text-stone-500 italic': $isPlaceholder(),
+    }"
+  >
+    <span class="truncate" [ngClass]="$valueClassName()">{{ $displayValue() }}</span>
+  </div>
+</app-form-field-block>

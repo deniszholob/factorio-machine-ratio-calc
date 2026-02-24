@@ -49,9 +49,13 @@
         }
       </div>
 
-      <app-form-field-block [$label]="'Production Name'" [$className]="''">
-        <strong class="text-stone-100">{{ production.name }}</strong>
-      </app-form-field-block>
+      <app-readonly-field
+        [$label]="'Production Name'"
+        [$className]="'min-w-56'"
+        [$value]="production.name || machine.name + ' + ' + recipe.name"
+        [$placeholder]="'Untitled Production'"
+        [$suffix]="''"
+      ></app-readonly-field>
 
       <span class="text-sm text-stone-500">(Inferred from recipe and machine)</span>
     </div>
@@ -60,23 +64,20 @@
       <app-section-title [$title]="'Machine'" [$iconClass]="'fas fa-industry'"></app-section-title>
 
       <div class="flex flex-wrap items-center gap-4">
-        <app-form-field-block
+        <app-select-single-icon-input
           [$label]="'Machine Name'"
           [$className]="'min-w-72'"
           [$prefixImageUrl]="machineIconUrl || ''"
           [$prefixIconClass]="machineIconUrl ? '' : 'fas fa-image'"
-        >
-          <app-icon-autocomplete-input
-            [$value]="machine.name"
-            [$name]="'machineName'"
-            [$placeholder]="'Machine name'"
-            [$options]="machineNameOptions"
-            [$iconsByName]="machineIconsByName"
-            [$showCurrentIcon]="false"
-            ($valueChange)="machine.name = $event"
-            ($commit)="onMachineNameChange(production)"
-          ></app-icon-autocomplete-input>
-        </app-form-field-block>
+          [$value]="machine.name"
+          [$name]="'machineName'"
+          [$placeholder]="'Machine name'"
+          [$options]="machineNameOptions"
+          [$iconsByName]="machineIconsByName"
+          [$showSelectedIcon]="false"
+          ($valueChange)="machine.name = $event"
+          ($commit)="onMachineNameChange(production)"
+        ></app-select-single-icon-input>
         <app-form-field-block
           [$label]="'Craft Speed'"
           [$className]="'w-36'"
@@ -139,23 +140,20 @@
 
       <div class="flex flex-col gap-4">
         <div class="flex flex-wrap items-center gap-4">
-          <app-form-field-block
+          <app-select-single-icon-input
             [$label]="'Recipe Name'"
             [$className]="'min-w-72'"
             [$prefixImageUrl]="recipeIconUrl || ''"
             [$prefixIconClass]="recipeIconUrl ? '' : 'fas fa-image'"
-          >
-            <app-icon-autocomplete-input
-              [$value]="recipe.name"
-              [$name]="'recipeName'"
-              [$placeholder]="'Recipe name'"
-              [$options]="recipeNameOptions"
-              [$iconsByName]="recipeIconsByName"
-              [$showCurrentIcon]="false"
-              ($valueChange)="onRecipeNameInput($event, production)"
-              ($commit)="onRecipeNameChange(production)"
-            ></app-icon-autocomplete-input>
-          </app-form-field-block>
+            [$value]="recipe.name"
+            [$name]="'recipeName'"
+            [$placeholder]="'Recipe name'"
+            [$options]="recipeNameOptions"
+            [$iconsByName]="recipeIconsByName"
+            [$showSelectedIcon]="false"
+            ($valueChange)="onRecipeNameInput($event, production)"
+            ($commit)="onRecipeNameChange(production)"
+          ></app-select-single-icon-input>
           <app-form-field-block
             [$label]="'Time'"
             [$className]="'w-40'"
@@ -173,25 +171,12 @@
               step="0.05"
             />
           </app-form-field-block>
-          <div class="flex flex-col gap-1">
-            <span
-              class="text-xs font-semibold tracking-wide whitespace-nowrap text-stone-400 uppercase"
-            >
-              Effective Time
-            </span>
-            <div class="flex items-stretch">
-              <span
-                class="inline-flex h-9 items-center rounded-l-sm border border-r-0 border-stone-700/70 bg-stone-950/80 px-3 font-mono text-sm text-stone-300 tabular-nums"
-              >
-                {{ production.effectiveTime | number: '0.1-2' }}
-              </span>
-              <span
-                class="inline-flex h-9 items-center rounded-r-sm border border-l-0 border-stone-700/70 bg-stone-900 px-2 text-xs font-semibold tracking-wide text-stone-400 uppercase"
-              >
-                s
-              </span>
-            </div>
-          </div>
+          <app-readonly-field
+            [$label]="'Effective Time'"
+            [$className]="'w-40'"
+            [$value]="production.effectiveTime | number: '0.1-2'"
+            [$suffix]="'s'"
+          ></app-readonly-field>
         </div>
 
         <div class="flex flex-wrap items-start gap-6">

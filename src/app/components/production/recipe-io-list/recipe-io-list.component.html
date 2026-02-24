@@ -67,24 +67,21 @@
           />
         </app-form-field-block>
 
-        <app-form-field-block
+        <app-select-single-icon-input
           [$label]="'Item'"
           [$className]="'min-w-56'"
           [$prefixImageUrl]="itemIconUrl || ''"
           [$prefixIconClass]="itemIconUrl ? '' : 'fas fa-image'"
           [$suffix]="$showRates() ? (item.rate ?? 0 | number: '0.1-2') + ' ' + $rateUnit() : ''"
-        >
-          <app-icon-autocomplete-input
-            [$value]="item.name"
-            [$name]="'recipeItemName'"
-            [$placeholder]="'Item name'"
-            [$options]="$itemNameOptions()"
-            [$iconsByName]="$itemIconsByName()"
-            [$showCurrentIcon]="false"
-            ($valueChange)="item.name = $event"
-            ($commit)="onItemNameCommit(i)"
-          ></app-icon-autocomplete-input>
-        </app-form-field-block>
+          [$value]="item.name"
+          [$name]="'recipeItemName'"
+          [$placeholder]="'Item name'"
+          [$options]="$itemNameOptions()"
+          [$iconsByName]="$itemIconsByName()"
+          [$showSelectedIcon]="false"
+          ($valueChange)="item.name = $event"
+          ($commit)="onItemNameCommit(i)"
+        ></app-select-single-icon-input>
       </div>
     </div>
   }

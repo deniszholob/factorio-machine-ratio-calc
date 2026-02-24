@@ -24,7 +24,7 @@ import {
 } from 'src/app/shared/services/settings/settings.service';
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
-import { IconAutocompleteInputComponent } from 'src/app/forms/icon-autocomplete-input/icon-autocomplete-input.component';
+import { SelectSingleIconInputComponent } from 'src/app/forms/select-single-icon-input/select-single-icon-input.component';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
 
 @Component({
@@ -39,7 +39,7 @@ import { Production } from 'src/app/shared/models/production-chain/production/pr
     ProductionEditorSidebarComponent,
     ProductionEditorFullComponent,
     FilePickerComponent,
-    IconAutocompleteInputComponent,
+    SelectSingleIconInputComponent,
   ],
 })
 export class ProductionChainEditorComponent {

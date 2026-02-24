@@ -14,6 +14,9 @@ import { FormFieldBlockComponent } from 'src/app/forms/form-field-block/form-fie
 import { RecipeIoListComponent } from 'src/app/components/production/recipe-io-list/recipe-io-lis.component.';
 import { SectionTitleComponent } from 'src/app/layouts/section-block/section-title/section-title.component';
 import { BadgeComponent } from 'src/app/components/generic/badge/badge.component';
+import { BadgeSize } from 'src/app/components/generic/badge/badge-size.enum';
+import { BadgeTone } from 'src/app/components/generic/badge/badge-tone.enum';
+import { TooltipDirective } from '../../generic/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-catalog-recipe-form',
@@ -27,15 +30,19 @@ import { BadgeComponent } from 'src/app/components/generic/badge/badge.component
     RecipeIoListComponent,
     SectionTitleComponent,
     BadgeComponent,
+    TooltipDirective,
   ],
 })
 export class CatalogRecipeFormComponent {
   protected readonly CatalogRecipeItemCollection = CatalogRecipeItemCollection;
+  protected readonly BadgeSize = BadgeSize;
+  protected readonly BadgeTone = BadgeTone;
 
   public readonly $recipe = input.required<CatalogRecipe>();
   public readonly $itemNames = input.required<string[]>();
   public readonly $itemIconsByName = input<Record<string, string>>({});
   public readonly $usageCount = input<number>(0);
+  public readonly $usageTooltip = input<string>('');
   public readonly $deleteDisabledReason = input<string | undefined>(undefined);
 
   public readonly $recipeChange = output<void>();
