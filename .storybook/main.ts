@@ -41,6 +41,23 @@ const config: StorybookConfig = {
     name: getAbsolutePath('@storybook/angular'),
     options: {},
   },
+  webpackFinal: async (webpackConfig) => {
+    webpackConfig.watchOptions = {
+      ...(webpackConfig.watchOptions ?? {}),
+      ignored: [
+        '**/node_modules/**',
+        '**/.pnpm-store/**',
+        '**/.git/**',
+        '**/dist/**',
+        '**/.angular/**',
+        '**/.nx/**',
+        '**/coverage/**',
+      ],
+      poll: process.env['STORYBOOK_POLLING'] === 'true' ? 1000 : undefined,
+    };
+
+    return webpackConfig;
+  },
 };
 
 export default config;

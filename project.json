@@ -67,6 +67,9 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "poll": 1000
+      },
       "configurations": {
         "production": {
           "buildTarget": "factorio-machine-ratio-calc:build:production"
