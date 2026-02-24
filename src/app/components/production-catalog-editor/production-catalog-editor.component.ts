@@ -29,6 +29,7 @@ import {
   IMPORT_MODE_INFO_OPTIONS,
   ImportMode,
 } from 'src/app/shared/models/import-mode.enum';
+import { TooltipDirective } from '../generic/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-production-catalog-editor',
@@ -44,6 +45,7 @@ import {
     FormFieldBlockComponent,
     BadgeComponent,
     SelectionButtonGroupComponent,
+    TooltipDirective,
   ],
 })
 export class ProductionCatalogEditorComponent {
@@ -522,7 +524,6 @@ interface CatalogUsageCounts {
   recipeByName: Record<string, number>;
   productionByName: Record<string, number>;
 }
-
 
 function normalizeUsageKey(name: string): string {
   return name.trim().toLowerCase();
