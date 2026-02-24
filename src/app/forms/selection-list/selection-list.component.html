@@ -25,11 +25,19 @@
           ></span>
         </span>
       } @else {
-        <span class="flex h-4 w-4 items-center justify-center rounded border border-stone-500">
-          <i
-            class="fas fa-check text-[9px] text-amber-400"
+        <span
+          class="flex h-4 w-4 items-center justify-center rounded border transition"
+          [class.border-amber-400]="isSelected"
+          [class.bg-amber-400/15]="isSelected"
+          [class.border-stone-500]="!isSelected"
+        >
+          <span
+            aria-hidden="true"
+            class="text-[10px] leading-none text-amber-300 transition"
             [style.opacity]="isSelected ? 1 : 0"
-          ></i>
+          >
+            ✓
+          </span>
         </span>
       }
 
