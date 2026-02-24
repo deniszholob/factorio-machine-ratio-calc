@@ -10,6 +10,7 @@ import { CatalogRecipe } from 'src/app/shared/models/production-catalog-state/pr
 import { FormFieldBlockComponent } from 'src/app/forms/form-field-block/form-field-block.component';
 import { RecipeIoListComponent } from 'src/app/components/production/recipe-io-list/recipe-io-lis.component.';
 import { SectionTitleComponent } from 'src/app/layouts/section-block/section-title/section-title.component';
+import { BadgeComponent } from 'src/app/components/generic/badge/badge.component';
 
 @Component({
   selector: 'app-catalog-recipe-form',
@@ -22,6 +23,7 @@ import { SectionTitleComponent } from 'src/app/layouts/section-block/section-tit
     FormFieldBlockComponent,
     RecipeIoListComponent,
     SectionTitleComponent,
+    BadgeComponent,
   ],
 })
 export class CatalogRecipeFormComponent {

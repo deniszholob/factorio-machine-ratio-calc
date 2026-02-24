@@ -65,11 +65,7 @@
       />
     </app-form-field-block>
 
-    <span
-      class="rounded border border-stone-700/70 bg-stone-900/70 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-stone-300 uppercase"
-    >
-      Used {{ usageCount }}
-    </span>
+    <app-badge [$label]="'Used ' + usageCount"></app-badge>
     <span [title]="usageCount > 0 ? deleteDisabledReason : ''">
       <button
         class="btn btn-icon btn-danger h-9"
