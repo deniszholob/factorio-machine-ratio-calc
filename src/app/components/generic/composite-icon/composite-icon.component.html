@@ -1,0 +1,39 @@
+@let primaryIconUrl = $primaryIconUrl();
+@let primaryLabel = $primaryLabel();
+@let secondaryIconUrl = $secondaryIconUrl();
+@let secondaryLabel = $secondaryLabel();
+@let missingIconTitle = $missingIconTitle();
+
+<span class="relative h-8 w-10 shrink-0">
+  @if (primaryIconUrl) {
+    <img
+      class="absolute top-0 left-0 h-8 w-8 rounded-sm border border-stone-700 object-cover"
+      [src]="primaryIconUrl"
+      [alt]="primaryLabel + ' icon'"
+    />
+  } @else {
+    <span
+      class="absolute top-0 left-0 flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
+      [title]="missingIconTitle"
+      aria-hidden="true"
+    >
+      <i class="fas fa-image"></i>
+    </span>
+  }
+
+  @if (secondaryIconUrl) {
+    <img
+      class="absolute right-0 bottom-0 h-5 w-5 object-cover"
+      [src]="secondaryIconUrl"
+      [alt]="secondaryLabel + ' icon'"
+    />
+  } @else {
+    <span
+      class="absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center bg-stone-800/40 text-xs text-stone-500"
+      [title]="missingIconTitle"
+      aria-hidden="true"
+    >
+      <i class="fas fa-image"></i>
+    </span>
+  }
+</span>

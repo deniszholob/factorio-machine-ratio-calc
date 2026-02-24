@@ -440,38 +440,12 @@
           <div class="flex flex-col divide-y divide-stone-800/80">
             @for (template of visibleProductionCards; track template.name) {
               <div class="flex flex-wrap items-center gap-3 py-3">
-                <span class="relative h-8 w-10 shrink-0">
-                  @if (template.machineIconUrl) {
-                    <img
-                      class="absolute top-0 left-0 h-8 w-8 rounded-sm border border-stone-700 object-cover"
-                      [src]="template.machineIconUrl"
-                      [alt]="template.machineName + ' icon'"
-                    />
-                  } @else {
-                    <span
-                      class="absolute top-0 left-0 flex h-8 w-8 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
-                      title="Provide an icon in the Catalog"
-                      aria-hidden="true"
-                    >
-                      <i class="fas fa-image"></i>
-                    </span>
-                  }
-                  @if (template.recipeIconUrl) {
-                    <img
-                      class="absolute right-0 bottom-0 h-5 w-5 rounded-sm border border-stone-700 object-cover"
-                      [src]="template.recipeIconUrl"
-                      [alt]="template.recipeName + ' icon'"
-                    />
-                  } @else {
-                    <span
-                      class="absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
-                      title="Provide an icon in the Catalog"
-                      aria-hidden="true"
-                    >
-                      <i class="fas fa-image"></i>
-                    </span>
-                  }
-                </span>
+                <app-composite-icon
+                  [$primaryIconUrl]="template.machineIconUrl"
+                  [$primaryLabel]="template.machineName"
+                  [$secondaryIconUrl]="template.recipeIconUrl"
+                  [$secondaryLabel]="template.recipeName"
+                ></app-composite-icon>
 
                 <div class="flex min-w-56 flex-col gap-1">
                   <span class="text-xs font-semibold tracking-wide text-stone-400 uppercase"

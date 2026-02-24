@@ -22,6 +22,7 @@ import { FormFieldBlockComponent } from '../../forms/form-field-block/form-field
 import { BadgeComponent } from '../generic/badge/badge.component';
 import { BadgeSize } from '../generic/badge/badge-size.enum';
 import { BadgeTone } from '../generic/badge/badge-tone.enum';
+import { CompositeIconComponent } from '../generic/composite-icon/composite-icon.component';
 import {
   SelectionButtonGroupComponent,
   SelectionButtonOption,
@@ -46,6 +47,7 @@ import { TooltipDirective } from '../generic/tooltip/tooltip.directive';
     CatalogRecipeFormComponent,
     FormFieldBlockComponent,
     BadgeComponent,
+    CompositeIconComponent,
     SelectionButtonGroupComponent,
     TooltipDirective,
   ],

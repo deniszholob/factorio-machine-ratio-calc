@@ -23,6 +23,7 @@ import { ProductionMovePreviewMode } from 'src/app/shared/services/production/pr
 import { BadgeComponent } from 'src/app/components/generic/badge/badge.component';
 import { BadgeTone } from 'src/app/components/generic/badge/badge-tone.enum';
 import { BadgeSize } from 'src/app/components/generic/badge/badge-size.enum';
+import { CompositeIconComponent } from 'src/app/components/generic/composite-icon/composite-icon.component';
 
 @Component({
   selector: 'app-production-item',
@@ -35,6 +36,7 @@ import { BadgeSize } from 'src/app/components/generic/badge/badge-size.enum';
     TooltipDirective,
     RateUnitValueComponent,
     BadgeComponent,
+    CompositeIconComponent,
     CdkDrag,
     CdkDragHandle,
   ],

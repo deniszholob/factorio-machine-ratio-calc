@@ -28,6 +28,7 @@ import { MachineItem } from 'src/app/shared/models/production-chain/production/m
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
 import { SectionTitleComponent } from 'src/app/layouts/section-block/section-title/section-title.component';
 import { ReadonlyFieldComponent } from 'src/app/forms/readonly-field/readonly-field.component';
+import { CompositeIconComponent } from 'src/app/components/generic/composite-icon/composite-icon.component';
 
 @Component({
   selector: 'app-production-editor',
@@ -42,6 +43,7 @@ import { ReadonlyFieldComponent } from 'src/app/forms/readonly-field/readonly-fi
     RecipeIoListComponent,
     SectionTitleComponent,
     ReadonlyFieldComponent,
+    CompositeIconComponent,
   ],
 })
 export class ProductionEditorComponent {
