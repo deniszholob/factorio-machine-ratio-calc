@@ -1,5 +1,5 @@
 <div
-  class="flex min-h-40 min-w-[22rem] flex-1 flex-col gap-2 rounded-md border p-2 transition-colors"
+  class="flex min-h-40 min-w-[22rem] flex-1 flex-col gap-2 rounded-md border transition-colors"
   [ngClass]="{
     'border-transparent': !$isDropActive(),
     'border-blue-400/70 bg-blue-950/15':
@@ -16,7 +16,7 @@
   (cdkDropListDropped)="onDrop($event)"
   cdkDropList
 >
-  <div class="text-md flex flex-row items-center gap-2 p-2">
+  <div class="text-md flex flex-row items-center gap-2">
     <button class="btn btn-icon btn-success" [title]="'Add item'" (click)="onAdd()">
       <i class="fas fa-plus"></i>
     </button>
