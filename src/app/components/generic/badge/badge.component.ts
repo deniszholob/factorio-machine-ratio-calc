@@ -13,8 +13,8 @@ import { BadgeTone } from './badge-tone.enum';
     <span
       class="inline-flex items-center justify-center border font-semibold tracking-wide uppercase"
       [ngClass]="{
-        'h-5 rounded px-1.5 text-[10px]': size === BadgeSize.Sm,
-        'h-9 rounded-full px-2 text-xs': size === BadgeSize.Md,
+        'h-5 rounded-sm px-1.5 text-[10px]': size === BadgeSize.Sm,
+        'my-1 h-7 rounded px-2 text-xs': size === BadgeSize.Md,
         'border-stone-600/70 bg-stone-900/70 text-stone-300':
           tone === BadgeTone.Stone,
         'border-teal-700/70 bg-teal-950/30 text-teal-300':
