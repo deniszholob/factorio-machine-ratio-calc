@@ -15,6 +15,7 @@
 @let machineUsageTooltipByName = $machineUsageTooltipByName();
 @let recipeUsageByName = $recipeUsageByName();
 @let recipeUsageTooltipByName = $recipeUsageTooltipByName();
+@let editingProductionTemplateDraft = $editingProductionTemplateDraft();
 
 <section class="flex flex-col gap-4 p-4">
   <div>
@@ -466,6 +467,16 @@
                 ></app-badge>
 
                 <button
+                  class="btn btn-icon btn-secondary-outline gap-2"
+                  (click)="onEditProduction(template.index)"
+                  type="button"
+                  title="Edit production template"
+                >
+                  <i class="fas fa-pen-to-square"></i>
+                  <span>Edit</span>
+                </button>
+
+                <button
                   class="btn btn-icon btn-danger"
                   [title]="
                     template.usageCount > 0
@@ -492,3 +503,21 @@
     }
   }
 </section>
+
+<app-modal
+  [($show)]="$isProductionEditorOpen"
+  [$title]="'Edit Catalog Production'"
+  [$primaryButton]="'Save'"
+  [$secondaryButton]="'Cancel'"
+  [$bodyClass]="'flex-auto overflow-auto p-4'"
+  ($primaryButtonClick)="onSaveEditedProduction()"
+  ($secondaryButtonClick)="onCancelEditProduction()"
+>
+  @if (editingProductionTemplateDraft) {
+    <app-production-editor
+      [$machine]="editingProductionTemplateDraft"
+      [$persistCatalog]="false"
+      ($machineChange)="onEditedProductionDraftChange($event)"
+    ></app-production-editor>
+  }
+</app-modal>

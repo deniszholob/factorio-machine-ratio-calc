@@ -87,11 +87,15 @@
       [$itemNameOptions]="$itemNames()"
       [$itemIconsByName]="$itemIconsByName()"
       [$showRates]="true"
+      [$dragEnabled]="true"
+      [$listId]="inputListId"
+      [$connectedTo]="[outputListId]"
       [$rateUnit]="'/s'"
       ($add)="onAddRecipeItem(CatalogRecipeItemCollection.Inputs)"
       ($remove)="onRemoveRecipeItem(CatalogRecipeItemCollection.Inputs, $event)"
       ($itemCountChange)="onRecipeChange()"
       ($itemNameCommit)="onRecipeChange()"
+      ($dropListDropped)="onDrop($event)"
     ></app-recipe-io-list>
 
     <app-recipe-io-list
@@ -100,11 +104,15 @@
       [$itemNameOptions]="$itemNames()"
       [$itemIconsByName]="$itemIconsByName()"
       [$showRates]="true"
+      [$dragEnabled]="true"
+      [$listId]="outputListId"
+      [$connectedTo]="[inputListId]"
       [$rateUnit]="'/s'"
       ($add)="onAddRecipeItem(CatalogRecipeItemCollection.Outputs)"
       ($remove)="onRemoveRecipeItem(CatalogRecipeItemCollection.Outputs, $event)"
       ($itemCountChange)="onRecipeChange()"
       ($itemNameCommit)="onRecipeChange()"
+      ($dropListDropped)="onDrop($event)"
     ></app-recipe-io-list>
   </div>
 </div>

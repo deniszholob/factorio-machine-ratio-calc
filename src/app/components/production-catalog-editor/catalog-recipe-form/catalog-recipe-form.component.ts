@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
+import {
   ChangeDetectionStrategy,
   Component,
   input,
@@ -52,6 +57,9 @@ export class CatalogRecipeFormComponent {
     collection: CatalogRecipeItemCollection;
     index: number;
   }>();
+  private readonly recipeListIdPrefix = createRecipeListIdPrefix();
+  protected readonly inputListId = `${this.recipeListIdPrefix}-inputs`;
+  protected readonly outputListId = `${this.recipeListIdPrefix}-outputs`;
 
   protected onRecipeChange(): void {
     this.$recipeChange.emit();
@@ -74,4 +82,35 @@ export class CatalogRecipeFormComponent {
   ): void {
     this.$removeRecipeItem.emit({ collection, index });
   }
+
+  protected onDrop(
+    event: CdkDragDrop<
+      {
+        name: string;
+        count: number;
+        rate?: number;
+      }[]
+    >,
+  ): void {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    }
+    this.onRecipeChange();
+  }
+}
+
+function createRecipeListIdPrefix(): string {
+  const randomPart = Math.random().toString(36).slice(2, 10);
+  return `catalog-recipe-${randomPart}`;
 }

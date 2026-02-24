@@ -11,6 +11,8 @@ import { ProductionChainItemComponent } from './production-chain-item/production
 import { ModalComponent } from '../generic/modal/modal.component';
 import { TooltipDirective } from '../generic/tooltip/tooltip.directive';
 import { ProductionChain } from 'src/app/shared/models/production-chain/production-chain.model';
+import { SettingsService } from 'src/app/shared/services/settings/settings.service';
+import { ProductionCatalogUiService } from 'src/app/shared/services/production-catalog/production-catalog-ui.service';
 
 @Component({
   selector: 'app-production-chain-group',
@@ -21,6 +23,10 @@ import { ProductionChain } from 'src/app/shared/models/production-chain/producti
 })
 export class ProductionChainGroupComponent {
   private readonly productionChainService = inject(ProductionChainService);
+  private readonly settingsService = inject(SettingsService);
+  private readonly productionCatalogUiService = inject(
+    ProductionCatalogUiService,
+  );
 
   protected readonly $confirmResetOpen = signal<boolean>(false);
 
@@ -61,6 +67,8 @@ export class ProductionChainGroupComponent {
   }
 
   protected onSelectProductionChain(productionId: string): void {
+    this.settingsService.closeSettings();
+    this.productionCatalogUiService.closeCatalog();
     this.productionChainService.selectProduction(productionId);
   }
 

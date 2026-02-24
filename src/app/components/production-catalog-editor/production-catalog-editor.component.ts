@@ -33,6 +33,9 @@ import {
   ImportMode,
 } from 'src/app/shared/models/import-mode.enum';
 import { TooltipDirective } from '../generic/tooltip/tooltip.directive';
+import { ModalComponent } from '../generic/modal/modal.component';
+import { ProductionEditorComponent } from '../production/production-chain-editor/production-editor/production-editor.component';
+import { Production } from 'src/app/shared/models/production-chain/production/production.model';
 
 @Component({
   selector: 'app-production-catalog-editor',
@@ -50,6 +53,8 @@ import { TooltipDirective } from '../generic/tooltip/tooltip.directive';
     CompositeIconComponent,
     SelectionButtonGroupComponent,
     TooltipDirective,
+    ModalComponent,
+    ProductionEditorComponent,
   ],
 })
 export class ProductionCatalogEditorComponent {
@@ -88,6 +93,13 @@ export class ProductionCatalogEditorComponent {
   );
   protected readonly $importMode = signal<ImportMode>(ImportMode.Add);
   protected readonly $uploadError = signal<string | undefined>(undefined);
+  protected readonly $isProductionEditorOpen = signal<boolean>(false);
+  protected readonly $editingProductionTemplateIndex = signal<number | undefined>(
+    undefined,
+  );
+  protected readonly $editingProductionTemplateDraft = signal<
+    Production | undefined
+  >(undefined);
   protected readonly $itemFilter = signal<string>('');
   protected readonly $machineFilter = signal<string>('');
   protected readonly $recipeFilter = signal<string>('');
@@ -174,7 +186,7 @@ export class ProductionCatalogEditorComponent {
         addUsageLabelByName(
           productionUsedBySetByName,
           production.name,
-          createUsageLabel('Production chain', chain.display),
+          usageLabel,
         );
         for (const item of production.recipe.inputs) {
           incrementCountByName(itemByName, item.name);
@@ -516,6 +528,41 @@ export class ProductionCatalogEditorComponent {
     this.productionCatalogService.removeProductionTemplateAtIndex(index);
   }
 
+  protected onEditProduction(index: number): void {
+    const template = this.$catalog().productions[index];
+    if (!template) {
+      return;
+    }
+    this.$editingProductionTemplateIndex.set(index);
+    this.$editingProductionTemplateDraft.set(cloneProduction(template.production));
+    this.$isProductionEditorOpen.set(true);
+  }
+
+  protected onEditedProductionDraftChange(production: Production): void {
+    this.$editingProductionTemplateDraft.set(cloneProduction(production));
+  }
+
+  protected onSaveEditedProduction(): void {
+    const index = this.$editingProductionTemplateIndex();
+    const draft = this.$editingProductionTemplateDraft();
+    if (index === undefined || !draft) {
+      this.onCancelEditProduction();
+      return;
+    }
+    this.productionCatalogService.updateProductionTemplateAtIndex(index, {
+      name: draft.name,
+      iconUrl: draft.iconUrl,
+      production: draft,
+    });
+    this.onCancelEditProduction();
+  }
+
+  protected onCancelEditProduction(): void {
+    this.$isProductionEditorOpen.set(false);
+    this.$editingProductionTemplateIndex.set(undefined);
+    this.$editingProductionTemplateDraft.set(undefined);
+  }
+
   private async runUpload(action: () => Promise<void>): Promise<void> {
     try {
       await action();
@@ -652,4 +699,11 @@ function getCountByName(map: Record<string, number>, name: string): number {
     return 0;
   }
   return map[key] ?? 0;
+}
+
+function cloneProduction(production: Production): Production {
+  if (typeof structuredClone === 'function') {
+    return structuredClone(production);
+  }
+  return JSON.parse(JSON.stringify(production)) as Production;
 }

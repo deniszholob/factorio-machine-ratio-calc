@@ -50,6 +50,7 @@ export class ProductionEditorComponent {
   private readonly productionCatalogService = inject(ProductionCatalogService);
 
   public readonly $machine = input.required<Production | undefined>();
+  public readonly $persistCatalog = input<boolean>(true);
   public readonly $machineChange = output<Production>();
   public readonly $itemNameOptions = this.productionCatalogService.$itemNames;
   public readonly $recipeNameOptions =
@@ -231,7 +232,9 @@ export class ProductionEditorComponent {
 
   private emitMachineChanged(production: Production): void {
     this.syncRecipeDefaults(production);
-    this.productionCatalogService.upsertProductionTemplate(production);
+    if (this.$persistCatalog()) {
+      this.productionCatalogService.upsertProductionTemplate(production);
+    }
     this.$machineChange.emit(production);
   }
 
