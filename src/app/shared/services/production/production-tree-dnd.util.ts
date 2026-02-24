@@ -1,5 +1,11 @@
 import { Production } from '../../models/production-chain/production/production.model';
 
+export enum ProductionMovePreviewMode {
+  'IntoParent' = 'IntoParent',
+  'OutsideParent' = 'OutsideParent',
+  'Reorder' = 'Reorder',
+}
+
 export interface ProductionTreeRow {
   production: Production;
   depth: number;
@@ -14,7 +20,7 @@ export interface ProductionMoveEvent {
 }
 
 export interface ProductionMovePreview extends ProductionMoveEvent {
-  mode: 'into-parent' | 'outside-parent' | 'reorder';
+  mode: ProductionMovePreviewMode;
 }
 
 /** Builds a tree-flattened visible list from a flat parent-linked collection. */
@@ -144,11 +150,11 @@ export function buildDragPreview(
     nextDepth,
   );
 
-  let mode: ProductionMovePreview['mode'] = 'reorder';
+  let mode: ProductionMovePreview['mode'] = ProductionMovePreviewMode.Reorder;
   if (nextDepth > sourceRow.depth) {
-    mode = 'into-parent';
+    mode = ProductionMovePreviewMode.IntoParent;
   } else if (nextDepth < sourceRow.depth) {
-    mode = 'outside-parent';
+    mode = ProductionMovePreviewMode.OutsideParent;
   }
 
   return {

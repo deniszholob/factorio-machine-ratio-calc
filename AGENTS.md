@@ -29,6 +29,11 @@ Only write v4 tailwind code!
 - Always use Types, if javascript use js docs to enforce types
 - Use actual 'function' keywords when creating tol level functions instead of arrow functions (arrow functions are ok for callbacks in things like array.map() etc...)
 - DO NOT create nested functions prefer using state and defining flat level functions
+- Always use Enums instead of string literal union types
+  - e.g. instead of `export type Options = "Option1" | "Option2"` use `export enum Options { 'Option1' = 'Option1', 'Option2' = 'Option2' }`
+  - Always CapitalCamelCase BOTH the key and value of the enum
+  - See `.vscode/ngfg-templates/__name__.enum.ts.mustache`
+  - When writing stories with an enum input, use the option mapping like `$inputName: { options: Object.values(YourEnum), mapping: YourEnum, control: { type: 'select' }}`. See `.vscode/ngfg-templates/__name__.component.stories.ts.mustache`
 
 ## DRY
 

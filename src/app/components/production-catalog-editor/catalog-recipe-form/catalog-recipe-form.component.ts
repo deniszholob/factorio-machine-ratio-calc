@@ -6,7 +6,10 @@ import {
   output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CatalogRecipe } from 'src/app/shared/models/production-catalog-state/production-catalog-state.model';
+import {
+  CatalogRecipe,
+  CatalogRecipeItemCollection,
+} from 'src/app/shared/models/production-catalog-state/production-catalog-state.model';
 import { FormFieldBlockComponent } from 'src/app/forms/form-field-block/form-field-block.component';
 import { RecipeIoListComponent } from 'src/app/components/production/recipe-io-list/recipe-io-lis.component.';
 import { SectionTitleComponent } from 'src/app/layouts/section-block/section-title/section-title.component';
@@ -27,6 +30,8 @@ import { BadgeComponent } from 'src/app/components/generic/badge/badge.component
   ],
 })
 export class CatalogRecipeFormComponent {
+  protected readonly CatalogRecipeItemCollection = CatalogRecipeItemCollection;
+
   public readonly $recipe = input.required<CatalogRecipe>();
   public readonly $itemNames = input.required<string[]>();
   public readonly $itemIconsByName = input<Record<string, string>>({});
@@ -35,9 +40,9 @@ export class CatalogRecipeFormComponent {
 
   public readonly $recipeChange = output<void>();
   public readonly $removeRecipe = output<void>();
-  public readonly $addRecipeItem = output<'inputs' | 'outputs'>();
+  public readonly $addRecipeItem = output<CatalogRecipeItemCollection>();
   public readonly $removeRecipeItem = output<{
-    collection: 'inputs' | 'outputs';
+    collection: CatalogRecipeItemCollection;
     index: number;
   }>();
 
@@ -52,12 +57,12 @@ export class CatalogRecipeFormComponent {
     this.$removeRecipe.emit();
   }
 
-  protected onAddRecipeItem(collection: 'inputs' | 'outputs'): void {
+  protected onAddRecipeItem(collection: CatalogRecipeItemCollection): void {
     this.$addRecipeItem.emit(collection);
   }
 
   protected onRemoveRecipeItem(
-    collection: 'inputs' | 'outputs',
+    collection: CatalogRecipeItemCollection,
     index: number,
   ): void {
     this.$removeRecipeItem.emit({ collection, index });

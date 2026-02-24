@@ -16,6 +16,19 @@ export interface SelectionListOption<T extends EnumId = string> {
   readonly description?: string;
 }
 
+export enum SelectionListType {
+  'Radio' = 'Radio',
+  'Checkbox' = 'Checkbox',
+}
+
+/** Html input type mapping */
+const SELECTION_LIST_INPUT_TYPE_BY_TYPE: Readonly<
+  Record<SelectionListType, string>
+> = {
+  [SelectionListType.Radio]: 'radio',
+  [SelectionListType.Checkbox]: 'checkbox',
+};
+
 @Component({
   selector: 'app-selection-list',
   templateUrl: './selection-list.component.html',
@@ -25,14 +38,20 @@ export interface SelectionListOption<T extends EnumId = string> {
 })
 export class SelectionListComponent<T extends EnumId> {
   protected readonly BadgeTone = BadgeTone;
+  protected readonly SelectionListType = SelectionListType;
 
   public readonly $name = input<string>('selection-list');
-  public readonly $type = input<'radio' | 'checkbox'>('radio');
+  public readonly $type = input<SelectionListType>(SelectionListType.Radio);
   public readonly $options =
     input.required<readonly SelectionListOption<T>[]>();
+  public readonly $defaultValue = input<T | undefined>(undefined);
+
   public readonly $selectedValue = model<T | undefined>(undefined);
   public readonly $selectedValues = model<readonly T[]>([]);
-  public readonly $defaultValue = input<T | undefined>(undefined);
+
+  protected readonly $inputType = computed<string>(() => {
+    return SELECTION_LIST_INPUT_TYPE_BY_TYPE[this.$type()];
+  });
 
   protected readonly $selectedValueSet = computed<Set<T>>(() => {
     return new Set(this.$selectedValues());

@@ -13,6 +13,7 @@ import {
   CatalogMachine,
   CatalogProduction,
   CatalogRecipe,
+  CatalogRecipeItemCollection,
 } from 'src/app/shared/models/production-catalog-state/production-catalog-state.model';
 import { FilePickerComponent } from 'src/app/forms/file-picker/file-picker.component';
 import { SectionBlockComponent } from 'src/app/layouts/section-block/section-block.component';
@@ -359,18 +360,26 @@ export class ProductionCatalogEditorComponent {
 
   protected onAddRecipeItem(
     recipe: CatalogRecipe,
-    collection: 'inputs' | 'outputs',
+    collection: CatalogRecipeItemCollection,
   ): void {
-    recipe[collection].push({ name: '', count: 1 });
+    if (collection === CatalogRecipeItemCollection.Inputs) {
+      recipe.inputs.push({ name: '', count: 1 });
+    } else {
+      recipe.outputs.push({ name: '', count: 1 });
+    }
     this.onRecipeChange(recipe);
   }
 
   protected onRemoveRecipeItem(
     recipe: CatalogRecipe,
     itemIndex: number,
-    collection: 'inputs' | 'outputs',
+    collection: CatalogRecipeItemCollection,
   ): void {
-    recipe[collection].splice(itemIndex, 1);
+    if (collection === CatalogRecipeItemCollection.Inputs) {
+      recipe.inputs.splice(itemIndex, 1);
+    } else {
+      recipe.outputs.splice(itemIndex, 1);
+    }
     this.onRecipeChange(recipe);
   }
 
@@ -513,6 +522,7 @@ interface CatalogUsageCounts {
   recipeByName: Record<string, number>;
   productionByName: Record<string, number>;
 }
+
 
 function normalizeUsageKey(name: string): string {
   return name.trim().toLowerCase();

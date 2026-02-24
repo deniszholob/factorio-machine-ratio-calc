@@ -13,6 +13,11 @@ export interface SelectionButtonOption<T extends EnumId = string> {
   readonly count?: number;
 }
 
+export enum SelectionButtonActiveTone {
+  'Primary' = 'Primary',
+  'Warning' = 'Warning',
+}
+
 @Component({
   selector: 'app-selection-button-group',
   templateUrl: './selection-button-group.component.html',
@@ -21,10 +26,14 @@ export interface SelectionButtonOption<T extends EnumId = string> {
   imports: [],
 })
 export class SelectionButtonGroupComponent {
+  protected readonly SelectionButtonActiveTone = SelectionButtonActiveTone;
+
   public readonly $ariaLabel = input<string>('Selection');
   public readonly $containerClass = input<string>('');
   public readonly $buttonClass = input<string>('h-8 px-3 py-0');
-  public readonly $activeTone = input<'primary' | 'warning'>('primary');
+  public readonly $activeTone = input<SelectionButtonActiveTone>(
+    SelectionButtonActiveTone.Primary,
+  );
 
   public readonly $options = input.required<readonly SelectionButtonOption[]>();
 

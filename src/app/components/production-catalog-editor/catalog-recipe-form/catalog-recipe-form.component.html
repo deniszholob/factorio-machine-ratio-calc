@@ -83,8 +83,8 @@
       [$itemIconsByName]="$itemIconsByName()"
       [$showRates]="true"
       [$rateUnit]="'/s'"
-      ($add)="onAddRecipeItem('inputs')"
-      ($remove)="onRemoveRecipeItem('inputs', $event)"
+      ($add)="onAddRecipeItem(CatalogRecipeItemCollection.Inputs)"
+      ($remove)="onRemoveRecipeItem(CatalogRecipeItemCollection.Inputs, $event)"
       ($itemCountChange)="onRecipeChange()"
       ($itemNameCommit)="onRecipeChange()"
     ></app-recipe-io-list>
@@ -96,8 +96,8 @@
       [$itemIconsByName]="$itemIconsByName()"
       [$showRates]="true"
       [$rateUnit]="'/s'"
-      ($add)="onAddRecipeItem('outputs')"
-      ($remove)="onRemoveRecipeItem('outputs', $event)"
+      ($add)="onAddRecipeItem(CatalogRecipeItemCollection.Outputs)"
+      ($remove)="onRemoveRecipeItem(CatalogRecipeItemCollection.Outputs, $event)"
       ($itemCountChange)="onRecipeChange()"
       ($itemNameCommit)="onRecipeChange()"
     ></app-recipe-io-list>

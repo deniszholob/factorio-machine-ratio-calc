@@ -31,7 +31,7 @@
 
         <app-selection-list
           [$name]="'editor-display'"
-          [$type]="'radio'"
+          [$type]="SelectionListType.Radio"
           [$options]="editorDisplayOptions"
           [$selectedValue]="editorMode"
           [$defaultValue]="defaultEditorMode"
@@ -52,7 +52,7 @@
             <div class="font-semibold text-stone-200">Production Chains</div>
             <app-selection-list
               [$name]="'import-chains-mode'"
-              [$type]="'radio'"
+              [$type]="SelectionListType.Radio"
               [$options]="importBehaviorOptions"
               [$selectedValue]="importChainsMode"
               [$defaultValue]="defaultImportChainsMode"
@@ -64,7 +64,7 @@
             <div class="font-semibold text-stone-200">Productions</div>
             <app-selection-list
               [$name]="'import-productions-mode'"
-              [$type]="'radio'"
+              [$type]="SelectionListType.Radio"
               [$options]="importBehaviorOptions"
               [$selectedValue]="importProductionsMode"
               [$defaultValue]="defaultImportProductionsMode"

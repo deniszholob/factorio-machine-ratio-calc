@@ -1,6 +1,9 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
-import { SelectionListComponent } from './selection-list.component';
+import {
+  SelectionListComponent,
+  SelectionListType,
+} from './selection-list.component';
 
 export default {
   component: SelectionListComponent,
@@ -8,13 +11,18 @@ export default {
     docs: { description: { component: 'SelectionListComponent' } },
   },
   argTypes: {
+    $type: {
+      options: Object.values(SelectionListType),
+      mapping: SelectionListType,
+      control: { type: 'select' },
+    },
     $selectedValue: { control: { type: 'select' }, table: { disable: true } },
     /** === Output Actions === */
     // inputChange: { action: 'inputChange', table: { disable: true } },
   },
   args: {
     $name: 'editor-display',
-    $type: 'radio',
+    $type: SelectionListType.Radio,
     $selectedValue: 'modal',
     $defaultValue: 'modal',
     $options: [

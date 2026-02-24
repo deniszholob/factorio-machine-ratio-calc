@@ -21,6 +21,7 @@ import { RateUnitValueComponent } from 'src/app/components/generic/rate-unit-val
 import {
   ProductionMoveEvent,
   ProductionMovePreview,
+  ProductionMovePreviewMode,
   ProductionTreeRow,
   buildDragPreview,
   buildVisibleRows,
@@ -42,6 +43,8 @@ import { Production } from 'src/app/shared/models/production-chain/production/pr
   ],
 })
 export class ProductionGroupComponent {
+  protected readonly ProductionMovePreviewMode = ProductionMovePreviewMode;
+
   private readonly productionCatalogService = inject(ProductionCatalogService);
 
   public readonly $machines = input.required<Production[]>();
@@ -122,12 +125,12 @@ export class ProductionGroupComponent {
   protected readonly $dropHint = computed<string | undefined>(() => {
     const preview = this.$dragPreview();
     if (!preview) {
-      return undefined;
+      return 'Drop mode: none, start dragging to see options';
     }
-    if (preview.mode === 'into-parent') {
+    if (preview.mode === ProductionMovePreviewMode.IntoParent) {
       return 'Drop mode: into parent';
     }
-    if (preview.mode === 'outside-parent') {
+    if (preview.mode === ProductionMovePreviewMode.OutsideParent) {
       return 'Drop mode: outside parent';
     }
     return 'Drop mode: reorder within level';
@@ -141,7 +144,10 @@ export class ProductionGroupComponent {
   });
   protected readonly $dropParentById = computed<Record<string, boolean>>(() => {
     const preview = this.$dragPreview();
-    if (preview?.mode !== 'into-parent' || !preview.parentProductionId) {
+    if (
+      preview?.mode !== ProductionMovePreviewMode.IntoParent ||
+      !preview.parentProductionId
+    ) {
       return {};
     }
     return { [preview.parentProductionId]: true };

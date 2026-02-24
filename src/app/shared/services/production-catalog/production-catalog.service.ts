@@ -20,6 +20,13 @@ const DEFAULT_MACHINE_NAME = 'Default Machine';
 const DEFAULT_PRODUCTION_NAME = 'Project Assembly';
 const DEFAULT_AUTONAME_PRODUCTION_NAME = `${DEFAULT_RECIPE_NAME} in ${DEFAULT_MACHINE_NAME}`;
 
+enum CatalogNameType {
+  'Item' = 'Item',
+  'Recipe' = 'Recipe',
+  'Machine' = 'Machine',
+  'Production' = 'Production',
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProductionCatalogService {
   private readonly _$catalog = signal<ProductionCatalogState>(loadCatalog());
@@ -772,7 +779,7 @@ function buildCatalogStateFromProductions(
     const production = normalizeProduction(source);
 
     const machineName = production.machine.name.trim();
-    if (isAllowedCatalogName(machineName, 'machine')) {
+    if (isAllowedCatalogName(machineName, CatalogNameType.Machine)) {
       upsertCatalogItemByName(nextState.items, {
         name: machineName,
         isMachine: true,
@@ -785,7 +792,7 @@ function buildCatalogStateFromProductions(
 
     const recipeName = production.recipe.name.trim();
     const firstOutputName = production.recipe.outputs[0]?.name?.trim() ?? '';
-    if (isAllowedCatalogName(recipeName, 'recipe')) {
+    if (isAllowedCatalogName(recipeName, CatalogNameType.Recipe)) {
       upsertRecipeByName(nextState.recipes, {
         name: recipeName,
         iconUrl:
@@ -806,7 +813,7 @@ function buildCatalogStateFromProductions(
 
     for (const item of production.recipe.inputs) {
       const itemName = item.name.trim();
-      if (!isAllowedCatalogName(itemName, 'item')) {
+      if (!isAllowedCatalogName(itemName, CatalogNameType.Item)) {
         continue;
       }
       upsertCatalogItemByName(nextState.items, {
@@ -817,7 +824,7 @@ function buildCatalogStateFromProductions(
 
     for (const item of production.recipe.outputs) {
       const itemName = item.name.trim();
-      if (!isAllowedCatalogName(itemName, 'item')) {
+      if (!isAllowedCatalogName(itemName, CatalogNameType.Item)) {
         continue;
       }
       upsertCatalogItemByName(nextState.items, {
@@ -827,7 +834,7 @@ function buildCatalogStateFromProductions(
     }
 
     const productionName = production.name.trim();
-    if (!isAllowedCatalogName(productionName, 'production')) {
+    if (!isAllowedCatalogName(productionName, CatalogNameType.Production)) {
       continue;
     }
 
@@ -1005,7 +1012,7 @@ function withCatalogConsistency(
   const mergedItems = mergeByName(
     items,
     recipeItemNames
-      .filter((name) => isAllowedCatalogName(name, 'item'))
+      .filter((name) => isAllowedCatalogName(name, CatalogNameType.Item))
       .map((name) => ({ name })),
   );
 
@@ -1150,7 +1157,7 @@ function normalizeCatalogItem(payload: unknown): CatalogItem | undefined {
     drain?: unknown;
   };
   const name = typeof item.name === 'string' ? item.name.trim() : '';
-  if (!isAllowedCatalogName(name, 'item')) {
+  if (!isAllowedCatalogName(name, CatalogNameType.Item)) {
     return undefined;
   }
 
@@ -1181,7 +1188,7 @@ function normalizeCatalogRecipe(payload: unknown): CatalogRecipe | undefined {
   };
 
   const name = typeof recipe.name === 'string' ? recipe.name.trim() : '';
-  if (!isAllowedCatalogName(name, 'recipe')) {
+  if (!isAllowedCatalogName(name, CatalogNameType.Recipe)) {
     return undefined;
   }
 
@@ -1213,7 +1220,9 @@ function normalizeCatalogProduction(
     const normalizedDirect = normalizeProduction(
       asProductionLike as Production,
     );
-    if (!isAllowedCatalogName(normalizedDirect.name, 'production')) {
+    if (
+      !isAllowedCatalogName(normalizedDirect.name, CatalogNameType.Production)
+    ) {
       return undefined;
     }
     return {
@@ -1232,7 +1241,7 @@ function normalizeCatalogProduction(
     typeof productionTemplate.name === 'string'
       ? productionTemplate.name.trim()
       : '';
-  if (!isAllowedCatalogName(name, 'production')) {
+  if (!isAllowedCatalogName(name, CatalogNameType.Production)) {
     return undefined;
   }
 
@@ -1264,7 +1273,7 @@ function normalizeCatalogMachine(payload: unknown): CatalogMachine | undefined {
   };
 
   const name = typeof machine.name === 'string' ? machine.name.trim() : '';
-  if (!isAllowedCatalogName(name, 'machine')) {
+  if (!isAllowedCatalogName(name, CatalogNameType.Machine)) {
     return undefined;
   }
 
@@ -1318,19 +1327,19 @@ function cloneProduction(production: Production): Production {
 
 function isAllowedCatalogName(
   name: string,
-  type: 'item' | 'recipe' | 'machine' | 'production',
+  type: CatalogNameType,
 ): boolean {
   const trimmed = name.trim();
   if (!trimmed) {
     return false;
   }
-  if (type === 'item') {
+  if (type === CatalogNameType.Item) {
     return !isDefaultItemName(trimmed);
   }
-  if (type === 'recipe') {
+  if (type === CatalogNameType.Recipe) {
     return !isDefaultRecipeName(trimmed);
   }
-  if (type === 'machine') {
+  if (type === CatalogNameType.Machine) {
     return !isDefaultMachineName(trimmed);
   }
   return !isDefaultProductionName(trimmed);

@@ -18,7 +18,10 @@ import { ProductionChainService } from 'src/app/shared/services/production-chain
 import { ProductionEditorModalComponent } from './production-editor/production-editor-modal/production-editor-modal.component';
 import { ProductionEditorSidebarComponent } from './production-editor/production-editor-sidebar/production-editor-sidebar.component';
 import { ProductionEditorFullComponent } from './production-editor/production-editor-full/production-editor-full.component';
-import { SettingsService } from 'src/app/shared/services/settings/settings.service';
+import {
+  EditorDisplayMode,
+  SettingsService,
+} from 'src/app/shared/services/settings/settings.service';
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
 import { IconAutocompleteInputComponent } from 'src/app/forms/icon-autocomplete-input/icon-autocomplete-input.component';
@@ -40,6 +43,8 @@ import { Production } from 'src/app/shared/models/production-chain/production/pr
   ],
 })
 export class ProductionChainEditorComponent {
+  protected readonly EditorDisplayMode = EditorDisplayMode;
+
   private readonly productionService = inject(ProductionService);
   private readonly importExportService = inject(ImportExportService);
   private readonly productionChainService = inject(ProductionChainService);

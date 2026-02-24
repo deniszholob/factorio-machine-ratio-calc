@@ -20,6 +20,7 @@ import {
   stringifyMock,
   toMockRowId,
   TreeRenderRow,
+  TreeRowKind,
 } from './model.util';
 
 type RequireWithContext = NodeRequire & {
@@ -63,6 +64,11 @@ const MOCK_KEYS = Object.keys(MODEL_MOCKS).sort();
 const DEFAULT_MOCK_KEY = MOCK_KEYS[0] ?? '';
 const TREE_ROWS = createTreeRows(MOCK_KEYS);
 const COLLAPSE_TARGETS = getCollapseTargets(TREE_ROWS);
+
+enum NavigationEdge {
+  'Start' = 'Start',
+  'End' = 'End',
+}
 
 @Component({
   selector: 'app-models-mocks-viewer',
@@ -185,7 +191,7 @@ const COLLAPSE_TARGETS = getCollapseTargets(TREE_ROWS);
             <p class="px-2 py-3 text-sm text-zinc-400">No matching entries.</p>
           } @else {
             @for (row of $displayRows(); track row.id) {
-              @if (row.kind === 'folder') {
+              @if (row.kind === TreeRowKind.Folder) {
                 <button
                   class="relative flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-xs font-semibold tracking-wide text-zinc-200 uppercase hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-zinc-400"
                   [id]="row.id"
@@ -219,7 +225,7 @@ const COLLAPSE_TARGETS = getCollapseTargets(TREE_ROWS);
                   >
                   <span>{{ row.label }}</span>
                 </button>
-              } @else if (row.kind === 'file') {
+              } @else if (row.kind === TreeRowKind.File) {
                 <button
                   class="relative flex w-full items-center gap-2 rounded-md px-2 py-1 text-left text-xs font-medium text-zinc-200 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-zinc-400"
                   [id]="row.id"
@@ -367,6 +373,8 @@ const COLLAPSE_TARGETS = getCollapseTargets(TREE_ROWS);
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModelsMocksViewerComponent {
+  protected readonly TreeRowKind = TreeRowKind;
+
   protected readonly controlButtonClass =
     'inline-flex cursor-pointer items-center gap-2 rounded-md border border-sky-400/40 bg-sky-500/10 px-2 py-1 text-xs text-sky-100 hover:bg-sky-500/20 focus-visible:outline-2 focus-visible:outline-sky-300';
 
@@ -422,7 +430,7 @@ export class ModelsMocksViewerComponent {
       const matchingRow = this.$displayRows().find(
         (row) =>
           row.id === selectedRowId ||
-          (row.kind === 'mock' && row.mockKey === selectedMockKey),
+          (row.kind === TreeRowKind.Mock && row.mockKey === selectedMockKey),
       );
       if (matchingRow) {
         this.$activeRowId.set(matchingRow.id);
@@ -432,13 +440,13 @@ export class ModelsMocksViewerComponent {
     effect(() => {
       const renderRows = this.$displayRows();
       const hasSelectedVisibleRow = renderRows.some(
-        (row) => row.kind === 'mock' && row.mockKey === this.$selectedMockKey(),
+        (row) => row.kind === TreeRowKind.Mock && row.mockKey === this.$selectedMockKey(),
       );
       if (hasSelectedVisibleRow) {
         return;
       }
 
-      const firstVisibleMock = renderRows.find((row) => row.kind === 'mock');
+      const firstVisibleMock = renderRows.find((row) => row.kind === TreeRowKind.Mock);
       if (firstVisibleMock?.mockKey) {
         this.$selectedMockKey.set(firstVisibleMock.mockKey);
         this.$activeRowId.set(firstVisibleMock.id);
@@ -589,13 +597,13 @@ export class ModelsMocksViewerComponent {
 
     if (event.key === 'Home') {
       event.preventDefault();
-      this.moveToEdge('start');
+      this.moveToEdge(NavigationEdge.Start);
       return;
     }
 
     if (event.key === 'End') {
       event.preventDefault();
-      this.moveToEdge('end');
+      this.moveToEdge(NavigationEdge.End);
       return;
     }
 
@@ -647,21 +655,22 @@ export class ModelsMocksViewerComponent {
     const nextRow = rows[nextIndex];
 
     this.$activeRowId.set(nextRow.id);
-    if (nextRow.kind === 'mock' && nextRow.mockKey) {
+    if (nextRow.kind === TreeRowKind.Mock && nextRow.mockKey) {
       this.$selectedMockKey.set(nextRow.mockKey);
     }
   }
 
-  private moveToEdge(edge: 'start' | 'end'): void {
+  private moveToEdge(edge: NavigationEdge): void {
     const rows = this.$displayRows();
     if (rows.length === 0) {
       return;
     }
 
-    const nextRow = edge === 'start' ? rows[0] : rows[rows.length - 1];
+    const nextRow =
+      edge === NavigationEdge.Start ? rows[0] : rows[rows.length - 1];
     this.$activeRowId.set(nextRow.id);
 
-    if (nextRow.kind === 'mock' && nextRow.mockKey) {
+    if (nextRow.kind === TreeRowKind.Mock && nextRow.mockKey) {
       this.$selectedMockKey.set(nextRow.mockKey);
     }
   }
@@ -674,17 +683,17 @@ export class ModelsMocksViewerComponent {
       return;
     }
 
-    if (row.kind === 'folder' && row.folderPath && row.isCollapsed) {
+    if (row.kind === TreeRowKind.Folder && row.folderPath && row.isCollapsed) {
       this.toggleFolder(row.folderPath);
       return;
     }
 
-    if (row.kind === 'file' && row.filePath && row.isCollapsed) {
+    if (row.kind === TreeRowKind.File && row.filePath && row.isCollapsed) {
       this.toggleFile(row.filePath);
       return;
     }
 
-    if (row.kind === 'mock' && row.mockKey) {
+    if (row.kind === TreeRowKind.Mock && row.mockKey) {
       this.$selectedMockKey.set(row.mockKey);
     }
   }
@@ -696,17 +705,17 @@ export class ModelsMocksViewerComponent {
       return;
     }
 
-    if (row.kind === 'folder' && row.folderPath && !row.isCollapsed) {
+    if (row.kind === TreeRowKind.Folder && row.folderPath && !row.isCollapsed) {
       this.toggleFolder(row.folderPath);
       return;
     }
 
-    if (row.kind === 'file' && row.filePath && !row.isCollapsed) {
+    if (row.kind === TreeRowKind.File && row.filePath && !row.isCollapsed) {
       this.toggleFile(row.filePath);
       return;
     }
 
-    if (row.kind === 'mock' && row.parentFilePath) {
+    if (row.kind === TreeRowKind.Mock && row.parentFilePath) {
       this.$activeRowId.set(`file:${row.parentFilePath}`);
       return;
     }
@@ -727,17 +736,17 @@ export class ModelsMocksViewerComponent {
       return;
     }
 
-    if (row.kind === 'folder' && row.folderPath) {
+    if (row.kind === TreeRowKind.Folder && row.folderPath) {
       this.toggleFolder(row.folderPath);
       return;
     }
 
-    if (row.kind === 'file' && row.filePath) {
+    if (row.kind === TreeRowKind.File && row.filePath) {
       this.toggleFile(row.filePath);
       return;
     }
 
-    if (row.kind === 'mock' && row.mockKey) {
+    if (row.kind === TreeRowKind.Mock && row.mockKey) {
       this.$selectedMockKey.set(row.mockKey);
     }
   }

@@ -4,7 +4,7 @@
 @let displayMode = $editorDisplayMode();
 @let isEditorOpen = $isEditorOpen();
 
-@if (displayMode === 'full' && isEditorOpen) {
+@if (displayMode === EditorDisplayMode.Full && isEditorOpen) {
   <app-content-layout
     [$title]="'Production Editor'"
     [$subTitle]="$editorSubtitle()"
@@ -89,7 +89,7 @@
         }
       </div>
 
-      @if (displayMode === 'sidebar') {
+      @if (displayMode === EditorDisplayMode.Sidebar) {
         <div class="w-lg shrink-0 border-l border-stone-700">
           <app-production-editor-sidebar
             [$machine]="$machineDraft()"
@@ -104,7 +104,7 @@
   </app-content-layout>
 }
 
-@if (displayMode === 'modal') {
+@if (displayMode === EditorDisplayMode.Modal) {
   <app-production-editor-modal
     [$machine]="$machineDraft()"
     [$show]="isEditorOpen"

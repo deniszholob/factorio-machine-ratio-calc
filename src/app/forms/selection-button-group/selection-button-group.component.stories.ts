@@ -1,11 +1,21 @@
 import { Meta, StoryObj } from '@storybook/angular';
 
-import { SelectionButtonGroupComponent } from './selection-button-group.component';
+import {
+  SelectionButtonActiveTone,
+  SelectionButtonGroupComponent,
+} from './selection-button-group.component';
 
 export default {
   component: SelectionButtonGroupComponent,
   parameters: {
     docs: { description: { component: 'SelectionButtonGroupComponent' } },
+  },
+  argTypes: {
+    $activeTone: {
+      options: Object.values(SelectionButtonActiveTone),
+      mapping: SelectionButtonActiveTone,
+      control: { type: 'select' },
+    },
   },
   args: {
     $value: 'items',
@@ -25,6 +35,7 @@ export default {
       },
     ],
     $ariaLabel: 'Selection',
+    $activeTone: SelectionButtonActiveTone.Primary,
     $buttonClass: 'h-8 px-3 py-0',
     $containerClass: '',
   },

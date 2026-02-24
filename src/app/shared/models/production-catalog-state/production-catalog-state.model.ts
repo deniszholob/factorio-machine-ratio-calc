@@ -1,6 +1,11 @@
 import { Production } from '../production-chain/production/production.model';
 import { RecipeItem } from '../production-chain/production/recipe-item/recipe-item.model';
 
+export enum CatalogRecipeItemCollection {
+  'Inputs' = 'Inputs',
+  'Outputs' = 'Outputs',
+}
+
 export interface CatalogItem {
   name: string;
   iconUrl?: string;

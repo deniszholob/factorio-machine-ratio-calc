@@ -3,7 +3,11 @@ import { Injectable, effect, signal } from '@angular/core';
 import { LOCAL_STORAGE_KEY_SETTINGS } from '../import-export/local-storage.data';
 import { ImportMode } from '../../models/import-mode.enum';
 
-export type EditorDisplayMode = 'modal' | 'sidebar' | 'full';
+export enum EditorDisplayMode {
+  'Modal' = 'Modal',
+  'Sidebar' = 'Sidebar',
+  'Full' = 'Full',
+}
 
 interface SettingsState {
   editorDisplayMode: EditorDisplayMode;
@@ -12,7 +16,7 @@ interface SettingsState {
 }
 
 const DEFAULT_SETTINGS: SettingsState = {
-  editorDisplayMode: 'modal',
+  editorDisplayMode: EditorDisplayMode.Modal,
   importChainsMode: ImportMode.Add,
   importProductionsMode: ImportMode.Add,
 };

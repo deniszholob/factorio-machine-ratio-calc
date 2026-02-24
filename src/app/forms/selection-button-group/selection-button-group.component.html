@@ -7,8 +7,8 @@
     <button
       class="btn"
       [class]="$buttonClass()"
-      [class.btn-primary]="isSelected && activeTone === 'primary'"
-      [class.btn-warning]="isSelected && activeTone === 'warning'"
+      [class.btn-primary]="isSelected && activeTone === SelectionButtonActiveTone.Primary"
+      [class.btn-warning]="isSelected && activeTone === SelectionButtonActiveTone.Warning"
       [class.btn-secondary-outline]="!isSelected"
       [attr.aria-label]="option.display"
       [attr.aria-pressed]="isSelected"

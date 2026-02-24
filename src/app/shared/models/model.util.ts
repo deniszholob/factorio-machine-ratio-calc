@@ -1,10 +1,16 @@
 export type MockModuleExports = Readonly<Record<string, unknown>>;
 
+export enum TreeRowKind {
+  'Folder' = 'Folder',
+  'File' = 'File',
+  'Mock' = 'Mock',
+}
+
 export type TreeRow = Readonly<{
   id: string;
   label: string;
   depth: number;
-  kind: 'folder' | 'file' | 'mock';
+  kind: TreeRowKind;
   mockKey?: string;
   filePath?: string;
   folderPath?: string;
@@ -204,7 +210,7 @@ function renderFolder(
     id: `folder:${folderPath}`,
     label: folderName,
     depth,
-    kind: 'folder',
+    kind: TreeRowKind.Folder,
     folderPath,
     parentFolderPaths,
     guideOffsets: toGuideOffsets(depth),
@@ -235,7 +241,7 @@ function renderFolder(
         id: `file:${fileEntry.filePath}`,
         label: fileEntry.modelLabel,
         depth: depth + 1,
-        kind: 'file',
+        kind: TreeRowKind.File,
         filePath: fileEntry.filePath,
         parentFolderPaths: [...parentFolderPaths, folderPath],
         guideOffsets: toGuideOffsets(depth + 1),
@@ -246,7 +252,7 @@ function renderFolder(
           id: toMockRowId(`${fileEntry.filePath} :: ${exportName}`),
           label: exportName,
           depth: depth + 2,
-          kind: 'mock',
+          kind: TreeRowKind.Mock,
           mockKey: `${fileEntry.filePath} :: ${exportName}`,
           parentFilePath: fileEntry.filePath,
           parentFolderPaths: [...parentFolderPaths, folderPath],
@@ -321,7 +327,7 @@ export function createTreeRows(mockKeys: readonly string[]): TreeRow[] {
         id: `file:${fileEntry.filePath}`,
         label: fileEntry.modelLabel,
         depth: 0,
-        kind: 'file',
+        kind: TreeRowKind.File,
         filePath: fileEntry.filePath,
         parentFolderPaths: [],
         guideOffsets: toGuideOffsets(0),
@@ -332,7 +338,7 @@ export function createTreeRows(mockKeys: readonly string[]): TreeRow[] {
           id: toMockRowId(`${fileEntry.filePath} :: ${exportName}`),
           label: exportName,
           depth: 1,
-          kind: 'mock',
+          kind: TreeRowKind.Mock,
           mockKey: `${fileEntry.filePath} :: ${exportName}`,
           parentFilePath: fileEntry.filePath,
           parentFolderPaths: [],
@@ -365,13 +371,13 @@ export function buildTreeRenderRows(
   return rows
     .filter((row) => {
       const rowIsEnumEntry =
-        row.kind === 'file'
+        row.kind === TreeRowKind.File
           ? isEnumFilePath(row.filePath ?? '')
           : isEnumFilePath(row.parentFilePath ?? '');
 
       return (
         (!hideArrayEntries ||
-          row.kind !== 'mock' ||
+          row.kind !== TreeRowKind.Mock ||
           (rowIsEnumEntry
             ? isRelevantEnumExport(row.mockKey ?? '')
             : !isArrayMockKey(row.mockKey ?? ''))) &&
@@ -382,16 +388,16 @@ export function buildTreeRenderRows(
     .map((row) => ({
       ...row,
       isEnumEntry:
-        row.kind === 'file'
+        row.kind === TreeRowKind.File
           ? isEnumFilePath(row.filePath ?? '')
           : isEnumFilePath(row.parentFilePath ?? ''),
       isCompactRow: false,
-      isSelected: row.kind === 'mock' && row.mockKey === selectedMockKey,
+      isSelected: row.kind === TreeRowKind.Mock && row.mockKey === selectedMockKey,
       isCollapsed:
-        (row.kind === 'folder' && row.folderPath
+        (row.kind === TreeRowKind.Folder && row.folderPath
           ? collapsedFolderPaths.has(row.folderPath)
           : false) ||
-        (row.kind === 'file' && row.filePath
+        (row.kind === TreeRowKind.File && row.filePath
           ? collapsedFilePaths.has(row.filePath)
           : false),
     }));
@@ -403,7 +409,7 @@ export function compactSingleChains(rows: readonly TreeRenderRow[]): TreeRenderR
   const mockCountByFilePath = new Map<string, number>();
 
   rows.forEach((row) => {
-    if (row.kind === 'file') {
+    if (row.kind === TreeRowKind.File) {
       const parentFolderPath = row.parentFolderPaths.at(-1);
       if (parentFolderPath) {
         fileCountByFolderPath.set(
@@ -413,7 +419,7 @@ export function compactSingleChains(rows: readonly TreeRenderRow[]): TreeRenderR
       }
     }
 
-    if (row.kind === 'folder') {
+    if (row.kind === TreeRowKind.Folder) {
       const parentFolderPath = row.parentFolderPaths.at(-1);
       if (parentFolderPath) {
         folderCountByFolderPath.set(
@@ -423,7 +429,7 @@ export function compactSingleChains(rows: readonly TreeRenderRow[]): TreeRenderR
       }
     }
 
-    if (row.kind === 'mock' && row.parentFilePath) {
+    if (row.kind === TreeRowKind.Mock && row.parentFilePath) {
       mockCountByFilePath.set(
         row.parentFilePath,
         (mockCountByFilePath.get(row.parentFilePath) ?? 0) + 1,
@@ -440,7 +446,7 @@ export function compactSingleChains(rows: readonly TreeRenderRow[]): TreeRenderR
       return;
     }
 
-    if (row.kind === 'mock') {
+    if (row.kind === TreeRowKind.Mock) {
       const depthAdjust = row.parentFilePath
         ? (mockDepthAdjustByFilePath.get(row.parentFilePath) ?? 0)
         : 0;
@@ -452,7 +458,7 @@ export function compactSingleChains(rows: readonly TreeRenderRow[]): TreeRenderR
       return;
     }
 
-    if (row.kind === 'folder' && row.folderPath && !row.isCollapsed) {
+    if (row.kind === TreeRowKind.Folder && row.folderPath && !row.isCollapsed) {
       const childFileCount = fileCountByFolderPath.get(row.folderPath) ?? 0;
       const childFolderCount = folderCountByFolderPath.get(row.folderPath) ?? 0;
       if (childFileCount !== 1 || childFolderCount !== 0) {
@@ -462,7 +468,7 @@ export function compactSingleChains(rows: readonly TreeRenderRow[]): TreeRenderR
 
       const childFile = rows.find(
         (item) =>
-          item.kind === 'file' &&
+          item.kind === TreeRowKind.File &&
           item.parentFolderPaths.at(-1) === row.folderPath &&
           !rowsToSkip.has(item.id),
       );
@@ -475,7 +481,7 @@ export function compactSingleChains(rows: readonly TreeRenderRow[]): TreeRenderR
       if (childMockCount === 1) {
         const childMock = rows.find(
           (item) =>
-            item.kind === 'mock' &&
+            item.kind === TreeRowKind.Mock &&
             item.parentFilePath === childFile.filePath &&
             !rowsToSkip.has(item.id),
         );
@@ -509,7 +515,7 @@ export function compactSingleChains(rows: readonly TreeRenderRow[]): TreeRenderR
       return;
     }
 
-    if (row.kind !== 'file' || !row.filePath || row.isCollapsed) {
+    if (row.kind !== TreeRowKind.File || !row.filePath || row.isCollapsed) {
       compactedRows.push(row);
       return;
     }
@@ -522,7 +528,7 @@ export function compactSingleChains(rows: readonly TreeRenderRow[]): TreeRenderR
 
     const childMock = rows.find(
       (item) =>
-        item.kind === 'mock' &&
+        item.kind === TreeRowKind.Mock &&
         item.parentFilePath === row.filePath &&
         !rowsToSkip.has(item.id),
     );
@@ -551,7 +557,7 @@ export function collapseVisibleFolderChains(
 
   while (index < rows.length) {
     const row = rows[index];
-    if (row.kind !== 'folder') {
+    if (row.kind !== TreeRowKind.Folder) {
       output.push(row);
       index += 1;
       continue;
@@ -564,7 +570,7 @@ export function collapseVisibleFolderChains(
     while (cursor < rows.length) {
       const next = rows[cursor];
       if (
-        next.kind !== 'folder' ||
+        next.kind !== TreeRowKind.Folder ||
         next.depth !== current.depth + 1 ||
         next.parentFolderPaths.at(-1) !== current.folderPath
       ) {
@@ -630,10 +636,10 @@ export function filterRowsBySearch(
     if (row.parentFilePath) {
       includedIds.add(`file:${row.parentFilePath}`);
     }
-    if (row.kind === 'folder' && row.folderPath) {
+    if (row.kind === TreeRowKind.Folder && row.folderPath) {
       matchedFolderPaths.add(row.folderPath);
     }
-    if (row.kind === 'file' && row.filePath) {
+    if (row.kind === TreeRowKind.File && row.filePath) {
       matchedFilePaths.add(row.filePath);
     }
   });
@@ -656,10 +662,10 @@ export function getCollapseTargets(rows: readonly TreeRow[]): Readonly<{
   filePaths: readonly string[];
 }> {
   const folderPaths = rows.flatMap((row) =>
-    row.kind === 'folder' && row.folderPath ? [row.folderPath] : [],
+    row.kind === TreeRowKind.Folder && row.folderPath ? [row.folderPath] : [],
   );
   const filePaths = rows.flatMap((row) =>
-    row.kind === 'file' && row.filePath ? [row.filePath] : [],
+    row.kind === TreeRowKind.File && row.filePath ? [row.filePath] : [],
   );
 
   return { folderPaths, filePaths };

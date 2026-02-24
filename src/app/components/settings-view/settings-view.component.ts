@@ -10,6 +10,7 @@ import {
   SelectionListOption,
 } from 'src/app/forms/selection-list/selection-list.component';
 import { ImportMode } from 'src/app/shared/models/import-mode.enum';
+import { SelectionListType } from 'src/app/forms/selection-list/selection-list.component';
 
 @Component({
   selector: 'app-settings-view',
@@ -20,6 +21,7 @@ import { ImportMode } from 'src/app/shared/models/import-mode.enum';
 })
 export class SettingsViewComponent {
   private readonly settingsService = inject(SettingsService);
+  protected readonly SelectionListType = SelectionListType;
 
   protected readonly $editorDisplayMode =
     this.settingsService.$editorDisplayMode;
@@ -32,23 +34,24 @@ export class SettingsViewComponent {
     this.settingsService.defaultSettings.importChainsMode;
   protected readonly $defaultImportProductionsMode =
     this.settingsService.defaultSettings.importProductionsMode;
-  protected readonly editorDisplayOptions: readonly SelectionListOption[] = [
+  protected readonly editorDisplayOptions: readonly SelectionListOption<EditorDisplayMode>[] =
+    [
     {
-      id: 'modal',
+      id: EditorDisplayMode.Modal,
       display: 'Modal Popup',
       description: 'Keep focus in a dialog overlay.',
     },
     {
-      id: 'sidebar',
+      id: EditorDisplayMode.Sidebar,
       display: 'Right Sidebar',
       description: 'Slide out editor beside the list.',
     },
     {
-      id: 'full',
+      id: EditorDisplayMode.Full,
       display: 'Full Main Content',
       description: 'Replace the list with the editor.',
     },
-  ];
+    ];
   protected readonly importBehaviorOptions: readonly SelectionListOption<ImportMode>[] =
     [
       {
@@ -63,11 +66,8 @@ export class SettingsViewComponent {
       },
     ];
 
-  protected setEditorDisplayMode(mode: string | undefined): void {
+  protected setEditorDisplayMode(mode: EditorDisplayMode | undefined): void {
     if (!mode) {
-      return;
-    }
-    if (!isEditorDisplayMode(mode)) {
       return;
     }
     this.settingsService.setEditorDisplayMode(mode);
@@ -94,8 +94,4 @@ export class SettingsViewComponent {
   protected onResetSettings(): void {
     this.settingsService.resetSettings();
   }
-}
-
-function isEditorDisplayMode(value: string): value is EditorDisplayMode {
-  return value === 'modal' || value === 'sidebar' || value === 'full';
 }
