@@ -425,7 +425,7 @@ export class ProductionCatalogEditorComponent {
   }
 
   protected onRecipeChange(recipe: CatalogRecipe): void {
-    const index = this.findRecipeIndex(recipe.name);
+    const index = this.findRecipeIndex(recipe);
     if (index === -1) {
       return;
     }
@@ -467,7 +467,7 @@ export class ProductionCatalogEditorComponent {
     if (getCountByName(this.$recipeUsageByName(), recipe.name) > 0) {
       return;
     }
-    const index = this.findRecipeIndex(recipe.name);
+    const index = this.findRecipeIndex(recipe);
     if (index === -1) {
       return;
     }
@@ -476,6 +476,10 @@ export class ProductionCatalogEditorComponent {
 
   protected onAddMachine(): void {
     this.productionCatalogService.addMachine();
+  }
+
+  protected onAddProduction(): void {
+    this.productionCatalogService.addProductionTemplate();
   }
 
   protected onMachineNameFocus(machine: CatalogMachine): void {
@@ -585,10 +589,21 @@ export class ProductionCatalogEditorComponent {
     );
   }
 
-  private findRecipeIndex(name: string): number {
+  private findRecipeIndex(target: CatalogRecipe | string): number {
+    if (typeof target !== 'string') {
+      const indexByReference = this.$catalog().recipes.indexOf(target);
+      if (indexByReference !== -1) {
+        return indexByReference;
+      }
+      return this.$catalog().recipes.findIndex(
+        (recipe) =>
+          recipe.name.trim().toLowerCase() === target.name.trim().toLowerCase(),
+      );
+    }
+
     return this.$catalog().recipes.findIndex(
       (recipe) =>
-        recipe.name.trim().toLowerCase() === name.trim().toLowerCase(),
+        recipe.name.trim().toLowerCase() === target.trim().toLowerCase(),
     );
   }
 

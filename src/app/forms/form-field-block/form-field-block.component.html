@@ -10,7 +10,11 @@
     </span>
   }
   <div
-    class="flex min-w-0 items-stretch rounded-sm ring-1 ring-stone-600/70 transition-colors focus-within:ring-blue-400/80"
+    class="flex min-w-0 items-stretch rounded-sm"
+    [ngClass]="{
+      'ring-1 ring-stone-600/70 transition-colors focus-within:ring-blue-400/80': $showFrame(),
+      'ring-0': !$showFrame(),
+    }"
   >
     @if ($hasPrefixAddon()) {
       <span

@@ -17,7 +17,7 @@
   cdkDropList
 >
   <div class="text-md flex flex-row items-center gap-2">
-    <button class="btn btn-icon btn-success" [title]="'Add item'" (click)="onAdd()">
+    <button class="btn btn-icon btn-success" [title]="'Add item'" (click)="onAdd()" type="button">
       <i class="fas fa-plus"></i>
     </button>
     <h5>{{ $label() }}</h5>
@@ -46,7 +46,12 @@
           </button>
         }
 
-        <button class="btn btn-icon btn-danger" [title]="'Delete item'" (click)="onRemove(i)">
+        <button
+          class="btn btn-icon btn-danger"
+          [title]="'Delete item'"
+          (click)="onRemove(i)"
+          type="button"
+        >
           <i class="fas fa-trash"></i>
         </button>
 

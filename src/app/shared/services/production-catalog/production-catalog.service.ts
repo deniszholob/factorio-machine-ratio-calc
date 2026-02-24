@@ -1305,9 +1305,6 @@ function normalizeRecipeItems(
     const recipeItem = item as { name?: unknown; count?: unknown };
     const name =
       typeof recipeItem.name === 'string' ? recipeItem.name.trim() : '';
-    if (!name) {
-      continue;
-    }
 
     nextItems.push({
       name,

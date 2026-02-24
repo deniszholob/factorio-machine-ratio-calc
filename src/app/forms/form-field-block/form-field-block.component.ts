@@ -16,6 +16,7 @@ import {
 export class FormFieldBlockComponent {
   public readonly $label = input<string>('');
   public readonly $className = input<string>('');
+  public readonly $showFrame = input<boolean>(true);
   public readonly $prefix = input<string>('');
   public readonly $suffix = input<string>('');
   public readonly $suffixIconClass = input<string>('');

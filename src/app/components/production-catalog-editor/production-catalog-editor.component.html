@@ -33,11 +33,11 @@
         [$iconClass]="'fas fa-right-left text-stone-400'"
         [$showToolbar]="false"
       >
-        <app-form-field-block [$label]="'(Import) Mode'" [$className]="''">
+        <app-form-field-block [$label]="'(Import) Mode'" [$className]="''" [$showFrame]="false">
           <app-selection-button-group
             [($value)]="$importMode"
             [$options]="importModeOptions"
-            [$buttonClass]="'h-9 px-3 py-0'"
+            [$buttonClass]="'h-8 px-3 py-0'"
           ></app-selection-button-group>
         </app-form-field-block>
 
@@ -431,7 +431,11 @@
       <app-section-block
         [$title]="'Productions'"
         [$iconClass]="'fas fa-diagram-project text-stone-400'"
-        [$showToolbar]="false"
+        [$showToolbar]="true"
+        [$addLabel]="'production'"
+        [$filterValue]="$productionFilter()"
+        ($add)="onAddProduction()"
+        ($filterValueChange)="onProductionFilterChange($event)"
       >
         <div class="flex flex-col gap-4 p-4">
           @if (visibleProductionCards.length === 0) {
@@ -461,7 +465,7 @@
 
                 <app-badge
                   [title]="template.usageCount > 0 ? template.usageTooltip : ''"
-                  [$label]="`Used ${template.usageCount ?? 0}`"
+                  [$label]="`Used ${template.usageCount}`"
                   [$size]="BadgeSize.Md"
                   [$tone]="template.usageCount > 0 ? BadgeTone.Red : BadgeTone.Stone"
                 ></app-badge>
