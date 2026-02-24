@@ -1,5 +1,9 @@
 import {
   CdkDrag,
+  CdkDragEnd,
+  CdkDragEnter,
+  CdkDragExit,
+  CdkDragStart,
   CdkDragDrop,
   CdkDragHandle,
   CdkDropList,
@@ -8,8 +12,10 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   output,
+  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FormFieldBlockComponent } from '../../../forms/form-field-block/form-field-block.component';
@@ -19,6 +25,16 @@ interface EditableRecipeItem {
   name: string;
   count: number;
   rate?: number;
+}
+
+interface RecipeIoDragData {
+  sourceListId: string;
+}
+
+export enum RecipeIoDropHighlightMode {
+  'None' = 'None',
+  'WithinContainer' = 'WithinContainer',
+  'CrossContainer' = 'CrossContainer',
 }
 
 @Component({
@@ -37,6 +53,8 @@ interface EditableRecipeItem {
   ],
 })
 export class RecipeIoListComponent {
+  protected readonly RecipeIoDropHighlightMode = RecipeIoDropHighlightMode;
+
   public readonly $label = input.required<string>();
   public readonly $items = input.required<EditableRecipeItem[]>();
   public readonly $itemNameOptions = input.required<string[]>();
@@ -54,6 +72,12 @@ export class RecipeIoListComponent {
   public readonly $itemNameCommit = output<number>();
   public readonly $dropListDropped =
     output<CdkDragDrop<EditableRecipeItem[]>>();
+  protected readonly $dropHighlightMode = signal<RecipeIoDropHighlightMode>(
+    RecipeIoDropHighlightMode.None,
+  );
+  protected readonly $isDropActive = computed<boolean>(() => {
+    return this.$dropHighlightMode() !== RecipeIoDropHighlightMode.None;
+  });
 
   protected onAdd(): void {
     this.$add.emit();
@@ -72,6 +96,48 @@ export class RecipeIoListComponent {
   }
 
   protected onDrop(event: CdkDragDrop<EditableRecipeItem[]>): void {
+    this.clearDropHighlight();
     this.$dropListDropped.emit(event);
+  }
+
+  protected onDragStarted(_event: CdkDragStart<unknown>): void {
+    this.$dropHighlightMode.set(RecipeIoDropHighlightMode.WithinContainer);
+  }
+
+  protected onDragEnded(_event: CdkDragEnd<unknown>): void {
+    this.clearDropHighlight();
+  }
+
+  protected onDropListEntered(event: CdkDragEnter<EditableRecipeItem[]>): void {
+    const sourceListId = this.readSourceListId(event.item.data);
+    const targetListId = this.$listId();
+    if (!sourceListId || !targetListId) {
+      this.$dropHighlightMode.set(RecipeIoDropHighlightMode.WithinContainer);
+      return;
+    }
+    this.$dropHighlightMode.set(
+      sourceListId === targetListId
+        ? RecipeIoDropHighlightMode.WithinContainer
+        : RecipeIoDropHighlightMode.CrossContainer,
+    );
+  }
+
+  protected onDropListExited(_event: CdkDragExit<EditableRecipeItem[]>): void {
+    this.clearDropHighlight();
+  }
+
+  private clearDropHighlight(): void {
+    this.$dropHighlightMode.set(RecipeIoDropHighlightMode.None);
+  }
+
+  private readSourceListId(data: unknown): string | undefined {
+    if (!data || typeof data !== 'object') {
+      return undefined;
+    }
+    if (!('sourceListId' in data)) {
+      return undefined;
+    }
+    const sourceListId = (data as RecipeIoDragData).sourceListId;
+    return typeof sourceListId === 'string' ? sourceListId : undefined;
   }
 }

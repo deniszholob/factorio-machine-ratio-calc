@@ -152,7 +152,26 @@ public readonly $myValue = model<boolean>(true);
 - Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
 - Prefer using `@let myValue = $myValue();` instead of doing `$myValue(); as myValue` in @if statements etc...
 - Prefer Signal forms instead of Reactive forms instead of Template-driven ones in that priority. For context: https://angular.dev/guide/forms/signals/models
-- Do NOT use `[class.*]`, instead DO use `[ngClass]={'':conditionDefault, '':condition1}` bindings instead, when using conditional classes to group all the tailwind classes under one condition.
+- Do NOT use `[class.*]`, instead DO use `[ngClass]={'':conditionDefault, '':condition1}` bindings instead, when using conditional classes to group all the tailwind classes under one condition. You HAVE to have a default condition if changing something, it cannot be in the default classlist.
+  - e.g. WRONG:
+    ```html
+    <div
+      class="bg-gray-500 text-sm"
+      [ngClass]="{
+        'bg-blue-500': 'condition1'
+      }"
+    ></div>
+    ```
+  - e.g. CORRECT:
+    ```html
+    <div
+      class="text-sm"
+      [ngClass]="{
+      'bg-gray-500': 'defaultCondition;,
+        'bg-blue-500': 'condition1'
+      }"
+    ></div>
+    ```
 - Do NOT use `[ngStyle]`, use `[style.*]` bindings instead, for context: https://angular.dev/guide/templates/binding#css-class-and-style-property-bindings
 - DO NOT use functions in html templates for getting data (signals and events are ok)
 - Do create storybook files along side components
@@ -215,3 +234,4 @@ Creating new CSS when Tailwind or reusable styles exist is considered incorrect 
 
 - Keep it modern
 - Do not draw borders everywhere: avoid bordered box in a bordered box in bordered box etc... situations
+- Prefer borders to ring or outline

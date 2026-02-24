@@ -1,9 +1,18 @@
 <div
-  class="flex min-w-[22rem] flex-1 flex-col gap-2"
+  class="flex min-h-40 min-w-[22rem] flex-1 flex-col gap-2 rounded-md border p-2 transition-colors"
+  [ngClass]="{
+    'border-transparent': !$isDropActive(),
+    'border-blue-400/70 bg-blue-950/15':
+      $isDropActive() && $dropHighlightMode() === RecipeIoDropHighlightMode.WithinContainer,
+    'border-orange-400/80 bg-orange-950/20':
+      $isDropActive() && $dropHighlightMode() === RecipeIoDropHighlightMode.CrossContainer,
+  }"
   [id]="$listId()"
   [cdkDropListData]="$items()"
   [cdkDropListConnectedTo]="$connectedTo()"
   [cdkDropListDisabled]="!$dragEnabled()"
+  (cdkDropListEntered)="onDropListEntered($event)"
+  (cdkDropListExited)="onDropListExited($event)"
   (cdkDropListDropped)="onDrop($event)"
   cdkDropList
 >
@@ -17,8 +26,11 @@
   @for (item of $items(); track item; let i = $index) {
     @let itemIconUrl = $itemIconsByName()[item.name];
     <div
-      class="transition-color flex cursor-pointer items-center gap-2 rounded-lg bg-stone-950/45 p-2 text-stone-100 ring-1 ring-stone-800/70 hover:bg-stone-900/70 hover:ring-stone-700"
+      class="transition-color flex w-full cursor-pointer items-center gap-2 rounded-lg border border-stone-800/70 bg-stone-950/45 p-2 text-stone-100 hover:border-stone-700 hover:bg-stone-900/70"
       [cdkDragDisabled]="!$dragEnabled()"
+      [cdkDragData]="{ sourceListId: $listId() }"
+      (cdkDragStarted)="onDragStarted($event)"
+      (cdkDragEnded)="onDragEnded($event)"
       cdkDrag
     >
       <div class="flex flex-row flex-wrap items-end gap-2">
@@ -74,6 +86,14 @@
           ></app-icon-autocomplete-input>
         </app-form-field-block>
       </div>
+    </div>
+  }
+
+  @if ($items().length === 0) {
+    <div
+      class="flex min-h-28 items-center justify-center rounded-md border border-dashed border-stone-700/80 bg-stone-950/30 px-3 py-4 text-center text-sm text-stone-400"
+    >
+      Drag item here or click + to add one
     </div>
   }
 </div>
