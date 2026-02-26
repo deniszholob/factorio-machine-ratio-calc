@@ -29,22 +29,10 @@
         <button class="btn btn-icon btn-success cursor-pointer" (click)="onAddMachine()">
           <i class="fas fa-plus"></i> Production
         </button>
-        <app-select-single-icon-input
-          [$className]="'min-w-56'"
-          [$value]="$selectedProductionTemplateName()"
-          [$name]="'catalogProductionQuickAdd'"
-          [$placeholder]="'Production from catalog'"
-          [$options]="$productionTemplateNames()"
-          [$iconsByName]="$productionTemplateIconsByName()"
-          [$showSelectedIcon]="false"
-          ($valueChange)="onProductionTemplateNameChange($event)"
-          ($commit)="onProductionTemplateNameChange($event)"
-        ></app-select-single-icon-input>
 
         <button
           class="btn btn-icon btn-primary-outline cursor-pointer"
-          [disabled]="!$selectedProductionTemplateName()"
-          (click)="onAddMachineFromCatalog()"
+          (click)="onOpenAddMachineFromCatalogModal()"
           type="button"
         >
           <i class="fas fa-plus"></i> Add From Catalog
@@ -119,3 +107,41 @@
     ($machineChange)="onDraftMachineChanged($event)"
   ></app-production-editor-modal>
 }
+
+<app-modal
+  [($show)]="$isAddFromCatalogModalOpen"
+  [$title]="'Add Production From Catalog'"
+  [$primaryButton]="undefined"
+  [$secondaryButton]="undefined"
+  [$bodyClass]="'flex flex-col gap-4 p-6'"
+>
+  <app-select-single-icon-input
+    [$className]="'w-full min-w-72'"
+    [$value]="$selectedProductionTemplateName()"
+    [$name]="'catalogProductionModalSelect'"
+    [$placeholder]="'Production from catalog'"
+    [$options]="$productionTemplateNames()"
+    [$iconsByName]="$productionTemplateIconsByName()"
+    [$showSelectedIcon]="false"
+    ($valueChange)="onProductionTemplateNameChange($event)"
+    ($commit)="onProductionTemplateNameChange($event)"
+  ></app-select-single-icon-input>
+
+  <div class="flex justify-end gap-2">
+    <button
+      class="btn btn-secondary-outline cursor-pointer"
+      (click)="onCloseAddMachineFromCatalogModal()"
+      type="button"
+    >
+      Cancel
+    </button>
+    <button
+      class="btn btn-primary cursor-pointer"
+      [disabled]="!$selectedProductionTemplateName()"
+      (click)="onAddMachineFromCatalog()"
+      type="button"
+    >
+      Add Production
+    </button>
+  </div>
+</app-modal>

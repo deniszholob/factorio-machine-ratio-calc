@@ -26,6 +26,7 @@ import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-l
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
 import { SelectSingleIconInputComponent } from 'src/app/forms/select-single-icon-input/select-single-icon-input.component';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
+import { ModalComponent } from 'src/app/components/generic/modal/modal.component';
 
 @Component({
   selector: 'app-production-chain-editor',
@@ -40,6 +41,7 @@ import { Production } from 'src/app/shared/models/production-chain/production/pr
     ProductionEditorFullComponent,
     FilePickerComponent,
     SelectSingleIconInputComponent,
+    ModalComponent,
   ],
 })
 export class ProductionChainEditorComponent {
@@ -67,6 +69,7 @@ export class ProductionChainEditorComponent {
   protected readonly $productionTemplateIconsByName =
     this.productionCatalogService.$productionIconsByName;
   protected readonly $selectedProductionTemplateName = signal<string>('');
+  protected readonly $isAddFromCatalogModalOpen = signal<boolean>(false);
   protected readonly $activeChainName =
     this.productionChainService.$activeProductionName;
   protected readonly productionFileAccept =
@@ -90,6 +93,15 @@ export class ProductionChainEditorComponent {
     this.$selectedProductionTemplateName.set(value);
   }
 
+  protected onOpenAddMachineFromCatalogModal(): void {
+    this.$isAddFromCatalogModalOpen.set(true);
+  }
+
+  protected onCloseAddMachineFromCatalogModal(): void {
+    this.$isAddFromCatalogModalOpen.set(false);
+    this.$selectedProductionTemplateName.set('');
+  }
+
   protected onAddMachineFromCatalog(): void {
     const selectedName = this.$selectedProductionTemplateName().trim();
     if (!selectedName) {
@@ -108,7 +120,7 @@ export class ProductionChainEditorComponent {
       id: machine.id,
     });
     this.syncActiveChainProductions();
-    this.$selectedProductionTemplateName.set('');
+    this.onCloseAddMachineFromCatalogModal();
   }
 
   protected onEditFinish(): void {
