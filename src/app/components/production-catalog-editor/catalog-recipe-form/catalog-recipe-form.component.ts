@@ -57,6 +57,7 @@ export class CatalogRecipeFormComponent {
     collection: CatalogRecipeItemCollection;
     index: number;
   }>();
+  public readonly $downloadRecipe = output<void>();
   private readonly recipeListIdPrefix = createRecipeListIdPrefix();
   protected readonly inputListId = `${this.recipeListIdPrefix}-inputs`;
   protected readonly outputListId = `${this.recipeListIdPrefix}-outputs`;
@@ -70,6 +71,10 @@ export class CatalogRecipeFormComponent {
       return;
     }
     this.$removeRecipe.emit();
+  }
+
+  protected onDownloadRecipe(): void {
+    this.$downloadRecipe.emit();
   }
 
   protected onAddRecipeItem(collection: CatalogRecipeItemCollection): void {

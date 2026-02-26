@@ -81,61 +81,69 @@
 }
 
 @utility btn {
-  @apply flex h-9 cursor-pointer items-center justify-center gap-2 rounded-sm border border-transparent px-3 py-0 text-sm font-semibold shadow-md transition focus:outline-hidden disabled:cursor-not-allowed disabled:border-stone-700 disabled:bg-stone-800/60 disabled:text-stone-500 disabled:shadow-none disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
+  @apply flex h-9 min-w-9 cursor-pointer items-center justify-center gap-2 rounded-sm border border-transparent px-2 py-1 text-sm font-semibold shadow-md transition focus:outline-hidden disabled:cursor-not-allowed disabled:border-stone-700 disabled:bg-stone-800/60 disabled:text-stone-500 disabled:shadow-none disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
 }
 
-@utility btn-sm {
-  @apply h-8 px-3 py-0 text-sm;
+@utility btn-solid {
+  @apply text-white disabled:hover:bg-stone-800/60;
+}
+
+@utility btn-outline-fill {
+  @apply border-stone-600 text-stone-300 disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
+}
+
+@utility btn-outline {
+  @apply text-stone-300 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
 }
 
 @utility btn-primary {
-  @apply bg-amber-700 text-white hover:bg-amber-600 disabled:hover:bg-stone-800/60;
+  @apply btn-solid bg-amber-700 hover:bg-amber-600;
 }
 @utility btn-primary-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-amber-600 hover:bg-amber-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
+  @apply btn-outline-fill hover:border-amber-600 hover:bg-amber-600 hover:text-white;
 }
 @utility btn-primary-outline {
-  @apply border-amber-700 text-stone-300 hover:border-amber-400 hover:text-amber-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
+  @apply btn-outline border-amber-700 hover:border-amber-400 hover:text-amber-200;
 }
 
 @utility btn-secondary {
-  @apply bg-zinc-700 text-white hover:bg-zinc-600 disabled:hover:bg-stone-800/60;
+  @apply btn-solid bg-zinc-700 hover:bg-zinc-600;
 }
 @utility btn-secondary-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-zinc-600 hover:bg-zinc-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
+  @apply btn-outline-fill hover:border-zinc-600 hover:bg-zinc-600 hover:text-white;
 }
 @utility btn-secondary-outline {
-  @apply border-zinc-600 text-stone-300 hover:border-zinc-400 hover:text-stone-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
+  @apply btn-outline border-zinc-600 hover:border-zinc-400 hover:text-stone-200;
 }
 
 @utility btn-success {
-  @apply bg-lime-700 text-white hover:bg-lime-600 disabled:hover:bg-stone-800/60;
+  @apply btn-solid bg-lime-700 hover:bg-lime-600;
 }
 @utility btn-success-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-lime-600 hover:bg-lime-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
+  @apply btn-outline-fill hover:border-lime-600 hover:bg-lime-600 hover:text-white;
 }
 @utility btn-success-outline {
-  @apply border-lime-600 text-stone-300 hover:border-lime-400 hover:text-lime-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
+  @apply btn-outline border-lime-600 hover:border-lime-400 hover:text-lime-200;
 }
 
 @utility btn-warning {
-  @apply bg-yellow-700 text-white hover:bg-yellow-600 disabled:hover:bg-stone-800/60;
+  @apply btn-solid bg-yellow-700 hover:bg-yellow-600;
 }
 @utility btn-warning-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-yellow-600 hover:bg-yellow-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
+  @apply btn-outline-fill hover:border-yellow-600 hover:bg-yellow-600 hover:text-white;
 }
 @utility btn-warning-outline {
-  @apply border-yellow-600 text-stone-300 hover:border-yellow-400 hover:text-yellow-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
+  @apply btn-outline border-yellow-600 hover:border-yellow-400 hover:text-yellow-200;
 }
 
 @utility btn-danger {
-  @apply bg-red-700 text-white hover:bg-red-600 disabled:hover:bg-stone-800/60;
+  @apply btn-solid bg-red-700 hover:bg-red-600;
 }
 @utility btn-danger-outline-fill {
-  @apply border-stone-600 text-stone-300 hover:border-red-600 hover:bg-red-600 hover:text-white disabled:hover:border-stone-700 disabled:hover:bg-stone-800/60 disabled:hover:text-stone-500;
+  @apply btn-outline-fill hover:border-red-600 hover:bg-red-600 hover:text-white;
 }
 @utility btn-danger-outline {
-  @apply border-red-700 text-stone-300 hover:border-red-400 hover:text-red-200 disabled:hover:border-stone-700 disabled:hover:text-stone-500;
+  @apply btn-outline border-red-700 hover:border-red-400 hover:text-red-200;
 }
 
 @utility row {
@@ -279,18 +287,27 @@
     min-width: 100% !important;
   }
 
-  .app-ng-select.ng-select .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  .app-ng-select.ng-select
+    .ng-dropdown-panel
+    .ng-dropdown-panel-items
+    .ng-option {
     @apply bg-stone-900 px-2 py-1 text-stone-200;
     white-space: nowrap !important;
     text-overflow: clip !important;
   }
 
-  .app-ng-select.ng-select .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+  .app-ng-select.ng-select
+    .ng-dropdown-panel
+    .ng-dropdown-panel-items
+    .ng-option.ng-option-marked {
     @apply bg-stone-800;
     background-color: rgb(41 37 36) !important;
   }
 
-  .app-ng-select.ng-select .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
+  .app-ng-select.ng-select
+    .ng-dropdown-panel
+    .ng-dropdown-panel-items
+    .ng-option.ng-option-selected {
     @apply bg-stone-800 text-amber-200;
     background-color: rgb(41 37 36) !important;
   }

@@ -69,6 +69,8 @@ export class ProductionChainEditorComponent {
   protected readonly $selectedProductionTemplateName = signal<string>('');
   protected readonly $activeChainName =
     this.productionChainService.$activeProductionName;
+  protected readonly productionFileAccept =
+    this.importExportService.productionFileAccept;
   protected readonly $editorSubtitle = computed(() => {
     const machine = this.$machineDraft();
     if (machine && this.$isEditorOpen()) {
@@ -131,6 +133,10 @@ export class ProductionChainEditorComponent {
     const duplicated = this.productionService.duplicateMachine(machine);
     this.syncActiveChainProductions();
     this.onEditMachine(duplicated);
+  }
+
+  protected onDownloadMachine(machine: Production): void {
+    this.importExportService.downloadProductionById(machine.id, machine);
   }
 
   protected onClearAll(): void {
@@ -196,29 +202,23 @@ export class ProductionChainEditorComponent {
 
   protected uploadData(files: File[]): void {
     const mode = this.settingsService.$importProductionsMode();
+    const activeChainId =
+      this.productionChainService.getActiveProductionChainId();
     this.importExportService
-      .uploadProductionChainById(files, mode)
+      .uploadProductionChainById(files, mode, activeChainId)
       .then(() => {
         this.$errorMessage.set(undefined);
         this.productionChainService.reloadFromStorage();
       })
       .catch((error) => {
-        console.log(error);
-        this.$errorMessage.set('Error reading file, see console for details');
+        const message =
+          error instanceof Error ? error.message : 'Error reading upload file';
+        this.$errorMessage.set(message);
       });
   }
 
   protected downloadData(): void {
-    const activeChainId =
-      this.productionChainService.getActiveProductionChainId();
-    if (!activeChainId) {
-      return;
-    }
-
-    this.importExportService.downloadProductionChainById(
-      activeChainId,
-      this.$machines(),
-    );
+    this.importExportService.downloadProductions(this.$machines());
   }
 
   protected closeEditor(): void {

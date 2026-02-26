@@ -12,8 +12,15 @@ import { normalizeProduction } from 'src/app/components/production/production-ch
 import { SharedProductionIconsPayload } from '../production-chain/production-chain-hash.util';
 import { Production } from '../../models/production-chain/production/production.model';
 import { ImportMode } from '../../models/import-mode.enum';
+import { DataTypes } from '../../models/data-types/data-types.enum';
 
 const DOWNLOAD_FILE_EXTENSION = 'json';
+const DOWNLOAD_FILE_PREFIX = 'PRC1';
+const DOWNLOAD_SCOPE_LIST = 'list';
+const CATALOG_DOWNLOAD_TYPE = 'Catalog';
+const DOWNLOAD_FILE_NAME_PATTERN = new RegExp(
+  `^${DOWNLOAD_FILE_PREFIX}\\.([^.]+)\\.(${Object.values(DataTypes).join('|')})\\.${DOWNLOAD_FILE_EXTENSION}$`,
+);
 const DEFAULT_ITEM_NAME = 'Default-Item';
 const DEFAULT_RECIPE_NAME = 'Default Recipe';
 const DEFAULT_MACHINE_NAME = 'Default Machine';
@@ -31,6 +38,13 @@ enum CatalogNameType {
 export class ProductionCatalogService {
   private readonly _$catalog = signal<ProductionCatalogState>(loadCatalog());
   public readonly $catalog = this._$catalog.asReadonly();
+  public readonly itemFileAccept = getDataTypeFileAccept(DataTypes.Item);
+  public readonly recipeFileAccept = getDataTypeFileAccept(DataTypes.Recipe);
+  public readonly machineFileAccept = getDataTypeFileAccept(DataTypes.Machine);
+  public readonly productionFileAccept = getDataTypeFileAccept(
+    DataTypes.Production,
+  );
+  public readonly catalogFileAccept = getCatalogFileAccept();
 
   private readonly $machineItems = computed(() =>
     this.$catalog().items.filter((item) => item.isMachine === true),
@@ -126,6 +140,12 @@ export class ProductionCatalogService {
     this.setCatalog(nextState);
   }
 
+  public mergeCatalogFromProductions(productions: Production[]): void {
+    const incoming = buildCatalogStateFromProductions(productions);
+    const merged = mergeCatalogStates(this.$catalog(), incoming);
+    this.setCatalog(merged);
+  }
+
   public getRecipeByName(name: string): CatalogRecipe | undefined {
     const index = this.findRecipeIndex(name);
     if (index === -1) {
@@ -173,6 +193,7 @@ export class ProductionCatalogService {
     if (!file) {
       return;
     }
+    assertCatalogFileName(file.name);
 
     const payload = await readJsonFile<unknown>(file);
     const incoming = normalizeCatalogState(payload);
@@ -188,9 +209,10 @@ export class ProductionCatalogService {
     if (!file) {
       return;
     }
+    const fileMeta = assertCatalogUploadFileType(file.name, DataTypes.Item);
 
     const payload = await readJsonFile<unknown>(file);
-    const incomingItems = normalizeCatalogItems(payload);
+    const incomingItems = normalizeCatalogItemsByScope(payload, fileMeta.scope);
 
     this._$catalog.update((state) => {
       const machineItems = state.items.filter(
@@ -214,9 +236,13 @@ export class ProductionCatalogService {
     if (!file) {
       return;
     }
+    const fileMeta = assertCatalogUploadFileType(file.name, DataTypes.Recipe);
 
     const payload = await readJsonFile<unknown>(file);
-    const incomingRecipes = normalizeCatalogRecipes(payload);
+    const incomingRecipes = normalizeCatalogRecipesByScope(
+      payload,
+      fileMeta.scope,
+    );
 
     this._$catalog.update((state) => {
       const nextRecipes =
@@ -237,11 +263,13 @@ export class ProductionCatalogService {
     if (!file) {
       return;
     }
+    const fileMeta = assertCatalogUploadFileType(file.name, DataTypes.Machine);
 
     const payload = await readJsonFile<unknown>(file);
-    const incomingMachines = normalizeCatalogMachines(payload).map((machine) =>
-      machineToCatalogItem(machine),
-    );
+    const incomingMachines = normalizeCatalogMachinesByScope(
+      payload,
+      fileMeta.scope,
+    ).map((machine) => machineToCatalogItem(machine));
 
     this._$catalog.update((state) => {
       const nonMachineItems = state.items.filter((item) => !item.isMachine);
@@ -266,9 +294,13 @@ export class ProductionCatalogService {
     if (!file) {
       return;
     }
+    const fileMeta = assertCatalogUploadFileType(file.name, DataTypes.Production);
 
     const payload = await readJsonFile<unknown>(file);
-    const incomingTemplates = normalizeCatalogProductions(payload);
+    const incomingTemplates = normalizeCatalogProductionsByScope(
+      payload,
+      fileMeta.scope,
+    );
     this._$catalog.update((state) => {
       const nextTemplates =
         mode === ImportMode.Override
@@ -284,18 +316,48 @@ export class ProductionCatalogService {
   }
 
   public downloadCatalog(): void {
-    downloadJson(this.$catalog(), 'PRC_catalog');
+    downloadJson(this.$catalog(), createCatalogFileName());
   }
 
   public downloadItems(): void {
     const plainItems = this.$catalog().items.filter(
       (item) => item.isMachine !== true,
     );
-    downloadJson(plainItems, 'PRC_catalog_items');
+    downloadJson(plainItems, createDownloadFileName(DataTypes.Item));
+  }
+
+  public downloadItemByName(name: string): void {
+    const index = findIndexByName(this.$catalog().items, name);
+    if (index === -1) {
+      return;
+    }
+    const item = this.$catalog().items[index];
+    if (item.isMachine === true) {
+      return;
+    }
+    downloadJson(
+      item,
+      createDownloadFileNameWithScope(toDownloadScope(item.name), DataTypes.Item),
+    );
   }
 
   public downloadRecipes(): void {
-    downloadJson(this.$catalog().recipes, 'PRC_catalog_recipes');
+    downloadJson(this.$catalog().recipes, createDownloadFileName(DataTypes.Recipe));
+  }
+
+  public downloadRecipeByName(name: string): void {
+    const index = findIndexByName(this.$catalog().recipes, name);
+    if (index === -1) {
+      return;
+    }
+    const recipe = this.$catalog().recipes[index];
+    downloadJson(
+      recipe,
+      createDownloadFileNameWithScope(
+        toDownloadScope(recipe.name),
+        DataTypes.Recipe,
+      ),
+    );
   }
 
   public downloadMachines(): void {
@@ -306,17 +368,89 @@ export class ProductionCatalogService {
       productivity: item.productivity ?? 1,
       drain: item.drain ?? 1,
     }));
-    downloadJson(machines, 'PRC_catalog_machines');
+    downloadJson(machines, createDownloadFileName(DataTypes.Machine));
+  }
+
+  public downloadMachineByName(name: string): void {
+    const machineItem = this.$machineItems().find(
+      (item) => item.name.trim().toLowerCase() === name.trim().toLowerCase(),
+    );
+    if (!machineItem) {
+      return;
+    }
+
+    const machine: CatalogMachine = {
+      name: machineItem.name,
+      iconUrl: machineItem.iconUrl,
+      craftingSpeed: machineItem.craftingSpeed ?? 1,
+      productivity: machineItem.productivity ?? 1,
+      drain: machineItem.drain ?? 1,
+    };
+
+    downloadJson(
+      machine,
+      createDownloadFileNameWithScope(
+        toDownloadScope(machine.name),
+        DataTypes.Machine,
+      ),
+    );
   }
 
   public downloadProductions(): void {
-    downloadJson(this.$catalog().productions, 'PRC_catalog_productions');
+    downloadJson(
+      this.$catalog().productions,
+      createDownloadFileName(DataTypes.Production),
+    );
   }
 
   public clearCatalog(): void {
     const nextState = createDefaultCatalogState();
     this._$catalog.set(nextState);
     saveCatalog(nextState);
+  }
+
+  public clearItems(): void {
+    this._$catalog.update((state) => {
+      const nextState: ProductionCatalogState = {
+        ...state,
+        items: state.items.filter((item) => item.isMachine === true),
+      };
+      saveCatalog(nextState);
+      return nextState;
+    });
+  }
+
+  public clearMachines(): void {
+    this._$catalog.update((state) => {
+      const nextState: ProductionCatalogState = {
+        ...state,
+        items: state.items.filter((item) => item.isMachine !== true),
+      };
+      saveCatalog(nextState);
+      return nextState;
+    });
+  }
+
+  public clearRecipes(): void {
+    this._$catalog.update((state) => {
+      const nextState = withCatalogConsistency({
+        ...state,
+        recipes: [],
+      });
+      saveCatalog(nextState);
+      return nextState;
+    });
+  }
+
+  public clearProductions(): void {
+    this._$catalog.update((state) => {
+      const nextState = withCatalogConsistency({
+        ...state,
+        productions: [],
+      });
+      saveCatalog(nextState);
+      return nextState;
+    });
   }
 
   public upsertRecipe(recipe: CatalogRecipe): void {
@@ -1074,6 +1208,25 @@ function normalizeCatalogItems(payload: unknown): CatalogItem[] {
   return nextItems;
 }
 
+function normalizeCatalogItemsByScope(
+  payload: unknown,
+  scope: string,
+): CatalogItem[] {
+  if (scope === DOWNLOAD_SCOPE_LIST) {
+    const nextItems = normalizeCatalogItems(payload);
+    if (nextItems.length === 0) {
+      throw new Error('Uploaded item file must contain an items array');
+    }
+    return nextItems;
+  }
+
+  const item = normalizeCatalogItem(payload);
+  if (!item) {
+    throw new Error('Uploaded item file must contain exactly one item object');
+  }
+  return [item];
+}
+
 function normalizeCatalogRecipes(payload: unknown): CatalogRecipe[] {
   if (!Array.isArray(payload)) {
     return [];
@@ -1095,6 +1248,27 @@ function normalizeCatalogRecipes(payload: unknown): CatalogRecipe[] {
   }
 
   return nextRecipes;
+}
+
+function normalizeCatalogRecipesByScope(
+  payload: unknown,
+  scope: string,
+): CatalogRecipe[] {
+  if (scope === DOWNLOAD_SCOPE_LIST) {
+    const nextRecipes = normalizeCatalogRecipes(payload);
+    if (nextRecipes.length === 0) {
+      throw new Error('Uploaded recipe file must contain a recipes array');
+    }
+    return nextRecipes;
+  }
+
+  const recipe = normalizeCatalogRecipe(payload);
+  if (!recipe) {
+    throw new Error(
+      'Uploaded recipe file must contain exactly one recipe object',
+    );
+  }
+  return [recipe];
 }
 
 function normalizeCatalogProductions(payload: unknown): CatalogProduction[] {
@@ -1120,6 +1294,29 @@ function normalizeCatalogProductions(payload: unknown): CatalogProduction[] {
   return nextTemplates;
 }
 
+function normalizeCatalogProductionsByScope(
+  payload: unknown,
+  scope: string,
+): CatalogProduction[] {
+  if (scope === DOWNLOAD_SCOPE_LIST) {
+    const nextTemplates = normalizeCatalogProductions(payload);
+    if (nextTemplates.length === 0) {
+      throw new Error(
+        'Uploaded production file must contain a productions array',
+      );
+    }
+    return nextTemplates;
+  }
+
+  const template = normalizeCatalogProduction(payload);
+  if (!template) {
+    throw new Error(
+      'Uploaded production file must contain exactly one production object',
+    );
+  }
+  return [template];
+}
+
 function normalizeCatalogMachines(payload: unknown): CatalogMachine[] {
   if (!Array.isArray(payload)) {
     return [];
@@ -1141,6 +1338,27 @@ function normalizeCatalogMachines(payload: unknown): CatalogMachine[] {
   }
 
   return nextMachines;
+}
+
+function normalizeCatalogMachinesByScope(
+  payload: unknown,
+  scope: string,
+): CatalogMachine[] {
+  if (scope === DOWNLOAD_SCOPE_LIST) {
+    const nextMachines = normalizeCatalogMachines(payload);
+    if (nextMachines.length === 0) {
+      throw new Error('Uploaded machine file must contain a machines array');
+    }
+    return nextMachines;
+  }
+
+  const machine = normalizeCatalogMachine(payload);
+  if (!machine) {
+    throw new Error(
+      'Uploaded machine file must contain exactly one machine object',
+    );
+  }
+  return [machine];
 }
 
 function normalizeCatalogItem(payload: unknown): CatalogItem | undefined {
@@ -1403,8 +1621,74 @@ function mergeByName<T extends { name: string }>(
   return next;
 }
 
+function createDownloadFileName(dataType: DataTypes): string {
+  return `${DOWNLOAD_FILE_PREFIX}.${DOWNLOAD_SCOPE_LIST}.${dataType}`;
+}
+
+function createDownloadFileNameWithScope(
+  scope: string,
+  dataType: DataTypes,
+): string {
+  return `${DOWNLOAD_FILE_PREFIX}.${scope}.${dataType}`;
+}
+
+function createCatalogFileName(): string {
+  return `${DOWNLOAD_FILE_PREFIX}.${DOWNLOAD_SCOPE_LIST}.${CATALOG_DOWNLOAD_TYPE}`;
+}
+
+function getDataTypeFileAccept(dataType: DataTypes): string {
+  return `.${dataType}.${DOWNLOAD_FILE_EXTENSION},.${DOWNLOAD_FILE_EXTENSION}`;
+}
+
+function getCatalogFileAccept(): string {
+  return `.${CATALOG_DOWNLOAD_TYPE}.${DOWNLOAD_FILE_EXTENSION},.${DOWNLOAD_FILE_EXTENSION}`;
+}
+
+function assertCatalogUploadFileType(
+  fileName: string,
+  expectedDataType: DataTypes,
+): UploadedCatalogFileMeta {
+  const match = DOWNLOAD_FILE_NAME_PATTERN.exec(fileName);
+  if (!match) {
+    throw new Error(
+      `Invalid file name "${fileName}". Expected "${DOWNLOAD_FILE_PREFIX}.{id|${DOWNLOAD_SCOPE_LIST}}.{${Object.values(DataTypes).join('|')}}.${DOWNLOAD_FILE_EXTENSION}".`,
+    );
+  }
+
+  const scope = match[1]?.trim();
+  const dataType = match[2] as DataTypes;
+  if (dataType !== expectedDataType) {
+    throw new Error(
+      `Invalid file type "${dataType}". Expected "${expectedDataType}" in file name.`,
+    );
+  }
+  if (!scope) {
+    throw new Error(
+      `Invalid file name "${fileName}". Missing import scope before "${expectedDataType}".`,
+    );
+  }
+  return { scope, dataType };
+}
+
+function assertCatalogFileName(fileName: string): void {
+  const expectedFileName = `${DOWNLOAD_FILE_PREFIX}.${DOWNLOAD_SCOPE_LIST}.${CATALOG_DOWNLOAD_TYPE}.${DOWNLOAD_FILE_EXTENSION}`;
+  if (fileName !== expectedFileName) {
+    throw new Error(
+      `Invalid file name "${fileName}". Expected "${expectedFileName}".`,
+    );
+  }
+}
+
+function toDownloadScope(value: string): string {
+  const normalized = value
+    .trim()
+    .replace(/[^a-zA-Z0-9_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return normalized.length > 0 ? normalized : DOWNLOAD_SCOPE_LIST;
+}
+
 function downloadJson(data: unknown, fileName: string): void {
-  const payload = JSON.stringify(data);
+  const payload = JSON.stringify(data, null, 2);
   const element: HTMLAnchorElement = document.createElement('a');
   element.setAttribute(
     'href',
@@ -1438,4 +1722,9 @@ function readJsonFile<T>(file: File): Promise<T> {
       reject(error instanceof Error ? error : new Error('Error reading file'));
     };
   });
+}
+
+interface UploadedCatalogFileMeta {
+  scope: string;
+  dataType: DataTypes;
 }

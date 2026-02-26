@@ -1,16 +1,18 @@
 import { Component, input, output } from '@angular/core';
+import { TooltipDirective } from 'src/app/components/generic/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-file-picker',
   templateUrl: './file-picker.component.html',
   host: { class: 'contents' },
-  imports: [],
+  imports: [TooltipDirective],
 })
 export class FilePickerComponent {
   public readonly $disabled = input<boolean>(false);
   public readonly $multi = input<boolean>(false);
   public readonly $filesTypesAccepted = input<string>('');
   public readonly $btnClass = input<string>('btn btn-icon btn-primary');
+  public readonly $title = input<string>('');
   public readonly $fileChange = output<File[]>();
 
   // private readonly $fileInput =

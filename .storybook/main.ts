@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import type { StorybookConfig } from '@storybook/angular';
+import { Indexer, IndexerOptions, IndexInput } from 'storybook/internal/types';
 
 const storyFiles = '*.stories.@(js|jsx|ts|tsx)';
 const docsFiles = '*.mdx';
@@ -11,16 +12,25 @@ const config: StorybookConfig = {
     `./**/${docsFiles}`,
     `../src/app/**/${docsFiles}`,
   ],
-  experimental_indexers: async (indexers = []) =>
+  experimental_indexers: async (indexers: Indexer[] | undefined = []) =>
     indexers.map((indexer) => ({
       ...indexer,
-      createIndex: async (fileName, options) => {
-        const entries = await indexer.createIndex(fileName, options);
-        return entries.map((entry) => {
+      createIndex: async (
+        fileName: string,
+        options: IndexerOptions,
+      ): Promise<IndexInput[]> => {
+        const entries: IndexInput[] = await indexer.createIndex(
+          fileName,
+          options,
+        );
+        return entries.map((entry: IndexInput): IndexInput => {
           // Keep default indexing, then replace only the sidebar title.
-          const sourceTitle = entry.title ?? fileName;
-          const nextTitle = flattenTitle(sourceTitle);
-          if (!nextTitle || nextTitle === sourceTitle) {
+          const sourceTitle: string = entry.title ?? fileName;
+          options?.makeTitle ? options.makeTitle(fileName) : fileName;
+
+          const nextTitle: string = flattenTitle(sourceTitle);
+
+          if (!nextTitle || nextTitle === entry.title) {
             return entry;
           }
 
@@ -29,10 +39,7 @@ const config: StorybookConfig = {
           const entryWithoutStaleId = { ...entry };
           delete entryWithoutStaleId.__id;
 
-          return {
-            ...entryWithoutStaleId,
-            title: nextTitle,
-          };
+          return { ...entryWithoutStaleId, title: nextTitle };
         });
       },
     })),

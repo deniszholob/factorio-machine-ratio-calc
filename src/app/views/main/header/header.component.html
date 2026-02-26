@@ -1,5 +1,6 @@
 @let isSettingsOpen = $isSettingsOpen();
 @let isCatalogOpen = $isCatalogOpen();
+@let uploadError = $uploadError();
 
 <div class="flex flex-col gap-3 border-b border-stone-700 p-2">
   <div class="flex items-center justify-between gap-3">
@@ -30,25 +31,25 @@
 
     <div class="flex flex-row gap-1">
       <button
-        class="btn btn-secondary-outline btn-sm w-8"
+        class="btn btn-secondary-outline"
         [ngClass]="{ 'ring-1 ring-amber-400': isCatalogOpen }"
         [title]="'Catalog'"
         (click)="onToggleCatalog()"
         type="button"
         aria-label="Catalog"
       >
-        <i class="fas fa-database"></i>
+        <i class="fas fa-database fa-fw"></i>
       </button>
 
       <button
-        class="btn btn-secondary-outline btn-sm w-8"
+        class="btn btn-secondary-outline"
         [ngClass]="{ 'ring-1 ring-amber-400': isSettingsOpen }"
         [title]="'Settings'"
         (click)="onToggleSettings()"
         type="button"
         aria-label="Settings"
       >
-        <i class="fas fa-gear"></i>
+        <i class="fas fa-gear fa-fw"></i>
       </button>
     </div>
   </div>
@@ -60,7 +61,7 @@
       (click)="onExportProductionChains()"
       type="button"
     >
-      <i class="fas fa-download"></i>
+      <i class="fas fa-download fa-fw"></i>
       Download All
     </button>
 
@@ -76,11 +77,18 @@
 
     <app-file-picker
       #importPicker
-      [$filesTypesAccepted]="'.json'"
+      [$filesTypesAccepted]="productionChainFileAccept"
       [$btnClass]="'btn btn-primary-outline-fill flex-1 gap-2'"
+      [$title]="'Upload all production chains'"
       ($fileChange)="onImportProductionChains($event)"
     >
-      <i class="fas fa-cloud-arrow-up"></i> Upload All
+      <i class="fas fa-cloud-arrow-up fa-fw"></i> Upload All
     </app-file-picker>
   </div>
+
+  @if (uploadError) {
+    <div class="rounded-sm border border-red-900/60 bg-red-950/30 px-2 py-1 text-xs text-red-300">
+      {{ uploadError }}
+    </div>
+  }
 </div>

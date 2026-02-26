@@ -12,15 +12,27 @@ import {
 import { ModalComponent } from '../../generic/modal/modal.component';
 import { TooltipDirective } from '../../generic/tooltip/tooltip.directive';
 import { ProductionChain } from 'src/app/shared/models/production-chain/production-chain.model';
+import { MenuComponent, MenuItem } from '../../generic/menu/menu.component';
+import { MenuAction } from '../../generic/menu/menu-action.enum';
+import { MENU_ITEMS_DUPLICATE_DOWNLOAD_DELETE } from '../../generic/menu/menu-items.constants';
 
 @Component({
   selector: 'app-production-chain-item',
   templateUrl: './production-chain-item.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, ModalComponent, TooltipDirective],
+  imports: [
+    NgClass,
+    ModalComponent,
+    TooltipDirective,
+    MenuComponent,
+  ],
 })
 export class ProductionChainItemComponent {
+  protected readonly MenuAction = MenuAction;
+  protected readonly $menuItems: readonly MenuItem[] =
+    MENU_ITEMS_DUPLICATE_DOWNLOAD_DELETE;
+
   public readonly $productionChain = input.required<ProductionChain>();
   public readonly $activeProductionChainId = input.required<
     string | undefined
@@ -39,6 +51,7 @@ export class ProductionChainItemComponent {
   public readonly $editIconUrl = output<string>();
   public readonly $delete = output<string>();
   public readonly $duplicate = output<string>();
+  public readonly $download = output<string>();
 
   protected readonly $confirmDeleteOpen = signal<boolean>(false);
 
@@ -78,8 +91,7 @@ export class ProductionChainItemComponent {
     this.$startRename.emit(productionChain.id);
   }
 
-  protected onDelete(event: Event): void {
-    event.stopPropagation();
+  protected onDelete(): void {
     this.$confirmDeleteOpen.set(true);
   }
 
@@ -94,9 +106,27 @@ export class ProductionChainItemComponent {
     this.$commitRename.emit();
   }
 
-  protected onDuplicate(event: Event): void {
-    event.stopPropagation();
+  protected onDuplicate(): void {
     const productionChain = this.$productionChain();
     this.$duplicate.emit(productionChain.id);
+  }
+
+  protected onDownload(): void {
+    const productionChain = this.$productionChain();
+    this.$download.emit(productionChain.id);
+  }
+
+  protected onMenuAction(actionId: string): void {
+    if (actionId === MenuAction.Download) {
+      this.onDownload();
+      return;
+    }
+    if (actionId === MenuAction.Duplicate) {
+      this.onDuplicate();
+      return;
+    }
+    if (actionId === MenuAction.Delete) {
+      this.onDelete();
+    }
   }
 }

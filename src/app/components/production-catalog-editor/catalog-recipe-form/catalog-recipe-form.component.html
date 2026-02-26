@@ -68,14 +68,23 @@
       [$size]="BadgeSize.Md"
       [$tone]="usageCount > 0 ? BadgeTone.Red : BadgeTone.Stone"
     ></app-badge>
-    <span [title]="usageCount > 0 ? deleteDisabledReason : ''">
+    <span class="flex items-center gap-2">
       <button
-        class="btn btn-icon btn-danger"
+        class="btn btn-primary-outline-fill"
+        [title]="'Download recipe'"
+        (click)="onDownloadRecipe()"
+        type="button"
+      >
+        <i class="fas fa-download fa-fw"></i>
+      </button>
+      <button
+        class="btn btn-danger-outline-fill"
         [disabled]="usageCount > 0"
+        [title]="usageCount > 0 ? deleteDisabledReason : 'Delete recipe'"
         (click)="onRemoveRecipe()"
         type="button"
       >
-        <i class="fas fa-trash"></i>
+        <i class="fas fa-trash-can fa-fw"></i>
       </button>
     </span>
   </div>

@@ -36,6 +36,7 @@ import { TooltipDirective } from '../generic/tooltip/tooltip.directive';
 import { ModalComponent } from '../generic/modal/modal.component';
 import { ProductionEditorComponent } from '../production/production-chain-editor/production-editor/production-editor.component';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
+import { ImportExportService } from 'src/app/shared/services/import-export/import-export.service';
 
 @Component({
   selector: 'app-production-catalog-editor',
@@ -64,6 +65,16 @@ export class ProductionCatalogEditorComponent {
 
   private readonly productionCatalogService = inject(ProductionCatalogService);
   private readonly productionChainService = inject(ProductionChainService);
+  private readonly importExportService = inject(ImportExportService);
+  protected readonly itemFileAccept = this.productionCatalogService.itemFileAccept;
+  protected readonly catalogFileAccept =
+    this.productionCatalogService.catalogFileAccept;
+  protected readonly recipeFileAccept =
+    this.productionCatalogService.recipeFileAccept;
+  protected readonly machineFileAccept =
+    this.productionCatalogService.machineFileAccept;
+  protected readonly productionFileAccept =
+    this.productionCatalogService.productionFileAccept;
 
   public readonly $catalog = this.productionCatalogService.$catalog;
   public readonly $itemNames = this.productionCatalogService.$itemNames;
@@ -243,6 +254,8 @@ export class ProductionCatalogEditorComponent {
       const machineName = template.production.machine.name;
       return {
         index: catalogProductions.indexOf(template),
+        productionId: template.production.id,
+        production: template.production,
         name: template.name,
         machineName,
         recipeName: template.production.recipe.name,
@@ -366,6 +379,22 @@ export class ProductionCatalogEditorComponent {
     this.productionCatalogService.clearCatalog();
   }
 
+  protected onDeleteAllItems(): void {
+    this.productionCatalogService.clearItems();
+  }
+
+  protected onDeleteAllMachines(): void {
+    this.productionCatalogService.clearMachines();
+  }
+
+  protected onDeleteAllRecipes(): void {
+    this.productionCatalogService.clearRecipes();
+  }
+
+  protected onDeleteAllProductions(): void {
+    this.productionCatalogService.clearProductions();
+  }
+
   protected onAddItem(): void {
     this.productionCatalogService.addItem();
   }
@@ -418,6 +447,10 @@ export class ProductionCatalogEditorComponent {
       return;
     }
     this.productionCatalogService.removeItemAtIndex(catalogIndex);
+  }
+
+  protected onDownloadItem(item: { name: string }): void {
+    this.productionCatalogService.downloadItemByName(item.name);
   }
 
   protected onAddRecipe(): void {
@@ -474,6 +507,10 @@ export class ProductionCatalogEditorComponent {
     this.productionCatalogService.removeRecipeAtIndex(index);
   }
 
+  protected onDownloadRecipe(recipe: CatalogRecipe): void {
+    this.productionCatalogService.downloadRecipeByName(recipe.name);
+  }
+
   protected onAddMachine(): void {
     this.productionCatalogService.addMachine();
   }
@@ -525,6 +562,10 @@ export class ProductionCatalogEditorComponent {
     this.productionCatalogService.removeMachineAtIndex(index);
   }
 
+  protected onDownloadMachine(machine: CatalogMachine): void {
+    this.productionCatalogService.downloadMachineByName(machine.name);
+  }
+
   protected onRemoveProduction(index: number, name: string): void {
     if (getCountByName(this.$productionUsageByName(), name) > 0) {
       return;
@@ -540,6 +581,10 @@ export class ProductionCatalogEditorComponent {
     this.$editingProductionTemplateIndex.set(index);
     this.$editingProductionTemplateDraft.set(cloneProduction(template.production));
     this.$isProductionEditorOpen.set(true);
+  }
+
+  protected onDownloadProduction(production: Production): void {
+    this.importExportService.downloadProductionById(production.id, production);
   }
 
   protected onEditedProductionDraftChange(production: Production): void {
@@ -571,8 +616,10 @@ export class ProductionCatalogEditorComponent {
     try {
       await action();
       this.$uploadError.set(undefined);
-    } catch {
-      this.$uploadError.set('Failed to import catalog JSON');
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Failed to import catalog JSON';
+      this.$uploadError.set(message);
     }
   }
 

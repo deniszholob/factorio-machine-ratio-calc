@@ -1,0 +1,44 @@
+@let items = $items();
+
+<div class="relative" (click)="onMenuContainerClick($event)">
+  <button
+    #triggerButton
+    class="btn btn-secondary-outline-fill px-2 py-1"
+    [attr.aria-expanded]="$isOpen()"
+    [title]="$menuLabel()"
+    [attr.aria-label]="$menuLabel()"
+    (click)="onToggleMenu($event)"
+    aria-haspopup="menu"
+    type="button"
+  >
+    <i class="fas fa-ellipsis fa-fw"></i>
+  </button>
+
+  @if ($isOpen()) {
+    <div
+      class="fixed z-[1200] rounded-sm border border-stone-700 bg-stone-950 p-1 shadow-xl"
+      [style.top.px]="$menuTop()"
+      [style.left.px]="$menuLeft()"
+      [style.minWidth.px]="$menuMinWidth()"
+      (click)="onMenuContainerClick($event)"
+      role="menu"
+    >
+      @for (item of items; track item.id) {
+        <button
+          class="flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-left text-sm transition"
+          [ngClass]="{
+            'text-stone-100 hover:bg-stone-800/80': item.tone !== MenuItemTone.Danger,
+            'text-red-300 hover:bg-red-900/30 hover:text-red-200':
+              item.tone === MenuItemTone.Danger,
+          }"
+          (click)="onSelectItem($event, item.id)"
+          type="button"
+          role="menuitem"
+        >
+          <i class="fa-fw" [class]="item.iconClass"></i>
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  }
+</div>

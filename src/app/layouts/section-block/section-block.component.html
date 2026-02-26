@@ -2,22 +2,30 @@
   <app-section-title [$title]="$title()" [$iconClass]="$iconClass()"></app-section-title>
 
   @if ($showToolbar()) {
-    <div class="flex flex-wrap items-end gap-3">
-      <button class="btn btn-icon btn-success" (click)="onAdd()">
-        <i class="fas fa-plus"></i>
-        <span>Add {{ $addLabel() }}</span>
-      </button>
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div class="flex flex-wrap items-end gap-1">
+        <ng-content select="[section-actions]"></ng-content>
+      </div>
 
-      <app-form-field-block [$label]="'Filter'" [$className]="'min-w-56'">
-        <input
-          class="h-9"
-          [ngModel]="$filterValue()"
-          [placeholder]="'Filter'"
-          [attr.aria-label]="'Filter'"
-          (ngModelChange)="onFilterChange($event)"
-          type="text"
-        />
-      </app-form-field-block>
+      <div class="flex flex-wrap items-end gap-3">
+        @if ($showAdd()) {
+          <button class="btn btn-icon btn-success" (click)="onAdd()">
+            <i class="fas fa-plus fa-fw"></i>
+            <span>Add {{ $addLabel() }}</span>
+          </button>
+        }
+
+        <app-form-field-block [$label]="'Filter'" [$className]="'min-w-56'">
+          <input
+            class="h-9"
+            [ngModel]="$filterValue()"
+            [placeholder]="'Filter'"
+            [attr.aria-label]="'Filter'"
+            (ngModelChange)="onFilterChange($event)"
+            type="text"
+          />
+        </app-form-field-block>
+      </div>
     </div>
     <hr />
   }

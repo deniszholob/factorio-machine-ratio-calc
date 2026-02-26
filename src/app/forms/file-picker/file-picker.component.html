@@ -1,6 +1,8 @@
 <button
   class="{{ $btnClass() }} cursor-pointer"
   [disabled]="$disabled()"
+  [title]="$title()"
+  [attr.aria-label]="$title() || null"
   (click)="fileInput.click()"
 >
   <ng-content></ng-content>

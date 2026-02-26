@@ -1,5 +1,5 @@
 import { NgClass, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { ImportExportService } from 'src/app/shared/services/import-export/import-export.service';
@@ -28,6 +28,9 @@ export class HeaderComponent {
   protected readonly $isSettingsOpen = this.settingsService.$isSettingsOpen;
   protected readonly $isCatalogOpen =
     this.productionCatalogUiService.$isCatalogOpen;
+  protected readonly $uploadError = signal<string | undefined>(undefined);
+  protected readonly productionChainFileAccept =
+    this.importExportService.productionChainFileAccept;
 
   protected onGoHome(): void {
     this.productionChainService.clearActiveProductionChain();
@@ -39,10 +42,13 @@ export class HeaderComponent {
     this.importExportService
       .uploadAllProductionChains(files, mode)
       .then(() => {
+        this.$uploadError.set(undefined);
         this.productionChainService.reloadFromStorage();
       })
       .catch((error) => {
-        console.log(error);
+        const message =
+          error instanceof Error ? error.message : 'Failed to upload JSON';
+        this.$uploadError.set(message);
       });
   }
 

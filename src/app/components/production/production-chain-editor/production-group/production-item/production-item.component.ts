@@ -24,6 +24,9 @@ import { BadgeComponent } from 'src/app/components/generic/badge/badge.component
 import { BadgeTone } from 'src/app/components/generic/badge/badge-tone.enum';
 import { BadgeSize } from 'src/app/components/generic/badge/badge-size.enum';
 import { CompositeIconComponent } from 'src/app/components/generic/composite-icon/composite-icon.component';
+import { MenuComponent, MenuItem } from 'src/app/components/generic/menu/menu.component';
+import { MenuAction } from 'src/app/components/generic/menu/menu-action.enum';
+import { MENU_ITEMS_DUPLICATE_DOWNLOAD_DELETE } from 'src/app/components/generic/menu/menu-items.constants';
 
 @Component({
   selector: 'app-production-item',
@@ -37,6 +40,7 @@ import { CompositeIconComponent } from 'src/app/components/generic/composite-ico
     RateUnitValueComponent,
     BadgeComponent,
     CompositeIconComponent,
+    MenuComponent,
     CdkDrag,
     CdkDragHandle,
   ],
@@ -45,6 +49,9 @@ export class ProductionItemComponent {
   protected readonly ProductionMovePreviewMode = ProductionMovePreviewMode;
   protected readonly BadgeTone = BadgeTone;
   protected readonly BadgeSize = BadgeSize;
+  protected readonly MenuAction = MenuAction;
+  protected readonly $actionMenuItems: readonly MenuItem[] =
+    MENU_ITEMS_DUPLICATE_DOWNLOAD_DELETE;
 
   private readonly productionCatalogService = inject(ProductionCatalogService);
 
@@ -68,6 +75,7 @@ export class ProductionItemComponent {
   public readonly $editMachine = output<Production>();
   public readonly $duplicateMachine = output<Production>();
   public readonly $deleteMachine = output<string>();
+  public readonly $downloadMachine = output<Production>();
   public readonly $updateMachineCount = output<Production>();
   public readonly $toggleExpanded = output<string>();
   public readonly $addChild = output<string>();
@@ -90,9 +98,28 @@ export class ProductionItemComponent {
     this.$duplicateMachine.emit(machine);
   }
 
+  protected onDownloadMachine(machine: Production): void {
+    this.$downloadMachine.emit(machine);
+  }
+
   protected onUpdateMachineCount(machine: Production): void {
     this.$updateMachineCount.emit(machine);
     reCalcProductionRates(machine);
+  }
+
+  protected onActionSelected(actionId: string): void {
+    const machine = this.$machine();
+    if (actionId === MenuAction.Duplicate) {
+      this.onDuplicateMachine(machine);
+      return;
+    }
+    if (actionId === MenuAction.Download) {
+      this.onDownloadMachine(machine);
+      return;
+    }
+    if (actionId === MenuAction.Delete) {
+      this.onDeleteMachine(machine);
+    }
   }
 
   protected onToggleExpanded(machineId: string): void {

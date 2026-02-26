@@ -186,6 +186,7 @@ export class ProductionGroupComponent {
 
   public readonly $editMachine = output<Production>();
   public readonly $duplicateMachine = output<Production>();
+  public readonly $downloadMachine = output<Production>();
   public readonly $deleteMachine = output<string>();
   public readonly $updateMachineCount = output<Production>();
   public readonly $toggleMachineExpanded = output<string>();
@@ -198,6 +199,10 @@ export class ProductionGroupComponent {
 
   protected onDuplicateMachine(machine: Production): void {
     this.$duplicateMachine.emit(machine);
+  }
+
+  protected onDownloadMachine(machine: Production): void {
+    this.$downloadMachine.emit(machine);
   }
 
   protected onDeleteMachine(machineId: string): void {

@@ -58,7 +58,7 @@
           class="flex h-5 w-5 items-center justify-center rounded-sm border border-stone-700/70 bg-stone-800/40 text-xs text-stone-500"
           aria-hidden="true"
         >
-          <i class="fas fa-image"></i>
+          <i class="fas fa-image fa-fw"></i>
         </span>
       }
       <span class="truncate text-sm font-semibold">
@@ -75,7 +75,7 @@
   <div class="flex items-center gap-1">
     <!-- class="cursor-pointer rounded-sm border border-stone-700 px-2 py-1  text-stone-300 transition hover:border-stone-500 hover:text-stone-100 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:outline-hidden" -->
     <button
-      class="btn px-2 py-1"
+      class="btn btn-outline-fill"
       [ngClass]="{
         'btn-warning-outline-fill': productionChain.id !== editingProductionChainId,
         'btn-success-outline-fill': productionChain.id === editingProductionChainId,
@@ -91,35 +91,20 @@
       <span class="sr-only">Rename chain</span>
       @if (productionChain.id === editingProductionChainId) {
         <div class="contents">
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check fa-fw"></i>
         </div>
       } @else {
         <div class="contents">
-          <i class="fas fa-pen"></i>
+          <i class="fas fa-pen fa-fw"></i>
         </div>
       }
     </button>
 
-    <button
-      class="btn btn-secondary-outline-fill px-2 py-1"
-      [title]="'Duplicate production chain'"
-      (click)="onDuplicate($event)"
-      type="button"
-    >
-      <span class="sr-only">Duplicate chain</span>
-      <i class="fas fa-copy"></i>
-    </button>
-
-    <!-- class="cursor-pointer rounded-sm border border-stone-700 px-2 py-1  text-stone-300 transition hover:border-red-400 hover:text-red-200 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-hidden" -->
-    <button
-      class="btn btn-danger-outline-fill px-2 py-1"
-      [title]="'Delete production chain'"
-      (click)="onDelete($event)"
-      type="button"
-    >
-      <span class="sr-only">Delete chain</span>
-      <i class="fas fa-trash"></i>
-    </button>
+    <app-menu
+      [$menuLabel]="'Chain actions'"
+      [$items]="$menuItems"
+      ($itemSelected)="onMenuAction($event)"
+    ></app-menu>
   </div>
 </div>
 

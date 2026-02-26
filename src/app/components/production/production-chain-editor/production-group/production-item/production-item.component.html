@@ -113,28 +113,19 @@
     <div class="grid w-full flex-1 grid-cols-12">
       <div class="col-span-6 flex flex-row flex-wrap items-center gap-2">
         <button
-          class="btn btn-icon btn-warning"
+          class="btn btn-warning"
           [title]="'Edit production'"
           (click)="onEditMachine(production)"
+          type="button"
         >
-          <i class="fas fa-pencil-alt"></i>
+          <i class="fas fa-pen fa-fw"></i>
         </button>
 
-        <button
-          class="btn btn-icon btn-secondary"
-          [title]="'Duplicate production'"
-          (click)="onDuplicateMachine(production)"
-        >
-          <i class="fas fa-copy"></i>
-        </button>
-
-        <button
-          class="btn btn-icon btn-danger"
-          [title]="'Delete production'"
-          (click)="onDeleteMachine(production)"
-        >
-          <i class="fas fa-trash"></i>
-        </button>
+        <app-menu
+          [$menuLabel]="'Production actions'"
+          [$items]="$actionMenuItems"
+          ($itemSelected)="onActionSelected($event)"
+        ></app-menu>
 
         <div class="flex flex-wrap items-center gap-1">
           <input

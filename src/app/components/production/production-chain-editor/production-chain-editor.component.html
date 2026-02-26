@@ -67,8 +67,9 @@
         </button>
         <app-file-picker
           #importPicker
-          [$filesTypesAccepted]="'.json'"
+          [$filesTypesAccepted]="productionFileAccept"
           [$btnClass]="'btn btn-icon btn-primary-outline cursor-pointer gap-2'"
+          [$title]="'Upload productions'"
           ($fileChange)="uploadData($event)"
         >
           <i class="fas fa-cloud-arrow-up"></i> Upload Productions
@@ -82,6 +83,7 @@
           [$machineTotals]="machinesTotals"
           ($editMachine)="onEditMachine($event)"
           ($duplicateMachine)="onDuplicateMachine($event)"
+          ($downloadMachine)="onDownloadMachine($event)"
           ($deleteMachine)="onDeleteMachineById($event)"
           ($moveMachine)="onMoveMachine($event)"
           ($toggleMachineExpanded)="onToggleMachineExpanded($event)"

@@ -52,8 +52,9 @@
               <span>Download</span>
             </button>
             <app-file-picker
-              [$filesTypesAccepted]="'.json'"
+              [$filesTypesAccepted]="catalogFileAccept"
               [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
+              [$title]="'Upload catalog'"
               ($fileChange)="onUploadCatalog($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -71,8 +72,9 @@
               <span>Download</span>
             </button>
             <app-file-picker
-              [$filesTypesAccepted]="'.json'"
+              [$filesTypesAccepted]="itemFileAccept"
               [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
+              [$title]="'Upload items'"
               ($fileChange)="onUploadItems($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -90,8 +92,9 @@
               <span>Download</span>
             </button>
             <app-file-picker
-              [$filesTypesAccepted]="'.json'"
+              [$filesTypesAccepted]="machineFileAccept"
               [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
+              [$title]="'Upload machines'"
               ($fileChange)="onUploadMachines($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -101,7 +104,7 @@
 
           <div class="flex flex-wrap items-center gap-2 py-2">
             <span class="inline-flex min-w-44 items-center gap-2 text-stone-200">
-              <i class="fas fa-vial text-stone-500"></i>
+              <i class="fas fa-scroll text-stone-500"></i>
               Recipes
             </span>
             <button class="btn btn-icon btn-primary-outline gap-2" (click)="onDownloadRecipes()">
@@ -109,8 +112,9 @@
               <span>Download</span>
             </button>
             <app-file-picker
-              [$filesTypesAccepted]="'.json'"
+              [$filesTypesAccepted]="recipeFileAccept"
               [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
+              [$title]="'Upload recipes'"
               ($fileChange)="onUploadRecipes($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -131,8 +135,9 @@
               <span>Download</span>
             </button>
             <app-file-picker
-              [$filesTypesAccepted]="'.json'"
+              [$filesTypesAccepted]="productionFileAccept"
               [$btnClass]="'btn btn-icon btn-primary-outline gap-2'"
+              [$title]="'Upload productions'"
               ($fileChange)="onUploadProductions($event)"
             >
               <i class="fas fa-cloud-arrow-up"></i>
@@ -161,11 +166,40 @@
         [$title]="'Items'"
         [$iconClass]="'fas fa-box text-stone-400'"
         [$showToolbar]="true"
+        [$showAdd]="false"
         [$addLabel]="'item'"
         [$filterValue]="itemFilter"
         ($add)="onAddItem()"
         ($filterValueChange)="onItemFilterChange($event)"
       >
+        <button
+          class="btn btn-success"
+          [title]="'Add item'"
+          (click)="onAddItem()"
+          section-actions
+          type="button"
+        >
+          <i class="fas fa-plus fa-fw"></i>
+        </button>
+        <app-file-picker
+          [$filesTypesAccepted]="itemFileAccept"
+          [$btnClass]="'btn btn-primary-outline-fill'"
+          [$title]="'Import item'"
+          ($fileChange)="onUploadItems($event)"
+          section-actions
+        >
+          <i class="fas fa-cloud-arrow-up fa-fw"></i>
+        </app-file-picker>
+        <button
+          class="btn btn-danger-outline-fill"
+          [title]="'Delete all items'"
+          (click)="onDeleteAllItems()"
+          section-actions
+          type="button"
+        >
+          <i class="fas fa-trash-can fa-fw"></i>
+        </button>
+
         <div class="flex flex-col gap-2">
           @for (item of visibleItems; track item) {
             @let itemUsageKey = item.name.trim().toLowerCase();
@@ -225,21 +259,31 @@
                 [$tone]="itemUsageCount > 0 ? BadgeTone.Red : BadgeTone.Stone"
               ></app-badge>
 
-              <button
-                class="btn btn-icon btn-danger"
-                [disabled]="itemUsageCount > 0"
-                [title]="
-                  itemUsageCount > 0
-                    ? 'Cannot delete item: used by ' +
-                      itemUsageCount +
-                      ' references. Remove it in recipes/productions first.'
-                    : ''
-                "
-                (click)="onRemoveItem(item)"
-                type="button"
-              >
-                <i class="fas fa-trash"></i>
-              </button>
+              <span class="flex items-center gap-2">
+                <button
+                  class="btn btn-primary-outline-fill"
+                  [title]="'Download item'"
+                  (click)="onDownloadItem(item)"
+                  type="button"
+                >
+                  <i class="fas fa-download fa-fw"></i>
+                </button>
+                <button
+                  class="btn btn-danger-outline-fill"
+                  [disabled]="itemUsageCount > 0"
+                  [title]="
+                    itemUsageCount > 0
+                      ? 'Cannot delete item: used by ' +
+                        itemUsageCount +
+                        ' references. Remove it in recipes/productions first.'
+                      : 'Delete item'
+                  "
+                  (click)="onRemoveItem(item)"
+                  type="button"
+                >
+                  <i class="fas fa-trash-can fa-fw"></i>
+                </button>
+              </span>
             </div>
           } @empty {
             <div class="text-stone-400">No items match.</div>
@@ -253,11 +297,40 @@
         [$title]="'Machines'"
         [$iconClass]="'fas fa-industry text-stone-400'"
         [$showToolbar]="true"
+        [$showAdd]="false"
         [$addLabel]="'machine'"
         [$filterValue]="machineFilter"
         ($add)="onAddMachine()"
         ($filterValueChange)="onMachineFilterChange($event)"
       >
+        <button
+          class="btn btn-success"
+          [title]="'Add machine'"
+          (click)="onAddMachine()"
+          section-actions
+          type="button"
+        >
+          <i class="fas fa-plus fa-fw"></i>
+        </button>
+        <app-file-picker
+          [$filesTypesAccepted]="machineFileAccept"
+          [$btnClass]="'btn btn-primary-outline-fill'"
+          [$title]="'Import machine'"
+          ($fileChange)="onUploadMachines($event)"
+          section-actions
+        >
+          <i class="fas fa-cloud-arrow-up fa-fw"></i>
+        </app-file-picker>
+        <button
+          class="btn btn-danger-outline-fill"
+          [title]="'Delete all machines'"
+          (click)="onDeleteAllMachines()"
+          section-actions
+          type="button"
+        >
+          <i class="fas fa-trash-can fa-fw"></i>
+        </button>
+
         <div class="flex flex-col gap-2">
           @for (machine of visibleMachines; track machine) {
             @let machineUsageKey = machine.name.trim().toLowerCase();
@@ -364,22 +437,29 @@
                 [$size]="BadgeSize.Md"
                 [$tone]="machineUsageCount > 0 ? BadgeTone.Red : BadgeTone.Stone"
               ></app-badge>
-              <span
-                [title]="
-                  machineUsageCount > 0
-                    ? 'Cannot delete machine: used by ' +
-                      machineUsageCount +
-                      ' productions. Update those productions first.'
-                    : ''
-                "
-              >
+              <span class="flex items-center gap-2">
                 <button
-                  class="btn btn-icon btn-danger"
+                  class="btn btn-primary-outline-fill"
+                  [title]="'Download machine'"
+                  (click)="onDownloadMachine(machine)"
+                  type="button"
+                >
+                  <i class="fas fa-download fa-fw"></i>
+                </button>
+                <button
+                  class="btn btn-danger-outline-fill"
                   [disabled]="machineUsageCount > 0"
+                  [title]="
+                    machineUsageCount > 0
+                      ? 'Cannot delete machine: used by ' +
+                        machineUsageCount +
+                        ' productions. Update those productions first.'
+                      : 'Delete machine'
+                  "
                   (click)="onRemoveMachine(machine)"
                   type="button"
                 >
-                  <i class="fas fa-trash"></i>
+                  <i class="fas fa-trash-can fa-fw"></i>
                 </button>
               </span>
             </div>
@@ -395,11 +475,40 @@
         [$title]="'Recipes'"
         [$iconClass]="'fas fa-scroll text-stone-400'"
         [$showToolbar]="true"
+        [$showAdd]="false"
         [$addLabel]="'recipe'"
         [$filterValue]="recipeFilter"
         ($add)="onAddRecipe()"
         ($filterValueChange)="onRecipeFilterChange($event)"
       >
+        <button
+          class="btn btn-success"
+          [title]="'Add recipe'"
+          (click)="onAddRecipe()"
+          section-actions
+          type="button"
+        >
+          <i class="fas fa-plus fa-fw"></i>
+        </button>
+        <app-file-picker
+          [$filesTypesAccepted]="recipeFileAccept"
+          [$btnClass]="'btn btn-primary-outline-fill'"
+          [$title]="'Import recipe'"
+          ($fileChange)="onUploadRecipes($event)"
+          section-actions
+        >
+          <i class="fas fa-cloud-arrow-up fa-fw"></i>
+        </app-file-picker>
+        <button
+          class="btn btn-danger-outline-fill"
+          [title]="'Delete all recipes'"
+          (click)="onDeleteAllRecipes()"
+          section-actions
+          type="button"
+        >
+          <i class="fas fa-trash-can fa-fw"></i>
+        </button>
+
         @for (recipe of visibleRecipes; track recipe) {
           @let recipeUsageKey = recipe.name.trim().toLowerCase();
           @let recipeUsageCount = recipeUsageByName[recipeUsageKey];
@@ -418,6 +527,7 @@
             "
             ($recipeChange)="onRecipeChange(recipe)"
             ($removeRecipe)="onRemoveRecipe(recipe)"
+            ($downloadRecipe)="onDownloadRecipe(recipe)"
             ($addRecipeItem)="onAddRecipeItem(recipe, $event)"
             ($removeRecipeItem)="onRemoveRecipeItem(recipe, $event.index, $event.collection)"
           ></app-catalog-recipe-form>
@@ -432,11 +542,40 @@
         [$title]="'Productions'"
         [$iconClass]="'fas fa-diagram-project text-stone-400'"
         [$showToolbar]="true"
+        [$showAdd]="false"
         [$addLabel]="'production'"
         [$filterValue]="$productionFilter()"
         ($add)="onAddProduction()"
         ($filterValueChange)="onProductionFilterChange($event)"
       >
+        <button
+          class="btn btn-success"
+          [title]="'Add production'"
+          (click)="onAddProduction()"
+          section-actions
+          type="button"
+        >
+          <i class="fas fa-plus fa-fw"></i>
+        </button>
+        <app-file-picker
+          [$filesTypesAccepted]="productionFileAccept"
+          [$btnClass]="'btn btn-primary-outline-fill'"
+          [$title]="'Import production'"
+          ($fileChange)="onUploadProductions($event)"
+          section-actions
+        >
+          <i class="fas fa-cloud-arrow-up fa-fw"></i>
+        </app-file-picker>
+        <button
+          class="btn btn-danger-outline-fill"
+          [title]="'Delete all productions'"
+          (click)="onDeleteAllProductions()"
+          section-actions
+          type="button"
+        >
+          <i class="fas fa-trash-can fa-fw"></i>
+        </button>
+
         <div class="flex flex-col gap-4 p-4">
           @if (visibleProductionCards.length === 0) {
             <div class="text-stone-400">No productions available.</div>
@@ -470,31 +609,39 @@
                   [$tone]="template.usageCount > 0 ? BadgeTone.Red : BadgeTone.Stone"
                 ></app-badge>
 
-                <button
-                  class="btn btn-icon btn-secondary-outline gap-2"
-                  (click)="onEditProduction(template.index)"
-                  type="button"
-                  title="Edit production template"
-                >
-                  <i class="fas fa-pen-to-square"></i>
-                  <span>Edit</span>
-                </button>
-
-                <button
-                  class="btn btn-icon btn-danger"
-                  [title]="
-                    template.usageCount > 0
-                      ? 'Cannot delete production template: used in ' +
-                        template.usageCount +
-                        ' productions across chains.'
-                      : ''
-                  "
-                  [disabled]="template.usageCount > 0"
-                  (click)="onRemoveProduction(template.index, template.name)"
-                  type="button"
-                >
-                  <i class="fas fa-trash"></i>
-                </button>
+                <span class="flex items-center gap-2">
+                  <button
+                    class="btn btn-warning"
+                    [title]="'Edit production'"
+                    (click)="onEditProduction(template.index)"
+                    type="button"
+                  >
+                    <i class="fas fa-pen fa-fw"></i>
+                  </button>
+                  <button
+                    class="btn btn-primary-outline-fill"
+                    [title]="'Download production'"
+                    (click)="onDownloadProduction(template.production)"
+                    type="button"
+                  >
+                    <i class="fas fa-download fa-fw"></i>
+                  </button>
+                  <button
+                    class="btn btn-danger-outline-fill"
+                    [disabled]="template.usageCount > 0"
+                    [title]="
+                      template.usageCount > 0
+                        ? 'Cannot delete production template: used in ' +
+                          template.usageCount +
+                          ' productions across chains.'
+                        : 'Delete production'
+                    "
+                    (click)="onRemoveProduction(template.index, template.name)"
+                    type="button"
+                  >
+                    <i class="fas fa-trash-can fa-fw"></i>
+                  </button>
+                </span>
               </div>
             }
           </div>

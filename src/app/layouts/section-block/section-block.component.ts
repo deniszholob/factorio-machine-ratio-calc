@@ -19,6 +19,7 @@ export class SectionBlockComponent {
   public readonly $title = input.required<string>();
   public readonly $iconClass = input<string>('fas fa-layer-group');
   public readonly $showToolbar = input<boolean>(true);
+  public readonly $showAdd = input<boolean>(true);
   public readonly $addLabel = input<string>('item');
   public readonly $filterValue = input<string>('');
 
