@@ -8,7 +8,10 @@ import {
   createDefaultCatalogState,
 } from '../../models/production-catalog-state/production-catalog-state.model';
 import { LOCAL_STORAGE_KEY_CATALOG } from '../import-export/local-storage.data';
-import { normalizeProduction } from 'src/app/components/production/production-chain-editor/production-editor/production.util';
+import {
+  newMachineItem,
+  normalizeProduction,
+} from 'src/app/components/production/production-chain-editor/production-editor/production.util';
 import { SharedProductionIconsPayload } from '../production-chain/production-chain-hash.util';
 import { Production } from '../../models/production-chain/production/production.model';
 import { ImportMode } from '../../models/import-mode.enum';
@@ -613,20 +616,47 @@ export class ProductionCatalogService {
     });
   }
 
+  public convertItemToMachineAtIndex(index: number): void {
+    this._$catalog.update((state) => {
+      if (index < 0 || index >= state.items.length) {
+        return state;
+      }
+      const target = state.items[index];
+      if (target?.isMachine === true) {
+        return state;
+      }
+
+      const nextItems = [...state.items];
+      nextItems[index] = {
+        ...target,
+        isMachine: true,
+        craftingSpeed: target.craftingSpeed ?? 1,
+        productivity: target.productivity ?? 1,
+        drain: target.drain ?? 1,
+      };
+
+      const nextState: ProductionCatalogState = {
+        ...state,
+        items: nextItems,
+      };
+      saveCatalog(nextState);
+      return nextState;
+    });
+  }
+
   public addRecipe(): void {
     this._$catalog.update((state) => {
       const nextRecipes = [...state.recipes];
-      const recipeName = ensureUniqueName('New Recipe', state.recipes);
       nextRecipes.push({
-        name: recipeName,
+        name: '',
         timeToComplete: 1,
         inputs: [{ name: '', count: 1 }],
         outputs: [{ name: '', count: 1 }],
       });
-      const nextState = withCatalogConsistency({
+      const nextState: ProductionCatalogState = {
         ...state,
         recipes: nextRecipes,
-      });
+      };
       saveCatalog(nextState);
       return nextState;
     });
@@ -647,10 +677,10 @@ export class ProductionCatalogService {
         outputs: recipe.outputs.map((item) => ({ ...item })),
       };
 
-      const nextState = withCatalogConsistency({
+      const nextState: ProductionCatalogState = {
         ...state,
         recipes: nextRecipes,
-      });
+      };
       saveCatalog(nextState);
       return nextState;
     });
@@ -674,21 +704,19 @@ export class ProductionCatalogService {
 
   public addMachine(): void {
     this._$catalog.update((state) => {
-      const machineNames = state.items.filter((item) => item.isMachine);
-      const machineName = ensureUniqueName('New Machine', machineNames);
-      const nextState = withCatalogConsistency({
+      const nextState: ProductionCatalogState = {
         ...state,
         items: [
           ...state.items,
           {
-            name: machineName,
+            name: '',
             isMachine: true,
             craftingSpeed: 1,
             productivity: 1,
             drain: 1,
           },
         ],
-      });
+      };
       saveCatalog(nextState);
       return nextState;
     });
@@ -715,10 +743,10 @@ export class ProductionCatalogService {
         };
       });
 
-      const nextState = withCatalogConsistency({
+      const nextState: ProductionCatalogState = {
         ...state,
         items: nextItems,
-      });
+      };
       saveCatalog(nextState);
       return nextState;
     });
@@ -757,12 +785,30 @@ export class ProductionCatalogService {
     }
 
     this._$catalog.update((state) => {
-      const index = findIndexByName(state.productions, trimmedName);
+      const indexById = state.productions.findIndex(
+        (template) => template.production.id === normalized.id,
+      );
+      const index = indexById;
       const nextTemplates = [...state.productions];
+      let nextName = trimmedName;
+
+      if (indexById !== -1) {
+        const otherTemplates = nextTemplates.filter(
+          (_template, templateIndex) => templateIndex !== indexById,
+        );
+        if (findIndexByName(otherTemplates, nextName) !== -1) {
+          nextName = ensureUniqueName(nextName, otherTemplates);
+        }
+      } else if (findIndexByName(nextTemplates, nextName) !== -1) {
+        nextName = ensureUniqueName(nextName, nextTemplates);
+      }
+
+      const nextProduction = cloneProduction(normalized);
+      nextProduction.name = nextName;
       const nextTemplate: CatalogProduction = {
-        name: trimmedName,
+        name: nextName,
         iconUrl: normalizeIconUrl(normalized.iconUrl),
-        production: cloneProduction(normalized),
+        production: nextProduction,
       };
 
       if (index === -1) {
@@ -782,17 +828,30 @@ export class ProductionCatalogService {
 
   public addProductionTemplate(): void {
     this._$catalog.update((state) => {
-      const nextName = ensureUniqueName('New Production', state.productions);
-      const nextState = withCatalogConsistency({
+      const nextState: ProductionCatalogState = {
         ...state,
         productions: [
           ...state.productions,
           {
-            name: nextName,
-            production: normalizeProduction({ name: nextName }),
+            name: '',
+            production: normalizeProduction({
+              name: '',
+              recipe: {
+                name: '',
+                timeToComplete: 1,
+                inputs: [newMachineItem()],
+                outputs: [newMachineItem()],
+              },
+              machine: {
+                name: '',
+                craftingSpeed: 1,
+                productivity: 1,
+                drain: 1,
+              },
+            }),
           },
         ],
-      });
+      };
       saveCatalog(nextState);
       return nextState;
     });
@@ -813,10 +872,10 @@ export class ProductionCatalogService {
         iconUrl: normalizeIconUrl(template.iconUrl),
         production: cloneProduction(normalized),
       };
-      const nextState = withCatalogConsistency({
+      const nextState: ProductionCatalogState = {
         ...state,
         productions: nextTemplates,
-      });
+      };
       saveCatalog(nextState);
       return nextState;
     });

@@ -50,6 +50,13 @@ export class SelectSingleIconInputComponent {
   public readonly $notFoundText = input<string>('No matches found');
   public readonly $addTagText = input<string>('Add custom value');
   public readonly $showSelectedIcon = input<boolean>(true);
+  public readonly $clearable = input<boolean>(false);
+  protected readonly $effectiveNotFoundText = computed<string>(() => {
+    if (this.$mode() === SelectInputMode.SelectOrCreate) {
+      return 'Type to add custom value';
+    }
+    return this.$notFoundText();
+  });
   protected readonly $effectivePlaceholder = computed<string>(() => {
     if (this.$value().trim()) {
       return '';

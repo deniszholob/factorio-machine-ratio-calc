@@ -74,9 +74,52 @@ export class ProductionService {
   public updateMachine(updated: Production): void {
     this._$productions.update((items) => {
       const normalized = normalizeProduction(updated);
-      return items.map((item) =>
-        item.id === updated.id ? { ...normalized, id: item.id } : item,
-      );
+      const machineNameKey = toNameKey(normalized.machine.name);
+      const recipeNameKey = toNameKey(normalized.recipe.name);
+      const recipeInputs = normalized.recipe.inputs.map((item) => ({ ...item }));
+      const recipeOutputs = normalized.recipe.outputs.map((item) => ({ ...item }));
+
+      return items.map((item) => {
+        let nextItem: Production = item;
+        const isTarget = item.id === updated.id;
+        if (isTarget) {
+          nextItem = { ...normalized, id: item.id };
+        }
+
+        if (
+          machineNameKey &&
+          toNameKey(nextItem.machine.name) === machineNameKey
+        ) {
+          nextItem = {
+            ...nextItem,
+            machine: {
+              ...nextItem.machine,
+              craftingSpeed: normalized.machine.craftingSpeed,
+              productivity: normalized.machine.productivity,
+              drain: normalized.machine.drain,
+            },
+          };
+        }
+
+        if (recipeNameKey && toNameKey(nextItem.recipe.name) === recipeNameKey) {
+          nextItem = {
+            ...nextItem,
+            recipe: {
+              ...nextItem.recipe,
+              iconUrl: normalized.recipe.iconUrl,
+              timeToComplete: normalized.recipe.timeToComplete,
+              inputs: recipeInputs.map((recipeItem) => ({ ...recipeItem })),
+              outputs: recipeOutputs.map((recipeItem) => ({ ...recipeItem })),
+            },
+          };
+        }
+
+        if (nextItem === item) {
+          return item;
+        }
+        const normalizedNext = normalizeProduction(nextItem);
+        return { ...normalizedNext, id: item.id };
+      });
     });
   }
 
@@ -225,6 +268,10 @@ export class ProductionService {
 
 function serializeProductions(machines: Production[]): string {
   return JSON.stringify(machines);
+}
+
+function toNameKey(value: string): string {
+  return value.trim().toLowerCase();
 }
 
 function sanitizeParentReferences(productions: Production[]): Production[] {

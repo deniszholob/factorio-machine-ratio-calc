@@ -37,13 +37,7 @@ export class TooltipDirective implements OnDestroy {
     this.renderer.addClass(anchorElement, 'cursor-pointer');
 
     queueMicrotask(() => {
-      const titleText = hostElement.title?.trim();
-      if (!titleText) {
-        return;
-      }
-      this.titleText = titleText;
-      hostElement.removeAttribute('title');
-      hostElement.title = '';
+      this.syncTitleFromHost();
     });
 
     this.unlisten.push(
@@ -66,19 +60,13 @@ export class TooltipDirective implements OnDestroy {
       return;
     }
 
+    this.syncTitleFromHost();
     const hostElement = this.elementRef.nativeElement;
-    const titleText =
-      this.titleText ||
-      hostElement.getAttribute('title')?.trim() ||
-      hostElement.title?.trim();
+    const titleText = this.titleText;
 
     if (!titleText) {
       return;
     }
-
-    this.titleText = titleText;
-    hostElement.removeAttribute('title');
-    hostElement.title = '';
 
     const tooltipRef = (this.tooltipRef = createComponent(TooltipComponent, {
       environmentInjector: this.environmentInjector,
@@ -102,6 +90,18 @@ export class TooltipDirective implements OnDestroy {
     this.renderer.setStyle(tooltipElement, 'z-index', '50');
 
     this.renderer.appendChild(this.document.body, tooltipElement);
+  }
+
+  private syncTitleFromHost(): void {
+    const hostElement = this.elementRef.nativeElement;
+    const nextTitle =
+      hostElement.getAttribute('title')?.trim() || hostElement.title?.trim();
+    if (!nextTitle) {
+      return;
+    }
+    this.titleText = nextTitle;
+    hostElement.removeAttribute('title');
+    hostElement.title = '';
   }
 
   private hide(): void {

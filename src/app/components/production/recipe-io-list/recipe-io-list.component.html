@@ -23,7 +23,7 @@
     <h5>{{ $label() }}</h5>
   </div>
 
-  @for (item of $items(); track item; let i = $index) {
+  @for (item of $items(); track i; let i = $index) {
     @let itemIconUrl = $itemIconsByName()[item.name];
     <div
       class="transition-color flex w-full cursor-pointer items-center gap-2 rounded-lg border border-stone-800/70 bg-stone-950/45 p-2 text-stone-100 hover:border-stone-700 hover:bg-stone-900/70"

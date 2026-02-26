@@ -25,7 +25,7 @@ interface ProductionNormalizationInput {
 
 export function newMachineItem(): MachineItem {
   return {
-    name: 'Default-Item',
+    name: '',
     count: 1,
     /** effective rate */
     rate: 0,
@@ -37,12 +37,12 @@ export function newMachineItem(): MachineItem {
 export function newProduction(): Production {
   const production: Production = {
     id: guid(),
-    name: 'Project Assembly',
+    name: '',
     isExpanded: true,
     count: 1,
     effectiveTime: 1,
     recipe: {
-      name: 'Default Recipe',
+      name: '',
       iconUrl: undefined,
       useAutoName: true,
       useAutoIcon: true,
@@ -51,7 +51,7 @@ export function newProduction(): Production {
       outputs: [],
     },
     machine: {
-      name: 'Default Machine',
+      name: '',
       craftingSpeed: 1,
       productivity: 1,
       drain: 1,
@@ -73,7 +73,7 @@ export function normalizeProduction(
   const hasDirectRecipe = Boolean(legacy.recipe);
   const recipe: ProductionRecipe = legacy.recipe
     ? {
-        name: legacy.recipe.name ?? 'Default Recipe',
+        name: legacy.recipe.name ?? '',
         iconUrl:
           typeof legacy.recipe.iconUrl === 'string' &&
           legacy.recipe.iconUrl.trim().length > 0
@@ -96,7 +96,7 @@ export function normalizeProduction(
           : [],
       }
     : {
-        name: 'Default Recipe',
+        name: '',
         timeToComplete: legacy.timeToComplete ?? 1,
         inputs: Array.isArray(legacy.machineInputs)
           ? legacy.machineInputs.map((item) => ({ ...item }))
@@ -108,13 +108,13 @@ export function normalizeProduction(
 
   const machine: ProductionMachine = legacy.machine
     ? {
-        name: legacy.machine.name ?? 'Default Machine',
+        name: legacy.machine.name ?? '',
         craftingSpeed: legacy.machine.craftingSpeed ?? 1,
         productivity: legacy.machine.productivity ?? 1,
         drain: legacy.machine.drain ?? 1,
       }
     : {
-        name: 'Default Machine',
+        name: '',
         craftingSpeed: legacy.craftingSpeed ?? 1,
         productivity: legacy.productivity ?? 1,
         drain: legacy.drain ?? 1,
@@ -122,7 +122,7 @@ export function normalizeProduction(
 
   const production: Production = {
     id: legacy.id ?? guid(),
-    name: legacy.name ?? 'Project Assembly',
+    name: legacy.name ?? '',
     iconUrl:
       typeof legacy.iconUrl === 'string' && legacy.iconUrl.trim().length > 0
         ? legacy.iconUrl.trim()
@@ -177,8 +177,14 @@ export function toMachineItems(items: RecipeItem[]): MachineItem[] {
 }
 
 export function getAutoProductionName(production: Production): string {
-  const recipeName = production.recipe.name?.trim() || 'Recipe';
-  const machineName = production.machine.name?.trim() || 'Machine';
+  const recipeName = production.recipe.name?.trim() || '';
+  const machineName = production.machine.name?.trim() || '';
+  if (!recipeName && !machineName) {
+    return '';
+  }
+  if (!recipeName || !machineName) {
+    return recipeName || machineName;
+  }
   return `${recipeName} in ${machineName}`;
 }
 
@@ -188,7 +194,7 @@ export function syncAutoProductionName(production: Production): void {
 
 export function getAutoRecipeName(production: Production): string {
   const firstOutputName = production.recipe.outputs[0]?.name?.trim();
-  return firstOutputName || 'Default Recipe';
+  return firstOutputName || '';
 }
 
 export function syncAutoRecipeName(production: Production): void {

@@ -3,6 +3,7 @@
 @let errorMessage = $errorMessage();
 @let displayMode = $editorDisplayMode();
 @let isEditorOpen = $isEditorOpen();
+@let hasBlankProduction = $hasBlankProduction();
 
 @if (displayMode === EditorDisplayMode.Full && isEditorOpen) {
   <app-content-layout
@@ -26,7 +27,12 @@
       ngProjectAs="content-header"
     >
       <div class="flex flex-wrap items-center gap-2">
-        <button class="btn btn-icon btn-success cursor-pointer" (click)="onAddMachine()">
+        <button
+          class="btn btn-icon btn-success cursor-pointer"
+          [disabled]="hasBlankProduction"
+          [title]="hasBlankProduction ? addBlockedTitle : 'Add production'"
+          (click)="onAddMachine()"
+        >
           <i class="fas fa-plus"></i> Production
         </button>
 
@@ -38,10 +44,7 @@
           <i class="fas fa-plus"></i> Add From Catalog
         </button>
 
-        <button
-          class="btn btn-icon btn-danger-outline cursor-pointer"
-          (click)="onClearAll()"
-        >
+        <button class="btn btn-icon btn-danger-outline cursor-pointer" (click)="onClearAll()">
           <i class="fas fa-trash"></i> Clear All
         </button>
       </div>
@@ -122,6 +125,7 @@
     [$placeholder]="'Production from catalog'"
     [$options]="$productionTemplateNames()"
     [$iconsByName]="$productionTemplateIconsByName()"
+    [$mode]="SelectInputMode.SelectOnly"
     [$showSelectedIcon]="false"
     ($valueChange)="onProductionTemplateNameChange($event)"
     ($commit)="onProductionTemplateNameChange($event)"
@@ -138,6 +142,9 @@
     <button
       class="btn btn-primary cursor-pointer"
       [disabled]="!$selectedProductionTemplateName()"
+      [title]="
+        !$selectedProductionTemplateName() ? 'No production selected to add' : 'Add production'
+      "
       (click)="onAddMachineFromCatalog()"
       type="button"
     >

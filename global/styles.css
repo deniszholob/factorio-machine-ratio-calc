@@ -235,8 +235,12 @@
     transform: translateY(-50%);
   }
 
-  .app-ng-select.ng-select .ng-value-container .ng-input > input {
-    @apply h-7 leading-7;
+  .app-ng-select.ng-select
+    .ng-select-container
+    .ng-value-container
+    .ng-input
+    > input {
+    @apply h-7 px-2! leading-7;
   }
 
   .app-ng-select.ng-select .ng-value-container .ng-value {

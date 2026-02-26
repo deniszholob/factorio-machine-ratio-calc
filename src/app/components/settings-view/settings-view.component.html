@@ -6,10 +6,20 @@
 @let defaultImportProductionsMode = $defaultImportProductionsMode;
 
 <app-content-layout [$title]="'Settings'" ($close)="onClose()">
-  <div class="flex flex-1 flex-row items-center justify-end" ngProjectAs="content-header">
+  <div class="flex flex-1 flex-row items-center justify-end gap-2" ngProjectAs="content-header">
+    <button
+      class="btn btn-danger-outline flex items-center gap-2"
+      [title]="'Clear all catalog and production chain data'"
+      (click)="onRequestClearAllData()"
+      type="button"
+    >
+      <i class="fas fa-trash-can"></i>
+      Clear All Data
+    </button>
+
     <button
       class="btn btn-secondary-outline flex items-center gap-2"
-      (click)="onResetSettings()"
+      (click)="onRequestResetSettings()"
       type="button"
     >
       <i class="fas fa-rotate-left"></i>
@@ -76,3 +86,28 @@
     </div>
   </section>
 </app-content-layout>
+
+<app-modal
+  [($show)]="$isClearDataConfirmOpen"
+  [$title]="'Clear All Data?'"
+  [$primaryButton]="'Clear Data'"
+  [$secondaryButton]="'Cancel'"
+  [$bodyClass]="'flex flex-col gap-3 p-6'"
+  ($primaryButtonClick)="onConfirmClearAllData()"
+  ($secondaryButtonClick)="onCancelClearAllData()"
+>
+  <p class="text-stone-200">This will permanently delete all catalog and production chain data.</p>
+  <p class="text-stone-400">This action cannot be undone.</p>
+</app-modal>
+
+<app-modal
+  [($show)]="$isResetSettingsConfirmOpen"
+  [$title]="'Reset Settings?'"
+  [$primaryButton]="'Reset Settings'"
+  [$secondaryButton]="'Cancel'"
+  [$bodyClass]="'flex flex-col gap-3 p-6'"
+  ($primaryButtonClick)="onConfirmResetSettings()"
+  ($secondaryButtonClick)="onCancelResetSettings()"
+>
+  <p class="text-stone-200">Reset all settings back to their default values.</p>
+</app-modal>

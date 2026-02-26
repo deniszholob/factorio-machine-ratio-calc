@@ -37,6 +37,10 @@ import { ModalComponent } from '../generic/modal/modal.component';
 import { ProductionEditorComponent } from '../production/production-chain-editor/production-editor/production-editor.component';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
 import { ImportExportService } from 'src/app/shared/services/import-export/import-export.service';
+import {
+  DATA_TYPES_INFO,
+  DataTypes,
+} from 'src/app/shared/models/data-types/data-types.enum';
 
 @Component({
   selector: 'app-production-catalog-editor',
@@ -105,6 +109,12 @@ export class ProductionCatalogEditorComponent {
   );
   protected readonly $importMode = signal<ImportMode>(ImportMode.Add);
   protected readonly $uploadError = signal<string | undefined>(undefined);
+  protected readonly $isDeleteCatalogConfirmOpen = signal<boolean>(false);
+  protected readonly $isConvertItemConfirmOpen = signal<boolean>(false);
+  protected readonly $convertItemCandidateName = signal<string>('');
+  protected readonly $convertItemCandidateIndex = signal<number | undefined>(
+    undefined,
+  );
   protected readonly $isProductionEditorOpen = signal<boolean>(false);
   protected readonly $editingProductionTemplateIndex = signal<
     number | undefined
@@ -128,94 +138,76 @@ export class ProductionCatalogEditorComponent {
   protected readonly $visibleProductions = computed(() =>
     filterByName(this.$productions(), this.$productionFilter()),
   );
+  protected readonly $hasBlankItem = computed<boolean>(() =>
+    this.$plainItems().some((item) => item.name.trim().length === 0),
+  );
+  protected readonly $hasBlankMachine = computed<boolean>(() =>
+    this.$machines().some((machine) => machine.name.trim().length === 0),
+  );
+  protected readonly $hasBlankRecipe = computed<boolean>(() =>
+    this.$catalog().recipes.some((recipe) => recipe.name.trim().length === 0),
+  );
+  protected readonly $hasBlankProduction = computed<boolean>(() =>
+    this.$productions().some((template) => template.name.trim().length === 0),
+  );
   protected readonly $usageCounts = computed<CatalogUsageCounts>(() => {
-    const itemByName: Record<string, number> = {};
-    const machineByName: Record<string, number> = {};
-    const recipeByName: Record<string, number> = {};
-    const productionByName: Record<string, number> = {};
     const itemUsedBySetByName: Record<string, Set<string>> = {};
     const machineUsedBySetByName: Record<string, Set<string>> = {};
     const recipeUsedBySetByName: Record<string, Set<string>> = {};
     const productionUsedBySetByName: Record<string, Set<string>> = {};
     const catalog = this.$catalog();
     const chainItems = this.productionChainService.$productionChains();
+    const machineNameSet = new Set(
+      this.$machines().map((machine) => normalizeUsageKey(machine.name)),
+    );
 
     for (const recipe of catalog.recipes) {
-      const usageLabel = createUsageLabel('Recipe', recipe.name);
-      for (const item of recipe.inputs) {
-        incrementCountByName(itemByName, item.name);
-        addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
-      }
-      for (const item of recipe.outputs) {
-        incrementCountByName(itemByName, item.name);
-        addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
+      const usageLabel = createUsageLabel(DataTypes.Recipe, recipe.name);
+      const uniqueItemNames = new Set<string>([
+        ...recipe.inputs.map((item) => item.name),
+        ...recipe.outputs.map((item) => item.name),
+      ]);
+      for (const itemName of uniqueItemNames) {
+        addUsageLabelByName(itemUsedBySetByName, itemName, usageLabel);
+        if (machineNameSet.has(normalizeUsageKey(itemName))) {
+          addUsageLabelByName(machineUsedBySetByName, itemName, usageLabel);
+        }
       }
     }
 
     for (const template of catalog.productions) {
-      const usageLabel = createUsageLabel('Catalog production', template.name);
-      incrementCountByName(machineByName, template.production.machine.name);
+      const usageLabel = createUsageLabel(DataTypes.Production, template.name);
       addUsageLabelByName(
         machineUsedBySetByName,
         template.production.machine.name,
         usageLabel,
       );
-      incrementCountByName(recipeByName, template.production.recipe.name);
       addUsageLabelByName(
         recipeUsedBySetByName,
         template.production.recipe.name,
         usageLabel,
       );
-      for (const item of template.production.recipe.inputs) {
-        incrementCountByName(itemByName, item.name);
-        addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
-      }
-      for (const item of template.production.recipe.outputs) {
-        incrementCountByName(itemByName, item.name);
-        addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
-      }
     }
 
     for (const chain of chainItems) {
       for (const production of chain.productions) {
         const usageLabel = createUsageLabel(
-          'Production chain',
+          DataTypes.ProductionChain,
           `${chain.display}`,
         );
-        incrementCountByName(machineByName, production.machine.name);
-        addUsageLabelByName(
-          machineUsedBySetByName,
-          production.machine.name,
-          usageLabel,
-        );
-        incrementCountByName(recipeByName, production.recipe.name);
-        addUsageLabelByName(
-          recipeUsedBySetByName,
-          production.recipe.name,
-          usageLabel,
-        );
-        incrementCountByName(productionByName, production.name);
         addUsageLabelByName(
           productionUsedBySetByName,
           production.name,
           usageLabel,
         );
-        for (const item of production.recipe.inputs) {
-          incrementCountByName(itemByName, item.name);
-          addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
-        }
-        for (const item of production.recipe.outputs) {
-          incrementCountByName(itemByName, item.name);
-          addUsageLabelByName(itemUsedBySetByName, item.name, usageLabel);
-        }
       }
     }
 
     return {
-      itemByName,
-      machineByName,
-      recipeByName,
-      productionByName,
+      itemByName: toUsageCountMap(itemUsedBySetByName),
+      machineByName: toUsageCountMap(machineUsedBySetByName),
+      recipeByName: toUsageCountMap(recipeUsedBySetByName),
+      productionByName: toUsageCountMap(productionUsedBySetByName),
       itemUsedByByName: toSortedUsageMap(itemUsedBySetByName),
       machineUsedByByName: toSortedUsageMap(machineUsedBySetByName),
       recipeUsedByByName: toSortedUsageMap(recipeUsedBySetByName),
@@ -304,6 +296,13 @@ export class ProductionCatalogEditorComponent {
   ]);
   protected readonly importModeOptions: readonly SelectionButtonOption<ImportMode>[] =
     [...IMPORT_MODE_INFO_OPTIONS];
+  protected readonly addBlockedTitleByType = {
+    item: 'Use the existing blank item first before adding another one.',
+    machine: 'Use the existing blank machine first before adding another one.',
+    recipe: 'Use the existing blank recipe first before adding another one.',
+    production:
+      'Use the existing blank production first before adding another one.',
+  } as const;
   private readonly itemNameBeforeEdit = new WeakMap<object, string>();
   private readonly machineNameBeforeEdit = new WeakMap<object, string>();
 
@@ -377,7 +376,15 @@ export class ProductionCatalogEditorComponent {
   }
 
   protected onDeleteCatalog(): void {
+    this.$isDeleteCatalogConfirmOpen.set(true);
+  }
+
+  protected onConfirmDeleteCatalog(): void {
     this.productionCatalogService.clearCatalog();
+  }
+
+  protected onCancelDeleteCatalog(): void {
+    this.$isDeleteCatalogConfirmOpen.set(false);
   }
 
   protected onDeleteAllItems(): void {
@@ -397,6 +404,9 @@ export class ProductionCatalogEditorComponent {
   }
 
   protected onAddItem(): void {
+    if (this.$hasBlankItem()) {
+      return;
+    }
     this.productionCatalogService.addItem();
   }
 
@@ -454,7 +464,36 @@ export class ProductionCatalogEditorComponent {
     this.productionCatalogService.downloadItemByName(item.name);
   }
 
+  protected onRequestConvertItemToMachine(item: { name: string }): void {
+    const catalogIndex = this.findCatalogItemIndex(item);
+    if (catalogIndex === -1 || !item.name.trim()) {
+      return;
+    }
+    this.$convertItemCandidateName.set(item.name.trim());
+    this.$convertItemCandidateIndex.set(catalogIndex);
+    this.$isConvertItemConfirmOpen.set(true);
+  }
+
+  protected onConfirmConvertItemToMachine(): void {
+    const index = this.$convertItemCandidateIndex();
+    if (index === undefined) {
+      return;
+    }
+    this.productionCatalogService.convertItemToMachineAtIndex(index);
+    this.$convertItemCandidateIndex.set(undefined);
+    this.$convertItemCandidateName.set('');
+  }
+
+  protected onCancelConvertItemToMachine(): void {
+    this.$convertItemCandidateIndex.set(undefined);
+    this.$convertItemCandidateName.set('');
+    this.$isConvertItemConfirmOpen.set(false);
+  }
+
   protected onAddRecipe(): void {
+    if (this.$hasBlankRecipe()) {
+      return;
+    }
     this.productionCatalogService.addRecipe();
   }
 
@@ -463,8 +502,14 @@ export class ProductionCatalogEditorComponent {
     if (index === -1) {
       return;
     }
+    const trimmedName = recipe.name.trim();
+    const inferredName = recipe.outputs[0]?.name?.trim() ?? '';
+    const nextName = trimmedName || inferredName;
+    if (nextName !== recipe.name) {
+      recipe.name = nextName;
+    }
     this.productionCatalogService.updateRecipeAtIndex(index, {
-      name: recipe.name.trim(),
+      name: nextName,
       iconUrl: recipe.iconUrl?.trim() || undefined,
       timeToComplete: recipe.timeToComplete,
       inputs: recipe.inputs,
@@ -513,10 +558,16 @@ export class ProductionCatalogEditorComponent {
   }
 
   protected onAddMachine(): void {
+    if (this.$hasBlankMachine()) {
+      return;
+    }
     this.productionCatalogService.addMachine();
   }
 
   protected onAddProduction(): void {
+    if (this.$hasBlankProduction()) {
+      return;
+    }
     this.productionCatalogService.addProductionTemplate();
   }
 
@@ -528,8 +579,14 @@ export class ProductionCatalogEditorComponent {
     this.machineNameBeforeEdit.set(machine, name);
   }
 
-  protected onMachineChange(machine: CatalogMachine): void {
-    const index = this.findMachineIndex(machine.name);
+  protected onMachineChange(
+    machine: CatalogMachine,
+    visibleMachineIndex: number,
+  ): void {
+    const index = this.findMachineIndexByReference(
+      machine,
+      visibleMachineIndex,
+    );
     if (index === -1) {
       return;
     }
@@ -552,11 +609,17 @@ export class ProductionCatalogEditorComponent {
     this.machineNameBeforeEdit.delete(machine);
   }
 
-  protected onRemoveMachine(machine: CatalogMachine): void {
+  protected onRemoveMachine(
+    machine: CatalogMachine,
+    visibleMachineIndex: number,
+  ): void {
     if (getCountByName(this.$machineUsageByName(), machine.name) > 0) {
       return;
     }
-    const index = this.findMachineIndex(machine.name);
+    const index = this.findMachineIndexByReference(
+      machine,
+      visibleMachineIndex,
+    );
     if (index === -1) {
       return;
     }
@@ -665,6 +728,21 @@ export class ProductionCatalogEditorComponent {
         machine.name.trim().toLowerCase() === name.trim().toLowerCase(),
     );
   }
+
+  private findMachineIndexByReference(
+    machine: CatalogMachine,
+    visibleMachineIndex: number,
+  ): number {
+    const visibleMachines = this.$visibleMachines();
+    const candidate = visibleMachines[visibleMachineIndex];
+    if (candidate === machine) {
+      const index = this.$machines().indexOf(candidate);
+      if (index !== -1) {
+        return index;
+      }
+    }
+    return this.findMachineIndex(machine.name);
+  }
 }
 
 function filterByName<T extends { name: string }>(
@@ -713,14 +791,6 @@ function normalizeUsageKey(name: string): string {
   return name.trim().toLowerCase();
 }
 
-function incrementCountByName(map: Record<string, number>, name: string): void {
-  const key = normalizeUsageKey(name);
-  if (!key) {
-    return;
-  }
-  map[key] = (map[key] ?? 0) + 1;
-}
-
 function addUsageLabelByName(
   map: Record<string, Set<string>>,
   name: string,
@@ -744,6 +814,14 @@ function toSortedUsageMap(
   );
 }
 
+function toUsageCountMap(
+  map: Record<string, Set<string>>,
+): Record<string, number> {
+  return Object.fromEntries(
+    Object.entries(map).map(([key, labels]) => [key, labels.size]),
+  );
+}
+
 function toUsageTooltipMap(
   map: Record<string, string[]>,
 ): Record<string, string> {
@@ -752,7 +830,8 @@ function toUsageTooltipMap(
   );
 }
 
-function createUsageLabel(context: string, name: string): string {
+function createUsageLabel(contextId: DataTypes, name: string): string {
+  const context: string = DATA_TYPES_INFO[contextId].display;
   const nextName = name.trim();
   if (!nextName) {
     return context;

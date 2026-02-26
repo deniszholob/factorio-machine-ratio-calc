@@ -91,6 +91,7 @@ export class ProductionEditorComponent {
   protected onRecipeNameChange(production: Production): void {
     const name = production.recipe.name.trim();
     if (!name) {
+      this.resetRecipe(production);
       return;
     }
 
@@ -144,6 +145,7 @@ export class ProductionEditorComponent {
 
   protected onRecipeChanged(production: Production): void {
     this.syncRecipeDefaults(production);
+    reCalcProductionRates(production);
     const name = production.recipe.name.trim();
     if (name) {
       this.productionCatalogService.upsertRecipe({
@@ -242,7 +244,7 @@ export class ProductionEditorComponent {
     const firstOutputName = production.recipe.outputs[0]?.name?.trim() ?? '';
     if (production.recipe.useAutoName !== false) {
       production.recipe.useAutoName = true;
-      production.recipe.name = firstOutputName || 'Default Recipe';
+      production.recipe.name = firstOutputName;
     }
     if (production.recipe.useAutoIcon !== false) {
       production.recipe.useAutoIcon = true;
@@ -250,6 +252,18 @@ export class ProductionEditorComponent {
         this.findItemIconUrl(firstOutputName) ??
         this.findRecipeIconUrl(production.recipe.name);
     }
+  }
+
+  private resetRecipe(production: Production): void {
+    production.recipe.name = '';
+    production.recipe.iconUrl = undefined;
+    production.recipe.useAutoName = true;
+    production.recipe.useAutoIcon = true;
+    production.recipe.timeToComplete = 1;
+    production.recipe.inputs = [newMachineItem()];
+    production.recipe.outputs = [newMachineItem()];
+    reCalcProductionRates(production);
+    this.emitMachineChanged(production);
   }
 
   private findItemIconUrl(name: string): string | undefined {

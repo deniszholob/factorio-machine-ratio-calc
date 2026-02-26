@@ -16,6 +16,10 @@
 @let recipeUsageByName = $recipeUsageByName();
 @let recipeUsageTooltipByName = $recipeUsageTooltipByName();
 @let editingProductionTemplateDraft = $editingProductionTemplateDraft();
+@let hasBlankItem = $hasBlankItem();
+@let hasBlankMachine = $hasBlankMachine();
+@let hasBlankRecipe = $hasBlankRecipe();
+@let hasBlankProduction = $hasBlankProduction();
 
 <section class="flex flex-col gap-4 p-4">
   <div>
@@ -174,7 +178,8 @@
       >
         <button
           class="btn btn-success"
-          [title]="'Add item'"
+          [disabled]="hasBlankItem"
+          [title]="hasBlankItem ? addBlockedTitleByType.item : 'Add item'"
           (click)="onAddItem()"
           section-actions
           type="button"
@@ -201,7 +206,7 @@
         </button>
 
         <div class="flex flex-col gap-2">
-          @for (item of visibleItems; track item) {
+          @for (item of visibleItems; track $index) {
             @let itemUsageKey = item.name.trim().toLowerCase();
             @let itemUsageCount = itemUsageByName[itemUsageKey];
             <div class="flex flex-wrap items-end gap-3 rounded-md bg-stone-950/20 px-4 py-2">
@@ -261,6 +266,19 @@
 
               <span class="flex items-center gap-2">
                 <button
+                  class="btn btn-warning-outline-fill"
+                  [disabled]="!item.name.trim()"
+                  [title]="
+                    item.name.trim()
+                      ? 'Convert item to machine'
+                      : 'Name the item before converting to a machine'
+                  "
+                  (click)="onRequestConvertItemToMachine(item)"
+                  type="button"
+                >
+                  <i class="fas fa-industry fa-fw"></i>
+                </button>
+                <button
                   class="btn btn-primary-outline-fill"
                   [title]="'Download item'"
                   (click)="onDownloadItem(item)"
@@ -305,7 +323,8 @@
       >
         <button
           class="btn btn-success"
-          [title]="'Add machine'"
+          [disabled]="hasBlankMachine"
+          [title]="hasBlankMachine ? addBlockedTitleByType.machine : 'Add machine'"
           (click)="onAddMachine()"
           section-actions
           type="button"
@@ -332,7 +351,7 @@
         </button>
 
         <div class="flex flex-col gap-2">
-          @for (machine of visibleMachines; track machine) {
+          @for (machine of visibleMachines; track $index; let machineIndex = $index) {
             @let machineUsageKey = machine.name.trim().toLowerCase();
             @let machineUsageCount = machineUsageByName[machineUsageKey];
             <div class="flex flex-wrap items-end gap-3 rounded-md bg-stone-950/20 px-4 py-2">
@@ -360,7 +379,7 @@
                   class="h-9"
                   [(ngModel)]="machine.name"
                   (focus)="onMachineNameFocus(machine)"
-                  (change)="onMachineChange(machine)"
+                  (change)="onMachineChange(machine, machineIndex)"
                   type="text"
                   name="catalogMachineName"
                   placeholder="Machine name"
@@ -375,7 +394,7 @@
                 <input
                   class="h-9"
                   [(ngModel)]="machine.iconUrl"
-                  (change)="onMachineChange(machine)"
+                  (change)="onMachineChange(machine, machineIndex)"
                   type="url"
                   name="catalogMachineIcon"
                   placeholder="Icon URL"
@@ -387,8 +406,8 @@
                 <input
                   class="h-9 w-full"
                   [(ngModel)]="machine.craftingSpeed"
-                  (change)="onMachineChange(machine)"
-                  (keyup)="onMachineChange(machine)"
+                  (change)="onMachineChange(machine, machineIndex)"
+                  (keyup)="onMachineChange(machine, machineIndex)"
                   type="number"
                   name="catalogMachineSpeed"
                   min="0"
@@ -403,8 +422,8 @@
                 <input
                   class="h-9 w-full"
                   [(ngModel)]="machine.drain"
-                  (change)="onMachineChange(machine)"
-                  (keyup)="onMachineChange(machine)"
+                  (change)="onMachineChange(machine, machineIndex)"
+                  (keyup)="onMachineChange(machine, machineIndex)"
                   type="number"
                   name="catalogMachineDrain"
                   min="0"
@@ -419,8 +438,8 @@
                 <input
                   class="h-9 w-full"
                   [(ngModel)]="machine.productivity"
-                  (change)="onMachineChange(machine)"
-                  (keyup)="onMachineChange(machine)"
+                  (change)="onMachineChange(machine, machineIndex)"
+                  (keyup)="onMachineChange(machine, machineIndex)"
                   type="number"
                   name="catalogMachineProductivity"
                   min="0"
@@ -456,7 +475,7 @@
                         ' productions. Update those productions first.'
                       : 'Delete machine'
                   "
-                  (click)="onRemoveMachine(machine)"
+                  (click)="onRemoveMachine(machine, machineIndex)"
                   type="button"
                 >
                   <i class="fas fa-trash-can fa-fw"></i>
@@ -483,7 +502,8 @@
       >
         <button
           class="btn btn-success"
-          [title]="'Add recipe'"
+          [disabled]="hasBlankRecipe"
+          [title]="hasBlankRecipe ? addBlockedTitleByType.recipe : 'Add recipe'"
           (click)="onAddRecipe()"
           section-actions
           type="button"
@@ -509,7 +529,7 @@
           <i class="fas fa-trash-can fa-fw"></i>
         </button>
 
-        @for (recipe of visibleRecipes; track recipe) {
+        @for (recipe of visibleRecipes; track $index) {
           @let recipeUsageKey = recipe.name.trim().toLowerCase();
           @let recipeUsageCount = recipeUsageByName[recipeUsageKey];
           <app-catalog-recipe-form
@@ -550,7 +570,10 @@
       >
         <button
           class="btn btn-success"
-          [title]="'Add production'"
+          [disabled]="hasBlankProduction"
+          [title]="
+            hasBlankProduction ? addBlockedTitleByType.production : 'Add production'
+          "
           (click)="onAddProduction()"
           section-actions
           type="button"
@@ -582,7 +605,7 @@
           }
 
           <div class="flex flex-col divide-y divide-stone-800/80">
-            @for (template of visibleProductionCards; track template.name) {
+            @for (template of visibleProductionCards; track template.productionId) {
               <div class="flex flex-wrap items-center gap-3 py-3">
                 <app-composite-icon
                   [$primaryIconUrl]="template.machineIconUrl"
@@ -654,6 +677,42 @@
     }
   }
 </section>
+
+<app-modal
+  [($show)]="$isConvertItemConfirmOpen"
+  [$title]="'Convert Item To Machine?'"
+  [$primaryButton]="'Convert'"
+  [$secondaryButton]="'Cancel'"
+  [$bodyClass]="'flex flex-col gap-3 p-6'"
+  ($primaryButtonClick)="onConfirmConvertItemToMachine()"
+  ($secondaryButtonClick)="onCancelConvertItemToMachine()"
+>
+  <p class="text-stone-200">
+    Convert
+    <span class="font-semibold text-amber-300">{{
+      $convertItemCandidateName() || 'this item'
+    }}</span>
+    into a machine?
+  </p>
+  <p class="text-stone-400">
+    This is a one-way action from the item list to the machine list.
+  </p>
+</app-modal>
+
+<app-modal
+  [($show)]="$isDeleteCatalogConfirmOpen"
+  [$title]="'Delete Whole Catalog?'"
+  [$primaryButton]="'Delete Catalog'"
+  [$secondaryButton]="'Cancel'"
+  [$bodyClass]="'flex flex-col gap-3 p-6'"
+  ($primaryButtonClick)="onConfirmDeleteCatalog()"
+  ($secondaryButtonClick)="onCancelDeleteCatalog()"
+>
+  <p class="text-stone-200">
+    This will permanently delete all catalog items, machines, recipes, and productions.
+  </p>
+  <p class="text-stone-400">This action cannot be undone.</p>
+</app-modal>
 
 <app-modal
   [($show)]="$isProductionEditorOpen"

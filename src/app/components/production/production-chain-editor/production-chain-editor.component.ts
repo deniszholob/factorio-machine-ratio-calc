@@ -25,8 +25,10 @@ import {
 import { ContentLayoutComponent } from 'src/app/layouts/content-layout/content-layout.component';
 import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
 import { SelectSingleIconInputComponent } from 'src/app/forms/select-single-icon-input/select-single-icon-input.component';
+import { SelectInputMode } from 'src/app/forms/select-input-mode.enum';
 import { Production } from 'src/app/shared/models/production-chain/production/production.model';
 import { ModalComponent } from 'src/app/components/generic/modal/modal.component';
+import { TooltipDirective } from '../../generic/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-production-chain-editor',
@@ -42,10 +44,12 @@ import { ModalComponent } from 'src/app/components/generic/modal/modal.component
     FilePickerComponent,
     SelectSingleIconInputComponent,
     ModalComponent,
+    TooltipDirective,
   ],
 })
 export class ProductionChainEditorComponent {
   protected readonly EditorDisplayMode = EditorDisplayMode;
+  protected readonly SelectInputMode = SelectInputMode;
 
   private readonly productionService = inject(ProductionService);
   private readonly importExportService = inject(ImportExportService);
@@ -70,6 +74,11 @@ export class ProductionChainEditorComponent {
     this.productionCatalogService.$productionIconsByName;
   protected readonly $selectedProductionTemplateName = signal<string>('');
   protected readonly $isAddFromCatalogModalOpen = signal<boolean>(false);
+  protected readonly $hasBlankProduction = computed<boolean>(() =>
+    this.$machines().some((production) => production.name.trim().length === 0),
+  );
+  protected readonly addBlockedTitle =
+    'Use the existing blank production first before adding another one.';
   protected readonly $activeChainName =
     this.productionChainService.$activeProductionName;
   protected readonly productionFileAccept =
@@ -84,6 +93,9 @@ export class ProductionChainEditorComponent {
   });
 
   protected onAddMachine(): void {
+    if (this.$hasBlankProduction()) {
+      return;
+    }
     const machine = this.productionService.addMachine();
     this.syncActiveChainProductions();
     this.onEditMachine(machine);
@@ -94,6 +106,9 @@ export class ProductionChainEditorComponent {
   }
 
   protected onOpenAddMachineFromCatalogModal(): void {
+    // if (this.$hasBlankProduction()) {
+    //   return;
+    // }
     this.$isAddFromCatalogModalOpen.set(true);
   }
 
@@ -103,6 +118,9 @@ export class ProductionChainEditorComponent {
   }
 
   protected onAddMachineFromCatalog(): void {
+    // if (this.$hasBlankProduction()) {
+    //   return;
+    // }
     const selectedName = this.$selectedProductionTemplateName().trim();
     if (!selectedName) {
       return;
@@ -175,6 +193,9 @@ export class ProductionChainEditorComponent {
   }
 
   protected onAddChildMachine(parentMachineId: string): void {
+    if (this.$hasBlankProduction()) {
+      return;
+    }
     const machine = this.productionService.addMachine();
     this.productionService.updateMachineParent(machine.id, parentMachineId);
     this.syncActiveChainProductions();

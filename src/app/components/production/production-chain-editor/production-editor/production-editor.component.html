@@ -32,6 +32,9 @@
       ></app-readonly-field>
 
       <span class="text-sm text-stone-500">(Inferred from recipe and machine)</span>
+      <span class="text-sm text-stone-500">
+        Machine and recipe definitions are shared by name across productions.
+      </span>
     </div>
 
     <section class="flex flex-col gap-3">
@@ -110,7 +113,12 @@
     </section>
 
     <section class="flex flex-col gap-3">
-      <app-section-title [$title]="'Recipe'" [$iconClass]="'fas fa-scroll'"></app-section-title>
+      <div class="flex items-end justify-start gap-3">
+        <app-section-title [$title]="'Recipe'" [$iconClass]="'fas fa-scroll'"></app-section-title>
+        <span class="text-xs text-stone-400">
+          Leave recipe name blank to auto-name from output 1.
+        </span>
+      </div>
 
       <div class="flex flex-col gap-4">
         <div class="flex flex-wrap items-center gap-4">
@@ -125,6 +133,7 @@
             [$options]="recipeNameOptions"
             [$iconsByName]="recipeIconsByName"
             [$showSelectedIcon]="false"
+            [$clearable]="true"
             ($valueChange)="onRecipeNameInput($event, production)"
             ($commit)="onRecipeNameChange(production)"
           ></app-select-single-icon-input>

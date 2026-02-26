@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
 import {
   EditorDisplayMode,
@@ -11,16 +11,21 @@ import {
 } from 'src/app/forms/selection-list/selection-list.component';
 import { ImportMode } from 'src/app/shared/models/import-mode.enum';
 import { SelectionListType } from 'src/app/forms/selection-list/selection-list.component';
+import { ProductionCatalogService } from 'src/app/shared/services/production-catalog/production-catalog.service';
+import { ProductionChainService } from 'src/app/shared/services/production-chain/production-chain.service';
+import { ModalComponent } from '../generic/modal/modal.component';
 
 @Component({
   selector: 'app-settings-view',
   templateUrl: './settings-view.component.html',
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ContentLayoutComponent, SelectionListComponent],
+  imports: [ContentLayoutComponent, SelectionListComponent, ModalComponent],
 })
 export class SettingsViewComponent {
   private readonly settingsService = inject(SettingsService);
+  private readonly productionCatalogService = inject(ProductionCatalogService);
+  private readonly productionChainService = inject(ProductionChainService);
   protected readonly SelectionListType = SelectionListType;
 
   protected readonly $editorDisplayMode =
@@ -34,6 +39,8 @@ export class SettingsViewComponent {
     this.settingsService.defaultSettings.importChainsMode;
   protected readonly $defaultImportProductionsMode =
     this.settingsService.defaultSettings.importProductionsMode;
+  protected readonly $isResetSettingsConfirmOpen = signal<boolean>(false);
+  protected readonly $isClearDataConfirmOpen = signal<boolean>(false);
   protected readonly editorDisplayOptions: readonly SelectionListOption<EditorDisplayMode>[] =
     [
     {
@@ -91,7 +98,28 @@ export class SettingsViewComponent {
     this.settingsService.closeSettings();
   }
 
-  protected onResetSettings(): void {
+  protected onRequestResetSettings(): void {
+    this.$isResetSettingsConfirmOpen.set(true);
+  }
+
+  protected onConfirmResetSettings(): void {
     this.settingsService.resetSettings();
+  }
+
+  protected onCancelResetSettings(): void {
+    this.$isResetSettingsConfirmOpen.set(false);
+  }
+
+  protected onRequestClearAllData(): void {
+    this.$isClearDataConfirmOpen.set(true);
+  }
+
+  protected onConfirmClearAllData(): void {
+    this.productionCatalogService.clearCatalog();
+    this.productionChainService.resetAllProductionChains();
+  }
+
+  protected onCancelClearAllData(): void {
+    this.$isClearDataConfirmOpen.set(false);
   }
 }
