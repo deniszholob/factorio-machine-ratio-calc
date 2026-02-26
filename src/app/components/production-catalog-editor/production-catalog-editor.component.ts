@@ -66,7 +66,8 @@ export class ProductionCatalogEditorComponent {
   private readonly productionCatalogService = inject(ProductionCatalogService);
   private readonly productionChainService = inject(ProductionChainService);
   private readonly importExportService = inject(ImportExportService);
-  protected readonly itemFileAccept = this.productionCatalogService.itemFileAccept;
+  protected readonly itemFileAccept =
+    this.productionCatalogService.itemFileAccept;
   protected readonly catalogFileAccept =
     this.productionCatalogService.catalogFileAccept;
   protected readonly recipeFileAccept =
@@ -105,9 +106,9 @@ export class ProductionCatalogEditorComponent {
   protected readonly $importMode = signal<ImportMode>(ImportMode.Add);
   protected readonly $uploadError = signal<string | undefined>(undefined);
   protected readonly $isProductionEditorOpen = signal<boolean>(false);
-  protected readonly $editingProductionTemplateIndex = signal<number | undefined>(
-    undefined,
-  );
+  protected readonly $editingProductionTemplateIndex = signal<
+    number | undefined
+  >(undefined);
   protected readonly $editingProductionTemplateDraft = signal<
     Production | undefined
   >(undefined);
@@ -179,7 +180,7 @@ export class ProductionCatalogEditorComponent {
       for (const production of chain.productions) {
         const usageLabel = createUsageLabel(
           'Production chain',
-          `${chain.display} > ${production.name}`,
+          `${chain.display}`,
         );
         incrementCountByName(machineByName, production.machine.name);
         addUsageLabelByName(
@@ -579,7 +580,9 @@ export class ProductionCatalogEditorComponent {
       return;
     }
     this.$editingProductionTemplateIndex.set(index);
-    this.$editingProductionTemplateDraft.set(cloneProduction(template.production));
+    this.$editingProductionTemplateDraft.set(
+      cloneProduction(template.production),
+    );
     this.$isProductionEditorOpen.set(true);
   }
 
@@ -618,7 +621,9 @@ export class ProductionCatalogEditorComponent {
       this.$uploadError.set(undefined);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Failed to import catalog JSON';
+        error instanceof Error
+          ? error.message
+          : 'Failed to import catalog JSON';
       this.$uploadError.set(message);
     }
   }
